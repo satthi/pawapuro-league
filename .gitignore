@@ -3,3 +3,4 @@
 /logs/*
 /webroot/img/player
 config/Migrations/schema-dump-default.lock
+game_next.sql
