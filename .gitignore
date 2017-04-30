@@ -2,3 +2,4 @@
 /tmp/*
 /logs/*
 /webroot/img/player
+config/Migrations/schema-dump-default.lock
