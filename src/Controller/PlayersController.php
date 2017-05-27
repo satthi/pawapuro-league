@@ -199,7 +199,27 @@ class PlayersController extends AppController
         	->group('Teams.ryaku_name')
         	->order(['Pitchers.team_id' => 'ASC'])
         	;
-        
+        // ピッチャーごとの対戦成績
+        $vsPitcherBatterInfos = $this->GameResults->find('all')
+            ->select('Pitchers.name')
+            ->select('Teams.ryaku_name')
+            ->select(['game' => 'count(DISTINCT GameResults.game_id)'])
+            ->select(['daseki' => 'count(CASE WHEN GameResults.type = 2 THEN 1 ELSE null END)'])
+            ->select(['dasu' => 'sum(Results.dasu_flag::integer)'])
+            ->select(['hit' => 'sum(Results.hit_flag::integer)'])
+            ->select(['hr' => 'sum(Results.hr_flag::integer)'])
+            ->select(['rbi' => 'sum(GameResults.point)'])
+            ->select(['steal' => 'count(CASE WHEN GameResults.type = 3 AND GameResults.out_num = 0 THEN 1 ELSE null END)'])
+            ->contain(['Pitchers' => ['Teams']])
+            ->contain('Results')
+            ->where(['GameResults.target_player_id' => $id])
+            ->where(['GameResults.pitcher_id IS NOT' => null])
+            ->group('Pitchers.name')
+            ->group('Pitchers.id')
+            ->group('Teams.ryaku_name')
+            ->order(['Pitchers.team_id' => 'ASC'])
+            ;
+
         // 利き腕ごとの野手成績
         $vsHandBatterInfos = $this->GameResults->find('all')
         	->select('Pitchers.throw')
@@ -252,6 +272,26 @@ class PlayersController extends AppController
         	->group('CASE when GamePitcherResults.team_id = HomeTeams.id THEN VisitorTeams.id ELSE HomeTeams.id END')
         	->order(['CASE when GamePitcherResults.team_id = HomeTeams.id THEN VisitorTeams.id ELSE HomeTeams.id END' => 'ASC'])
         	;
+
+        // ピッチャーごとの対戦成績
+        $vsBatterPitcherInfos = $this->GameResults->find('all')
+            ->select('Batters.name')
+            ->select('Teams.ryaku_name')
+            ->select(['game' => 'count(DISTINCT GameResults.game_id)'])
+            ->select(['daseki' => 'count(CASE WHEN GameResults.type = 2 THEN 1 ELSE null END)'])
+            ->select(['dasu' => 'sum(Results.dasu_flag::integer)'])
+            ->select(['hit' => 'sum(Results.hit_flag::integer)'])
+            ->select(['hr' => 'sum(Results.hr_flag::integer)'])
+            ->select(['rbi' => 'sum(GameResults.point)'])
+            ->contain(['Batters' => ['Teams']])
+            ->contain('Results')
+            ->where(['GameResults.pitcher_id' => $id])
+            ->group('Batters.name')
+            ->group('Batters.id')
+            ->group('Teams.ryaku_name')
+            // ->order(['Pitchers.team_id' => 'ASC'])
+            ;
+
         
         $this->set('player', $player);
         $this->set('batterResultSets', $batterResultSets);
@@ -259,7 +299,9 @@ class PlayersController extends AppController
         $this->set('pitcherResultSets', $pitcherResultSets);
         $this->set('monthPitcherInfos', $monthPitcherInfos);
         $this->set('vsTeamBatterInfos', $vsTeamBatterInfos);
+        $this->set('vsPitcherBatterInfos', $vsPitcherBatterInfos);
         $this->set('vsTeamPitcherInfos', $vsTeamPitcherInfos);
+        $this->set('vsBatterPitcherInfos', $vsBatterPitcherInfos);
         $this->set('vsHandBatterInfos', $vsHandBatterInfos);
         $this->set('vsHandPitcherInfos', $vsHandPitcherInfos);
         $this->set('_serialize', ['player']);

@@ -14,44 +14,7 @@
 		]);?>
 	</div>
 	<div id="main_div">
-	<!-- スコアボード-->
-	<table>
-		<tr>
-			<td></td>
-			<td>1</td>
-			<td>2</td>
-			<td>3</td>
-			<td>4</td>
-			<td>5</td>
-			<td>6</td>
-			<td>7</td>
-			<td>8</td>
-			<td>9</td>
-			<td>10</td>
-			<td>11</td>
-			<td>12</td>
-			<td>R</td>
-			<td>H</td>
-		</tr>
-		<tr>
-			<td><?= $visitorTeamInfo->ryaku_name;?></td>
-			<?php for ($i = 1; $i <= 12; $i++):?>
-			<td>
-			</td>
-			<?php endfor;?>
-			<td></td>
-			<td></td>
-		</tr>
-		<tr>
-			<td><?= $homeTeamInfo->ryaku_name;?></td>
-			<?php for ($i = 1; $i <= 12; $i++):?>
-			<td>
-			</td>
-			<?php endfor;?>
-			<td></td>
-			<td></td>
-		</tr>
-	</table>
+		<h2><?= $gameInfo->date->format('Y/m/d(D)');?> <?= $gameInfo->home_team->ryaku_name;?> VS <?= $gameInfo->visitor_team->ryaku_name;?></h2>
 	<div class="clearfix" >
 		<div style="position:relative;">
 			<div style="text-align:center;">
@@ -65,6 +28,8 @@
 			<p class="screen_font" id="screen_record"></p>
 		</div>
 		<button type="button" id="play">play</button>
+		<?= $this->Html->link('試合へ', ['controller' => 'games', 'action' => 'play', $gameId]);?>
+
 	</div>
 
 	</div>
@@ -90,7 +55,7 @@
 			4: 'second',
 			5: 'third',
 			6: 'short',
-			7: ';left',
+			7: 'left',
 			8: 'center',
 			9: 'right',
 		};
@@ -104,11 +69,18 @@
 			
 			setTimeout(
 			function(){
-				$('#screen_img_div img').attr('src', '<?= $this->Url->build('/img/default.png');?>');
-				$('#screen_name').text('<?= $visitorTeamInfo->name_eng;?>');
-				onseiYomiage('せんこう');
+				// バグ回避？
+				onseiYomiage('');
 			}
 			,time);
+			setTimeout(
+			function(){
+				// バグ回避？
+				$('#screen_img_div img').attr('src', '<?= $this->Url->build('/img/default.png');?>');
+				$('#screen_name').text('<?= $visitorTeamInfo->name;?>');
+				onseiYomiage('せんこう');
+			}
+			,200);
 			setTimeout(
 			function(){
 				onseiYomiage('<?= $visitorTeamInfo->yomi;?>');
@@ -124,7 +96,7 @@
 					// 音声
 					onseiYomiage(playerInfo['dajun'] + 'ばん');
 					$('#screen_img_div img').attr('src', '<?= $this->Url->build('/img/default.png');?>');
-					$('#screen_name').text('<?= $visitorTeamInfo->name_eng;?>');
+					$('#screen_name').text('<?= $visitorTeamInfo->name;?>');
 					$('#screen_no').text(playerInfo['dajun']);
 					$('#screen_record').text('');
 					
@@ -140,7 +112,7 @@
 					function(){
 						$("[data-player_id='" + player_id + "']").parent('tr').find('td').css('visibility', 'visible');
 						$('#screen_img_div img').attr('src', playerInfo['img_path']);
-						$('#screen_name').text(playerInfo['name_eng']);
+						$('#screen_name').text(playerInfo['name']);
 						$('#screen_no').text(playerInfo['no']);
 						$('#screen_record').text(playerInfo['info']);
 						onseiYomiage(playerInfo['name_read']);
@@ -180,7 +152,7 @@
 			setTimeout(
 			function(){
 				$('#screen_img_div img').attr('src', '<?= $this->Url->build('/img/default.png');?>');
-				$('#screen_name').text('<?= $homeTeamInfo->name_eng;?>');
+				$('#screen_name').text('<?= $homeTeamInfo->name;?>');
 				$('#screen_record').text('');
 				$('#screen_no').text('');
 				onseiYomiage('こうこう');
@@ -202,7 +174,7 @@
 					// 音声
 					onseiYomiage(playerInfo['dajun'] + 'ばん');
 					$('#screen_img_div img').attr('src', '<?= $this->Url->build('/img/default.png');?>');
-					$('#screen_name').text('<?= $homeTeamInfo->name_eng;?>');
+					$('#screen_name').text('<?= $homeTeamInfo->name;?>');
 					$('#screen_no').text(playerInfo['dajun']);
 					$('#screen_record').text('');
 					
@@ -218,7 +190,7 @@
 					function(){
 						$("[data-player_id='" + player_id + "']").parent('tr').find('td').css('visibility', 'visible');
 						$('#screen_img_div img').attr('src', playerInfo['img_path']);
-						$('#screen_name').text(playerInfo['name_eng']);
+						$('#screen_name').text(playerInfo['name']);
 						$('#screen_no').text(playerInfo['no']);
 						$('#screen_record').text(playerInfo['info']);
 						onseiYomiage(playerInfo['name_read']);
@@ -254,14 +226,26 @@
 				,time);
 				time += 13000;
 			});
+			setTimeout(
+			function(){
+				location.reload();
+			}
+			,time);
 		});
 		function onseiYomiage(word) {
-		    var synthes = new SpeechSynthesisUtterance(
-		        word
-		    );
+		    var synthes = new SpeechSynthesisUtterance();
+		    var voices = speechSynthesis.getVoices();
+		    synthes.voice = voices[12];
+		    synthes.text = word;
+		    synthes.rate = 1.2;
+		    before_sp = synthes;
 		    synthes.lang = "ja-JP"
 		    speechSynthesis.speak( synthes );
 		}
+
+		<?php if ($setgameId == 'random'):?>
+		$('#play').click();
+		<?php endif;?>
 		
 	});
 </script>

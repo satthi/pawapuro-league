@@ -5,7 +5,7 @@
 	</ul>
 </div>
 <div class="clearfix">
-	<div style="float:left;width:300px;border:1px solid #333;">
+	<div style="float:left;width:280px;border:1px solid #333;">
 		<?= $this->element('scoreboad_members', [
 			'teamInfo' => $gameInfo->home_team,
 			'members' => $homeMembers,
@@ -156,7 +156,7 @@
 	</div>
 
 	</div>
-	<div style="float:left;width:300px;border:1px solid #333;">
+	<div style="float:left;width:280px;border:1px solid #333;">
 		<?= $this->element('scoreboad_members', [
 			'teamInfo' => $gameInfo->visitor_team,
 			'members' => $visitorMembers,
@@ -332,6 +332,17 @@
 			11: 'runner',
 		};
 		
+			setTimeout(
+			function(){
+				// バグ回避？
+				onseiYomiage('');
+			}
+			,0);
+
+			setTimeout(
+			function(){
+				// バグ回避？
+
 		<?php //試合開始?>
 		<?php if ($gameInfo->status == 0):?>
 			onseiYomiage('<?= $gameInfo->home_team->yomi;?>');
@@ -412,11 +423,16 @@
 				onseiYomiage('以上です');
 			<?php endif;?>
 		<?php endif;?>
+			}
+			,100);
 		
 		function onseiYomiage(word) {
-		    var synthes = new SpeechSynthesisUtterance(
-		        word
-		    );
+		    var synthes = new SpeechSynthesisUtterance();
+		    var voices = speechSynthesis.getVoices();
+		    synthes.voice = voices[12];
+		    synthes.text = word;
+		    synthes.rate = 1.2;
+		    before_sp = synthes;
 		    synthes.lang = "ja-JP"
 		    speechSynthesis.speak( synthes );
 		}

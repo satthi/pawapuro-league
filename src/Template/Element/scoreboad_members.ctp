@@ -27,7 +27,12 @@
 
 		</td>
 		<td>
-			<?= $member['player']->real_avg;?>
+			<?php if (empty($playerData[$member['player']->id]['avg'])):?>
+				<?= $member['player']->real_avg;?>
+			<?php else:?>
+				<?php // デモ用?>
+				<?= $playerData[$member['player']->id]['avg'];?>
+			<?php endif;?>
 		</td>
 	</tr>
 	<?php endforeach;?>

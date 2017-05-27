@@ -1210,6 +1210,7 @@ class GamesController extends AppController
             $this->request->session()->delete('StamenDemo');
             $this->redirect(['action' => 'stamenDemoSet', $seasonId, $this->request->data['home_team_id'],  $this->request->data['visitor_team_id']]);
         }
+
         $this->loadModel('Teams');
         $teams = $this->Teams->find('list')
             ->order(['Teams.id' => 'ASC'])
@@ -1219,11 +1220,22 @@ class GamesController extends AppController
         $this->set('seasonId', $seasonId);
     }
 
-    public function stamenDemoSet($seasonId = null, $homeTeamID = null,$visitorTeamID = null)
+    public function stamenDemoSet($seasonId = null, $homeTeamID = null,$visitorTeamID = null, $gameId = null)
     {
         $this->set('seasonId', $seasonId);
+        $this->set('setgameId', $gameId);
         // visitorチーム
-        if (!$this->request->session()->check('StamenDemo.visitor')) {
+        if ($gameId) {
+            if ($gameId == 'random') {
+                $randomGameId = $this->Games->find('all')
+                    ->where(['Games.status' => 99])
+                    ->order('random()')
+                    ->first()->id;
+                $this->stamenDemoPlay($randomGameId);
+            } else {
+                $this->stamenDemoPlay($gameId);
+            }
+        } elseif (!$this->request->session()->check('StamenDemo.visitor')) {
             $this->set('type', 'visitor');
             return $this->stamenDemoSetParts($visitorTeamID);
         } elseif (!$this->request->session()->check('StamenDemo.home')) {
@@ -1355,11 +1367,44 @@ class GamesController extends AppController
         $this->render('stamen_setting_demo');
     }
     
-    private function stamenDemoPlay()
+    private function stamenDemoPlay($gameId = null)
     {
         $this->loadModel('Teams');
         $this->loadModel('Players');
-        $StamenDemo = $this->request->session()->read('StamenDemo');
+        if (!$gameId) {
+            $StamenDemo = $this->request->session()->read('StamenDemo');
+        } else {
+            $game = $this->Games->get($gameId, [
+                'contain' => [
+                    // 'HomeTeams',
+                    // 'VisitorTeams',
+                    'GameMembers' => [
+                        'Players'
+                    ],
+                ]
+            ]);
+
+            $StamenDemo = [];
+            $StamenDemo['visitor']['team_id'] = $game->visitor_team_id;
+            $StamenDemo['home']['team_id'] = $game->home_team_id;
+            // memberset
+            foreach ($game->game_members as $gameMember) {
+                if ($gameMember->stamen_flag == true) {
+                    if ($gameMember->team_id == $game->visitor_team_id) {
+                        $type = 'visitor';
+                    } else {
+                        $type = 'home';
+                    }
+                    $StamenDemo[$type][$gameMember->dajun] = [
+                        'dajun' => $gameMember->dajun,
+                        'position' => $gameMember->position,
+                        'player_id' => $gameMember->player_id,
+                    ];
+                }
+            }
+            // debug($game);
+            // exit;
+        }
         
         $visitorTeamInfo = $this->Teams->get($StamenDemo['visitor']['team_id']);
         $homeTeamInfo = $this->Teams->get($StamenDemo['home']['team_id']);
@@ -1387,10 +1432,10 @@ class GamesController extends AppController
         
         $playerData = [];
         foreach ($visitorMembers as $visitorMember) {
-            $playerData[$visitorMember['player']->id] = $this->stamenPlayerSeiri($visitorMember['dajun'], $visitorMember['player'], $visitorMember['position']);
+            $playerData[$visitorMember['player']->id] = $this->stamenPlayerSeiri($visitorMember['dajun'], $visitorMember['player'], $visitorMember['position'], $gameId);
         }
         foreach ($homeMembers as $homeMember) {
-            $playerData[$homeMember['player']->id] = $this->stamenPlayerSeiri($homeMember['dajun'], $homeMember['player'], $homeMember['position']);
+            $playerData[$homeMember['player']->id] = $this->stamenPlayerSeiri($homeMember['dajun'], $homeMember['player'], $homeMember['position'], $gameId);
         }
         
         $this->set('visitorTeamInfo', $visitorTeamInfo);
@@ -1400,6 +1445,7 @@ class GamesController extends AppController
         $this->set('positionLists', Configure::read('positionLists'));
         $this->set('positionColors', Configure::read('positionColors'));
         $this->set('playerData', $playerData);
+        $this->set('gameId', $gameId);
         $this->render('play_display_demo');
     }
 
@@ -1410,9 +1456,10 @@ class GamesController extends AppController
         $this->request->session()->write('StamenDemo.' . $type, $this->request->data[$type]);
     }
     
-    private function stamenPlayerSeiri($dajun, $playerInfo, $position)
+    private function stamenPlayerSeiri($dajun, $playerInfo, $position, $gameId)
     {
         $this->loadModel('Players');
+        $this->loadModel('GameMembers');
         //画像パス
         if (file_exists(ROOT . '/webroot/img/player/' . $playerInfo->team->ryaku_name . '/' . $playerInfo->no . '.jpg')) {
             $imgPath = Router::url('/img/player/' . $playerInfo->team->ryaku_name . '/' . $playerInfo->no . '.jpg');
@@ -1424,19 +1471,113 @@ class GamesController extends AppController
             $imgPath = Router::url('/img/noimage.jpg');
         }
         
-        if ($position != 1) {
-            $displayPlayerInfo = $playerInfo->batter_player_info;
+        $displayPlayerInfoAvg = null;
+        if (!$gameId) {
+            if ($position != 1) {
+                $displayPlayerInfo = $playerInfo->batter_player_info;
+            } else {
+                $displayPlayerInfo = $playerInfo->pitcher_player_info;
+            }
         } else {
-            $displayPlayerInfo = $playerInfo->pitcher_player_info;
+            $batterInfo = $this->GameMembers->find('all')
+                ->contain(['Players' => ['Teams']])
+                // ->where(['GameMembers.game_id' => $gameId])
+                ->where(['GameMembers.player_id' => $playerInfo->id])
+                ->select($this->GameMembers)
+                ->select($this->GameMembers->Players)
+                ->select(['dasu_count' => '(SELECT sum(Results.dasu_flag::integer) FROM game_results AS GameResults LEFT JOIN results AS Results ON GameResults.result_id = Results.id WHERE GameResults.game_id <= ' . $gameId . ' AND GameResults.target_player_id = GameMembers.player_id)'])
+                ->select(['hit_count' => '(SELECT sum(Results.hit_flag::integer) FROM game_results AS GameResults LEFT JOIN results AS Results ON GameResults.result_id = Results.id WHERE GameResults.game_id <= ' . $gameId . ' AND GameResults.target_player_id = GameMembers.player_id)'])
+                ->select(['hr_count' => '(SELECT sum(Results.hr_flag::integer) FROM game_results AS GameResults LEFT JOIN results AS Results ON GameResults.result_id = Results.id WHERE GameResults.game_id <= ' . $gameId . ' AND GameResults.target_player_id = GameMembers.player_id)'])
+                ->select(['rbi_count' => '(SELECT sum(GameResults.point) FROM game_results AS GameResults LEFT JOIN results AS Results ON GameResults.result_id = Results.id WHERE GameResults.game_id <= ' . $gameId . ' AND GameResults.target_player_id = GameMembers.player_id)'])
+                ->first()
+            ;
+            $avg = '';
+            if($batterInfo->dasu_count == 0) {
+               $avg = sprintf('%0.3f', round(0, 3));
+            } else {
+               $avg = sprintf('%0.3f', round($batterInfo->hit_count / ($batterInfo->dasu_count), 3));
+            }
+            $avg = preg_replace('/^0/', '', $avg);
+
+            $displayPlayerInfoAvg = $avg;
+            if ($position != 1) {
+                $displayPlayerInfo = $avg . ' (' . (int) $batterInfo->dasu_count . '-' . (int) $batterInfo->hit_count . ') ' . (int) $batterInfo->hr_count . '本' . (int) $batterInfo->rbi_count . '点';
+                // $displayPlayerInfo = $playerInfo->batter_player_info;
+            } else {
+                // 試合勝ち負けセーブ
+                $this->loadModel('GamePitcherResults');
+                $this->loadModel('GameResults');
+                $performData = $this->GamePitcherResults->find('all')
+                    ->select(['game_sum' => 'count(GamePitcherResults.id)'])
+                    ->select(['win_sum' => 'count(CASE WHEN GamePitcherResults.win = TRUE THEN 1 ELSE NULL END)'])
+                    ->select(['lose_sum' => 'count(CASE WHEN GamePitcherResults.lose = TRUE THEN 1 ELSE NULL END)'])
+                    ->select(['save_sum' => 'count(CASE WHEN GamePitcherResults.save = TRUE THEN 1 ELSE NULL END)'])
+                    ->contain('Games')
+                    ->where(['GamePitcherResults.pitcher_id' => $playerInfo->id])
+                    ->where(['Games.id <=' => $gameId])
+                    ->group('GamePitcherResults.pitcher_id')
+                    ->first()
+                ;
+                
+                // 防御率
+                $pitcherData = $this->GameResults->find('all')
+                    ->select('GameResults.pitcher_id')
+                    ->select(['total_inning' => '(SELECT sum(InningGameResults.out_num) FROM game_results AS InningGameResults WHERE InningGameResults.pitcher_id = GameResults.pitcher_id AND InningGameResults.game_id <= ' . $gameId . ')'])
+                    ->select(['total_jiseki' => '(SELECT sum(JisekiGamePithcerResults.jiseki) FROM game_pitcher_results AS JisekiGamePithcerResults WHERE JisekiGamePithcerResults.pitcher_id = GameResults.pitcher_id AND JisekiGamePithcerResults.game_id <= ' . $gameId . ')'])
+                    ->contain('Pitchers')
+                    ->contain('Results')
+                    ->group('GameResults.pitcher_id')
+                    ->group('Pitchers.name')
+                    // ->where(['GameResults.game_id' => $gameId])
+                    ->where(['Pitchers.id' => $playerInfo->id])
+                    ->where(['GameResults.type IN' => [2,3]])
+                    ->first()
+                ;
+
+            if($pitcherData->total_inning == 0) {
+               $era = '-';
+            } else {
+               $era = sprintf('%0.2f', round($pitcherData->total_jiseki / ($pitcherData->total_inning) * 27, 2));
+            }
+
+                $displayPlayerInfo = $era . ' ';
+                $displayPlayerInfo .= $performData->game_sum . '試合';
+                if ($performData->win_sum > 0) {
+                    $displayPlayerInfo .= $performData->win_sum . '勝';
+                }
+                if ($performData->lose_sum > 0) {
+                    $displayPlayerInfo .= $performData->lose_sum . '敗';
+                }
+                if ($performData->save_sum > 0) {
+                    $displayPlayerInfo .= $performData->save_sum . 'S';
+                }
+
+        // return $era . ' ' . (int) $performData->game_sum . '試' . $performData->win_sum . '勝' . (int) $performData->lose_sum . '敗' . (int) $performData->save_sum . 'S';
+
+
+                // return $text;
+                // $displayPlayerInfo = $playerInfo->pitcher_player_info;
+                $this->set('gameInfo', $this->Games->get($gameId, [
+                    'contain' => [
+                        'HomeTeams',
+                        'VisitorTeams',
+                        'WinPitchers',
+                        'LosePitchers',
+                        'SavePitchers',
+                    ]
+                ]));
+            }
         }
 
         return [
             'dajun' => $dajun,
             'no' => $playerInfo->no,
+            'name' => $playerInfo->name,
             'name_eng' => $playerInfo->name_eng,
             'name_read' => $playerInfo->name_read,
             'name_short_read' => $playerInfo->name_short_read,
             'info' => $displayPlayerInfo,
+            'avg' => $displayPlayerInfoAvg,
             'img_path' => $imgPath,
         ];
     }

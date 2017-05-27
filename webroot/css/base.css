@@ -542,16 +542,16 @@ label {
 #screen_no{
     font-size: 40px;
 	position:absolute;
-	bottom:50px;
+	top:30px;
 	left: 170px;
 	font-style: italic;
 }
 #screen_name{
-    font-size: 40px;
+    font-size: 30px;
 	position:absolute;
 	bottom:40px;
 	right: 170px;
-	width: 300px;
+	width: 370px;
 	text-align:right;
 	font-style: italic;
 	line-height: 50px;
@@ -568,7 +568,7 @@ label {
 
 #home_div {
 	float:left;
-	width:300px;
+	width:280px;
 	border:1px solid #333;
 }
 
@@ -579,7 +579,7 @@ width:700px;
 
 #visitor_div{
 float:left;
-width:300px;
+width:280px;
 border:1px solid #333;
 }
 

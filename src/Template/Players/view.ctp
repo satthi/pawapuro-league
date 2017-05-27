@@ -162,6 +162,39 @@
         <?php endforeach;?>
      </table>
     
+    <h4>対投手対戦成績</h4>
+    <table cellpadding="0" cellspacing="0" style="width:auto;">
+        <thead>
+            <tr>
+                <th scope="col">チーム</th>
+                <th scope="col">名前</th>
+                <th scope="col">打率</th>
+                <th scope="col">試合</th>
+                <th scope="col">打席</th>
+                <th scope="col">打数</th>
+                <th scope="col">安打</th>
+                <th scope="col">HR</th>
+                <th scope="col">打点</th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($vsPitcherBatterInfos as $vsPitcherBatterInfo):?>
+        <tr>
+            <td><?= $vsPitcherBatterInfo->pitcher->team->ryaku_name;?></td>
+            <td><?= $vsPitcherBatterInfo->pitcher->name;?></td>
+            <td><?php if ($vsPitcherBatterInfo->dasu > 0) echo sprintf('%0.3f', round($vsPitcherBatterInfo->hit / $vsPitcherBatterInfo->dasu, 3));?></td>
+            <td><?= $vsPitcherBatterInfo->game;?></td>
+            <td><?= $vsPitcherBatterInfo->daseki;?></td>
+            <td><?= $vsPitcherBatterInfo->dasu;?></td>
+            <td><?= $vsPitcherBatterInfo->hit;?></td>
+            <td><?= $vsPitcherBatterInfo->hr;?></td>
+            <td><?= $vsPitcherBatterInfo->rbi;?></td>
+        </tr>
+        <?php endforeach;?>
+     </table>
+    
+
+
     <h4>対左右対戦成績</h4>
     <table cellpadding="0" cellspacing="0" style="width:auto;">
         <thead>
@@ -361,6 +394,38 @@
         <?php endforeach;?>
      </table>
      <?php endif;?>
+
+    <h4>対投手対戦成績</h4>
+    <table cellpadding="0" cellspacing="0" style="width:auto;">
+        <thead>
+            <tr>
+                <th scope="col">チーム</th>
+                <th scope="col">名前</th>
+                <th scope="col">打率</th>
+                <th scope="col">試合</th>
+                <th scope="col">打席</th>
+                <th scope="col">打数</th>
+                <th scope="col">安打</th>
+                <th scope="col">HR</th>
+                <th scope="col">打点</th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($vsBatterPitcherInfos as $vsBatterPitcherInfo):?>
+        <tr>
+            <td><?= $vsBatterPitcherInfo->batter->team->ryaku_name;?></td>
+            <td><?= $vsBatterPitcherInfo->batter->name;?></td>
+            <td><?php if ($vsBatterPitcherInfo->dasu > 0) echo sprintf('%0.3f', round($vsBatterPitcherInfo->hit / $vsBatterPitcherInfo->dasu, 3));?></td>
+            <td><?= $vsBatterPitcherInfo->game;?></td>
+            <td><?= $vsBatterPitcherInfo->daseki;?></td>
+            <td><?= $vsBatterPitcherInfo->dasu;?></td>
+            <td><?= $vsBatterPitcherInfo->hit;?></td>
+            <td><?= $vsBatterPitcherInfo->hr;?></td>
+            <td><?= $vsBatterPitcherInfo->rbi;?></td>
+        </tr>
+        <?php endforeach;?>
+     </table>
+
      
     <?php if(!empty($pitcherResultSets)):?>
     <h4>投球履歴</h4>

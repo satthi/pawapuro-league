@@ -6,7 +6,9 @@
 </div>
 <div class="clearfix">
 	</div>
+	<h2><?= $gameInfo->date->format('Y/m/d(D)');?> <?= $gameInfo->home_team->ryaku_name;?> VS <?= $gameInfo->visitor_team->ryaku_name;?></h2>
 	<div style="float:left;width:1000px;">
+
 	<!-- スコアボード-->
 	<table>
 		<tr>

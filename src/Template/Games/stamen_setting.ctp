@@ -89,7 +89,10 @@
 	</div>
 </div>
 <div>
-	<button type="button" id="submit">登録</button>
+	<button type="button" class="submit" id="submit">登録</button>
+	<?php if ($checkTeam->id == $gameInfo->home_team_id):?>
+		<button type="button" class="submit" id="stamen">スタメン発表</button>
+	<?php endif;?>
 </div>
 
 <script type="text/javascript">
@@ -148,7 +151,7 @@
 			}
 		});
 		
-		$('#submit').click(function(){
+		$('.submit').click(function(){
 			//データの登録
 			var data = {};
 			$('#stamen_table tr').each(function(){
@@ -168,12 +171,17 @@
 					'inning' : 0,
 				}
 			});
+			var submit_id = $(this).prop('id');
 			$.ajax({
 				data: data,
 				type: "POST",
 				url: '<?= $this->Url->build(['controller' => 'games', 'action' => 'member_change']);?>',
 				success: function() {
-					location.reload();
+					if (submit_id == 'stamen') {
+						location.href='<?= $this->Url->build(['controller' => 'games', 'action' => 'stamenDemoSet', $gameInfo->season_id, $gameInfo->visitor_team_id, $gameInfo->home_team_id, $gameInfo->id]);?>';
+					} else {
+						location.reload();
+					}
 				}
 			});
 			
