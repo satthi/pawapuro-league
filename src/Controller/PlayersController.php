@@ -60,7 +60,7 @@ class PlayersController extends AppController
     	$this->loadModel('VMonthBatterInfos');
     	$this->loadModel('VMonthPitcherInfos');
         $player = $this->Players->get($id, [
-            'contain' => ['GameMembers']
+            'contain' => ['GameMembers', 'Teams']
         ]);
         // 該当者の全履歴取得
         $batterResults = $this->GameResults->find('all')
@@ -215,6 +215,7 @@ class PlayersController extends AppController
             ->where(['GameResults.target_player_id' => $id])
             ->where(['GameResults.pitcher_id IS NOT' => null])
             ->group('Pitchers.name')
+            ->group('Pitchers.team_id')
             ->group('Pitchers.id')
             ->group('Teams.ryaku_name')
             ->order(['Pitchers.team_id' => 'ASC'])
@@ -291,7 +292,13 @@ class PlayersController extends AppController
             ->group('Teams.ryaku_name')
             // ->order(['Pitchers.team_id' => 'ASC'])
             ;
-
+        // 歴代成績
+        $histories = $this->Players->find('all')
+        	->where(['Teams.ryaku_name' => $player->team->ryaku_name])
+        	->where(['Players.no' => $player->no])
+        	->contain(['Teams' => ['Seasons']])
+        	->order(['Teams.season_id' => 'ASC'])
+        	;
         
         $this->set('player', $player);
         $this->set('batterResultSets', $batterResultSets);
@@ -304,6 +311,7 @@ class PlayersController extends AppController
         $this->set('vsBatterPitcherInfos', $vsBatterPitcherInfos);
         $this->set('vsHandBatterInfos', $vsHandBatterInfos);
         $this->set('vsHandPitcherInfos', $vsHandPitcherInfos);
+        $this->set('histories', $histories);
         $this->set('_serialize', ['player']);
     }
 

@@ -180,6 +180,7 @@
 
 <script type="text/javascript">
 	$(function(){
+		var synthesSet = [];
 		// 交代周り
 		$(".colorbox").colorbox({width: '700px',height: '700px',iframe:true});
 		$(".colorbox_button").colorbox({width: '1200px',height: '800px',iframe:true});
@@ -211,6 +212,7 @@
 			$.ajax({
 				data: data,
 				type: "POST",
+				async:false,
 				url: '<?= $this->Url->build(['controller' => 'games', 'action' => 'next_inning']);?>',
 				success: function() {
 					location.href='<?= $this->Url->build();?>';
@@ -258,6 +260,7 @@
 			$.ajax({
 				data: data,
 				type: "POST",
+				async:false,
 				url: '<?= $this->Url->build(['controller' => 'games', 'action' => 'result_save']);?>',
 				success: function() {
 					location.href='<?= $this->Url->build();?>';
@@ -291,6 +294,7 @@
 			$.ajax({
 				data: data,
 				type: "POST",
+				async:false,
 				url: '<?= $this->Url->build(['controller' => 'games', 'action' => 'point_only_save']);?>',
 				success: function() {
 					location.href='<?= $this->Url->build();?>';
@@ -309,8 +313,12 @@
 			$.ajax({
 				data: data,
 				type: "POST",
+				async:false,
 				url: '<?= $this->Url->build(['controller' => 'games', 'action' => 'back']);?>',
 				success: function() {
+					$.each(synthesSet, function(i,v) {
+						//v.cancel();
+					});
 					location.href='<?= $this->Url->build();?>';
 				}
 			});
@@ -435,6 +443,7 @@
 		    before_sp = synthes;
 		    synthes.lang = "ja-JP"
 		    speechSynthesis.speak( synthes );
+		    synthesSet.push(synthes) ;
 		}
 		
 		// 詳細のポップアップ

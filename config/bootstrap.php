@@ -230,6 +230,12 @@ Configure::write('Hand', [
     '両' => 3,
 ]);
 
+Configure::write('HandOptoins', [
+    1 => '右',
+    2 => '左',
+    3 => '両',
+]);
+
 Configure::write('PositionCheck', [
     '' => null,
     '○' => 1,
@@ -264,3 +270,42 @@ Configure::write('positionColors', [
     11 => 'p',
 ]);
 
+
+Configure::write('statusPositionLists', [
+    2 => '捕手',
+    3 => '一塁手',
+    4 => '二塁手',
+    5 => '三塁手',
+    6 => '遊撃手',
+    7 => '外野手',
+    11 => '先発',
+    12 => '中継ぎ',
+    13 => 'セットアッパー',
+    14 => '抑え',
+]);
+
+Configure::write('statusPositionShortLists', [
+    2 => '捕',
+    3 => '一',
+    4 => '二',
+    5 => '三',
+    6 => '遊',
+    7 => '外',
+    11 => '先',
+    12 => '中',
+    13 => 'セ',
+    14 => '抑',
+]);
+
+
+Configure::write('batterPositionName', [
+    2 => '捕手',
+    3 => '一塁',
+    4 => '二塁',
+    5 => '三塁',
+    6 => '遊撃',
+    7 => '左翼',
+    8 => '中堅',
+    9 => '右翼',
+    99 => 'ＤＨ',
+]);

@@ -1472,6 +1472,7 @@ class GamesController extends AppController
         }
         
         $displayPlayerInfoAvg = null;
+        $displayPlayerInfoHr = null;
         if (!$gameId) {
             if ($position != 1) {
                 $displayPlayerInfo = $playerInfo->batter_player_info;
@@ -1500,6 +1501,7 @@ class GamesController extends AppController
             $avg = preg_replace('/^0/', '', $avg);
 
             $displayPlayerInfoAvg = $avg;
+            $displayPlayerInfoHr = $batterInfo->hr_count ;
             if ($position != 1) {
                 $displayPlayerInfo = $avg . ' (' . (int) $batterInfo->dasu_count . '-' . (int) $batterInfo->hit_count . ') ' . (int) $batterInfo->hr_count . '本' . (int) $batterInfo->rbi_count . '点';
                 // $displayPlayerInfo = $playerInfo->batter_player_info;
@@ -1534,7 +1536,8 @@ class GamesController extends AppController
                     ->first()
                 ;
 
-            if($pitcherData->total_inning == 0) {
+            if (!empty($pitcherData)) {
+            if ($pitcherData->total_inning == 0) {
                $era = '-';
             } else {
                $era = sprintf('%0.2f', round($pitcherData->total_jiseki / ($pitcherData->total_inning) * 27, 2));
@@ -1551,6 +1554,10 @@ class GamesController extends AppController
                 if ($performData->save_sum > 0) {
                     $displayPlayerInfo .= $performData->save_sum . 'S';
                 }
+            } else {
+               $era = '-';
+                $displayPlayerInfo = '0試合';
+            }
 
         // return $era . ' ' . (int) $performData->game_sum . '試' . $performData->win_sum . '勝' . (int) $performData->lose_sum . '敗' . (int) $performData->save_sum . 'S';
 
@@ -1578,6 +1585,7 @@ class GamesController extends AppController
             'name_short_read' => $playerInfo->name_short_read,
             'info' => $displayPlayerInfo,
             'avg' => $displayPlayerInfoAvg,
+            'hr' => $displayPlayerInfoHr,
             'img_path' => $imgPath,
         ];
     }

@@ -205,6 +205,29 @@ class Player extends Entity
         return preg_replace('/^0/', '', $avg);
     }
 
+    protected function _getRealHr()
+    {
+		//
+		$playerId = $this->_properties['id'];
+    	$resultSet = Configure::read('resultSet');
+
+    	$GameResults = TableRegistry::get('GameResults');
+    	$shukeiData = $GameResults->find('all')
+    		->contain('Results')
+    		->select('GameResults.target_player_id')
+    		->select(['hr_count' => 'sum(Results.hr_flag::integer)'])
+    		->group('GameResults.target_player_id')
+    		->where(['GameResults.target_player_id' => $playerId])
+    		->first()
+    	;
+    	
+    	if (empty($shukeiData)) {
+        	return 0;
+    	}
+        
+        return (int) $shukeiData->hr_count;
+    }
+
     protected function _getRealBatterPlayerInfo()
     {
 		//

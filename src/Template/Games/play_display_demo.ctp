@@ -14,9 +14,11 @@
 		]);?>
 	</div>
 	<div id="main_div">
+	<?php if (!empty($gameInfo)):?>
 		<h2><?= $gameInfo->date->format('Y/m/d(D)');?> <?= $gameInfo->home_team->ryaku_name;?> VS <?= $gameInfo->visitor_team->ryaku_name;?></h2>
+	<?php endif;?>
 	<div class="clearfix" >
-		<div style="position:relative;">
+		<div style="position:relative;" id="photo_frame">
 			<div style="text-align:center;">
 				<div id="screen_img_div">
 					<img width="400" height="400" src="<?= $this->Url->build('/img/default.png');?>"/>
@@ -26,6 +28,45 @@
 			<p class="screen_font" id="screen_no"></p>
 			<p class="screen_font" id="screen_name"></p>
 			<p class="screen_font" id="screen_record"></p>
+		</div>
+		<div class="clearfix" style="margin:0 auto;width:400px;">
+		<?php if (array_key_exists('card', $this->request->query) && $seasonId):?>
+			<?php $PlayersTable = \Cake\ORM\TableRegistry::get('Players');?>
+			<?php foreach ($homeMembers as $homeMember):?>
+				<?php $player = $PlayersTable->find('all')
+					->where(['Teams.ryaku_name' => $homeTeamInfo->ryaku_name])
+					->where(['Players.no' => $homeMember['player']->no])
+					->where(['Seasons.regular_flag' => true])
+					->where(['Seasons.id <=' => $seasonId])
+					->order(['Seasons.id ' => 'DESC'])
+					->contain(['Teams' => ['Seasons']])
+					->first()
+					;
+				?>
+				<?php if (!empty($player)):?>
+					<div class="card_frame" id="card_frame_<?= $homeMember['player']->id;?>">
+						<?= $this->element('player_card', ['player' => $player]);?>
+					</div>
+				<?php endif;?>
+			<?php endforeach;?>
+			<?php foreach ($visitorMembers as $visitorMember):?>
+				<?php $player = $PlayersTable->find('all')
+					->where(['Teams.ryaku_name' => $visitorTeamInfo->ryaku_name])
+					->where(['Players.no' => $visitorMember['player']->no])
+					->where(['Seasons.regular_flag' => true])
+					->where(['Seasons.id <=' => $seasonId])
+					->order(['Seasons.id ' => 'DESC'])
+					->contain(['Teams' => ['Seasons']])
+					->first()
+					;
+				?>
+				<?php if (!empty($player)):?>
+					<div class="card_frame" id="card_frame_<?= $visitorMember['player']->id;?>">
+						<?= $this->element('player_card', ['player' => $player]);?>
+					</div>
+				<?php endif;?>
+			<?php endforeach;?>
+		<?php endif;?>
 		</div>
 		<button type="button" id="play">play</button>
 		<?= $this->Html->link('試合へ', ['controller' => 'games', 'action' => 'play', $gameId]);?>
@@ -60,7 +101,7 @@
 			9: 'right',
 		};
 		var playerData = <?= json_encode($playerData);?>;
-		
+		$('.card_frame').hide();
 		$('#play').click(function(){
 		
 			// visitorより
@@ -95,6 +136,8 @@
 				function(){
 					// 音声
 					onseiYomiage(playerInfo['dajun'] + 'ばん');
+					$('#photo_frame').show();
+					$('.card_frame').hide();
 					$('#screen_img_div img').attr('src', '<?= $this->Url->build('/img/default.png');?>');
 					$('#screen_name').text('<?= $visitorTeamInfo->name;?>');
 					$('#screen_no').text(playerInfo['dajun']);
@@ -110,6 +153,13 @@
 					//名前
 					setTimeout(
 					function(){
+						$('.card_frame').hide();
+						if ($('#card_frame_' + player_id).length > 0) {
+							$('#photo_frame').hide();
+							$('#card_frame_' + player_id).show();
+						} else {
+							$('.photo_frame').show();
+						}
 						$("[data-player_id='" + player_id + "']").parent('tr').find('td').css('visibility', 'visible');
 						$('#screen_img_div img').attr('src', playerInfo['img_path']);
 						$('#screen_name').text(playerInfo['name']);
@@ -151,6 +201,8 @@
 			
 			setTimeout(
 			function(){
+				$('#photo_frame').show();
+				$('.card_frame').hide();
 				$('#screen_img_div img').attr('src', '<?= $this->Url->build('/img/default.png');?>');
 				$('#screen_name').text('<?= $homeTeamInfo->name;?>');
 				$('#screen_record').text('');
@@ -173,6 +225,8 @@
 				function(){
 					// 音声
 					onseiYomiage(playerInfo['dajun'] + 'ばん');
+					$('#photo_frame').show();
+					$('.card_frame').hide();
 					$('#screen_img_div img').attr('src', '<?= $this->Url->build('/img/default.png');?>');
 					$('#screen_name').text('<?= $homeTeamInfo->name;?>');
 					$('#screen_no').text(playerInfo['dajun']);
@@ -188,6 +242,13 @@
 					//名前
 					setTimeout(
 					function(){
+						$('.card_frame').hide();
+						if ($('#card_frame_' + player_id).length > 0) {
+							$('#photo_frame').hide();
+							$('#card_frame_' + player_id).show();
+						} else {
+							$('.photo_frame').show();
+						}
 						$("[data-player_id='" + player_id + "']").parent('tr').find('td').css('visibility', 'visible');
 						$('#screen_img_div img').attr('src', playerInfo['img_path']);
 						$('#screen_name').text(playerInfo['name']);

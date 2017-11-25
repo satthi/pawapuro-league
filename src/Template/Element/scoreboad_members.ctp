@@ -1,6 +1,8 @@
 <table style="width:auto;">
 	<tr>
 		<th colspan="3"><?= $teamInfo->name;?></th>
+		<th>AVG</th>
+		<th>HR</th>
 	</tr>
 	<?php foreach ($members as $member) :?>
 	<?php if (is_object($member)) {
@@ -32,6 +34,14 @@
 			<?php else:?>
 				<?php // デモ用?>
 				<?= $playerData[$member['player']->id]['avg'];?>
+			<?php endif;?>
+		</td>
+		<td>
+			<?php if (empty($playerData[$member['player']->id]['hr'])):?>
+				<?= $member['player']->real_hr;?>
+			<?php else:?>
+				<?php // デモ用?>
+				<?= $playerData[$member['player']->id]['hr'];?>
 			<?php endif;?>
 		</td>
 	</tr>

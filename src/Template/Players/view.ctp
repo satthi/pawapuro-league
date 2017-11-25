@@ -1,15 +1,4 @@
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('Edit Player'), ['action' => 'edit', $player->id]) ?> </li>
-        <li><?= $this->Form->postLink(__('Delete Player'), ['action' => 'delete', $player->id], ['confirm' => __('Are you sure you want to delete # {0}?', $player->id)]) ?> </li>
-        <li><?= $this->Html->link(__('List Players'), ['action' => 'index']) ?> </li>
-        <li><?= $this->Html->link(__('New Player'), ['action' => 'add']) ?> </li>
-        <li><?= $this->Html->link(__('List Game Members'), ['controller' => 'GameMembers', 'action' => 'index']) ?> </li>
-        <li><?= $this->Html->link(__('New Game Member'), ['controller' => 'GameMembers', 'action' => 'add']) ?> </li>
-    </ul>
-</nav>
-<div class="players view large-9 medium-8 columns content">
+<div class="players view columns content">
     <h3><?= h($player->name) ?></h3>
     <table class="vertical-table">
         <tr>
@@ -478,6 +467,239 @@
         </tbody>
     </table>
     <?php endif;?>
+    
+    <h3>歴代成績</h3>
+    <table cellpadding="0" cellspacing="0" style="width:auto;">
+        <tr>
+            <th>シーズン</th>
+            <th>打率</th>
+            <th>HR</th>
+            <th>打点</th>
+            <th>打席</th>
+            <th>打数</th>
+            <th>安打</th>
+            <th>2塁打</th>
+            <th>3塁打</th>
+            <th>四球</th>
+            <th>死球</th>
+            <th>出塁率</th>
+            <th>犠打</th>
+            <th>犠飛</th>
+            <th>三振</th>
+            <th>併殺</th>
+            <th>盗塁</th>
+        </tr>
+        <?php $total = [
+            'hr' => 0,
+            'rbi' => 0,
+            'daseki' => 0,
+            'dasu' => 0,
+            'hit' => 0,
+            'base2' => 0,
+            'base3' => 0,
+            'walk' => 0,
+            'deadball' => 0,
+            'bant' => 0,
+            'sacrifice_fly' => 0,
+            'sansin' => 0,
+            'heisatsu' => 0,
+            'steal' => 0,
+        ];?>
+        <?php foreach ($histories as $history):?>
+        <tr>
+            <td><?= $history->team->season->name; ?></td>
+            <td><?= preg_replace('/^0/', '', sprintf('%0.3f', $history->avg)); ?></td>
+            <td><?= $this->Number->format($history->hr) ?></td>
+            <td><?= $this->Number->format($history->rbi) ?></td>
+            <td><?= $this->Number->format($history->daseki) ?></td>
+            <td><?= $this->Number->format($history->dasu) ?></td>
+            <td><?= $this->Number->format($history->hit) ?></td>
+            <td><?= $this->Number->format($history->base2) ?></td>
+            <td><?= $this->Number->format($history->base3) ?></td>
+            <td><?= $this->Number->format($history->walk) ?></td>
+            <td><?= $this->Number->format($history->deadball) ?></td>
+            <td><?= $history->obp; ?></td>
+            <td><?= $this->Number->format($history->bant) ?></td>
+            <td><?= $this->Number->format($history->sacrifice_fly) ?></td>
+            <td><?= $this->Number->format($history->sansin) ?></td>
+            <td><?= $this->Number->format($history->heisatsu) ?></td>
+            <td><?= $this->Number->format($history->steal) ?></td>
+        </tr>
+            <?php if ($history->team->season->regular_flag):?>
+        <?php $total = [
+            'hr' => $total['hr'] + $history->hr,
+            'rbi' => $total['rbi'] + $history->rbi,
+            'daseki' => $total['daseki'] + $history->daseki,
+            'dasu' => $total['dasu'] + $history->dasu,
+            'hit' => $total['hit'] + $history->hit,
+            'base2' => $total['base2'] + $history->base2,
+            'base3' => $total['base3'] + $history->base3,
+            'walk' => $total['walk'] + $history->walk,
+            'deadball' => $total['deadball'] + $history->deadball,
+            'bant' => $total['bant'] + $history->bant,
+            'sacrifice_fly' => $total['sacrifice_fly'] + $history->sacrifice_fly,
+            'sansin' => $total['sansin'] + $history->sansin,
+            'heisatsu' => $total['heisatsu'] + $history->heisatsu,
+            'steal' => $total['steal'] + $history->steal,
+        ];?>
+        <?php endif;?>
+        <?php endforeach;?>
+        <tr>
+            <td>シーズン合計</td>
+                <td>
+		        <?php if (!empty($total['dasu'])):?>
+		        <?= preg_replace('/^0/', '', sprintf('%0.3f', $total['hit'] / $total['dasu'])); ?>
+				<?php else:?>
+		        -
+		        <?php endif;?>
+        </td>
+            <td><?= $this->Number->format($total['hr']) ?></td>
+            <td><?= $this->Number->format($total['rbi']) ?></td>
+            <td><?= $this->Number->format($total['daseki']) ?></td>
+            <td><?= $this->Number->format($total['dasu']) ?></td>
+            <td><?= $this->Number->format($total['hit']) ?></td>
+            <td><?= $this->Number->format($total['base2']) ?></td>
+            <td><?= $this->Number->format($total['base3']) ?></td>
+            <td><?= $this->Number->format($total['walk']) ?></td>
+            <td><?= $this->Number->format($total['deadball']) ?></td>
+                <td>
+		        <?php if (!empty($total['dasu'] + $total['walk'] + $total['deadball'] + $total['sacrifice_fly'])):?>
+		        <?= preg_replace('/^0/', '', sprintf('%0.3f', ($total['hit'] + $total['walk'] + $total['deadball']) / ($total['dasu'] + $total['walk'] + $total['deadball'] + $total['sacrifice_fly']))); ?>
+				<?php else:?>
+		        -
+		        <?php endif;?>
+        </td>
+            <td><?= $this->Number->format($total['bant']) ?></td>
+            <td><?= $this->Number->format($total['sacrifice_fly']) ?></td>
+            <td><?= $this->Number->format($total['sansin']) ?></td>
+            <td><?= $this->Number->format($total['heisatsu']) ?></td>
+            <td><?= $this->Number->format($total['steal']) ?></td>
+        </tr>
+    </table>
+    <h4>投手</h4>
+    <table cellpadding="0" cellspacing="0" style="width:auto;">
+        <thead>
+            <tr>
+                <th>シーズン</th>
+                <th scope="col"><?= $this->Paginator->sort('bougyo') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('inning') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('jiseki') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('game') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('win') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('lose') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('hold') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('save') ?></th>
+                <th scope="col">被安打</th>
+                <th scope="col">被打率</th>
+                <th scope="col">被本塁打</th>
+                <th scope="col">奪三振</th>
+                <th scope="col">奪三振率</th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php $total = [
+            'inning' => 0,
+            'jiseki' => 0,
+            'game' => 0,
+            'win' => 0,
+            'lose' => 0,
+            'hold' => 0,
+            'save' => 0,
+            'p_hit' => 0,
+            'p_dasu' => 0,
+            'p_hr' => 0,
+            'get_sansin' => 0,
+        ];?>
+        <?php foreach ($histories as $history):?>
+            <tr>
+                <td><?= $history->team->season->name; ?></td>
+                <td>
+		        <?php if (!empty($history->inning)):?>
+		        <?= sprintf('%0.2f', $history->jiseki / ($history->inning / 27)); ?>
+				<?php else:?>
+		        -
+		        <?php endif;?>
+        </td>
+                <td><?= floor($history->inning / 3);?>
+        		<?php if ($history->inning % 3 != 0) :?>
+        			<?= $history->inning % 3 . '/3'?>
+        		<?php endif;?>
+        		</td>
+                <td><?= $this->Number->format($history->jiseki) ?></td>
+                <td><?= $this->Number->format($history->game) ?></td>
+                <td><?= $this->Number->format($history->win) ?></td>
+                <td><?= $this->Number->format($history->lose) ?></td>
+                <td><?= $this->Number->format($history->hold) ?></td>
+                <td><?= $this->Number->format($history->save) ?></td>
+                <td><?= $this->Number->format($history->p_hit) ?></td>
+                <td><?= $history->p_avg ?></td>
+                <td><?= $this->Number->format($history->p_hr) ?></td>
+                <td><?= $this->Number->format($history->get_sansin) ?></td>
+                <td><?php
+                if ($history->inning > 0) {
+             echo sprintf('%0.2f', round($history->get_sansin / $history->inning * 27, 2));
+        } else {
+        echo '-';
+        }
+            ?></td>
+            </tr>
+            <?php if ($history->team->season->regular_flag):?>
+        <?php $total = [
+            'inning' => $total['inning'] + $history->inning,
+            'jiseki' => $total['jiseki'] + $history->jiseki,
+            'game' => $total['game'] + $history->game,
+            'win' => $total['win'] + $history->win,
+            'lose' => $total['lose'] + $history->lose,
+            'hold' => $total['hold'] + $history->hold,
+            'save' => $total['save'] + $history->save,
+            'p_hit' => $total['p_hit'] + $history->p_hit,
+            'p_dasu' => $total['p_dasu'] + $history->p_dasu,
+            'p_hr' => $total['p_hr'] + $history->p_hr,
+            'get_sansin' => $total['get_sansin'] + $history->get_sansin,
+        ];?>
+        <?php endif;?>
+        <?php endforeach;?>
+            <tr>
+                <td>シーズン合計</td>
+                <td>
+		        <?php if (!empty($total['inning'])):?>
+		        <?= sprintf('%0.2f', $total['jiseki'] / ($total['inning'] / 27)); ?>
+				<?php else:?>
+		        -
+		        <?php endif;?>
+        </td>
+                <td><?= floor($total['inning'] / 3);?>
+        		<?php if ($total['inning'] % 3 != 0) :?>
+        			<?= $total['inning'] % 3 . '/3'?>
+        		<?php endif;?>
+        		</td>
+                <td><?= $this->Number->format($total['jiseki']) ?></td>
+                <td><?= $this->Number->format($total['game']) ?></td>
+                <td><?= $this->Number->format($total['win']) ?></td>
+                <td><?= $this->Number->format($total['lose']) ?></td>
+                <td><?= $this->Number->format($total['hold']) ?></td>
+                <td><?= $this->Number->format($total['save']) ?></td>
+                <td><?= $this->Number->format($total['p_hit']) ?></td>
+                <td>
+		        <?php if (!empty($total['p_dasu'])):?>
+		        <?= preg_replace('/^0/', '', sprintf('%0.3f', $total['p_hit'] / $total['p_dasu'])); ?>
+				<?php else:?>
+		        -
+		        <?php endif;?>
+        </td>
+                <td><?= $this->Number->format($total['p_hr']) ?></td>
+                <td><?= $this->Number->format($total['get_sansin']) ?></td>
+                <td><?php
+                if ($total['inning'] > 0) {
+             echo sprintf('%0.2f', round($total['get_sansin'] / $total['inning'] * 27, 2));
+        } else {
+        echo '-';
+        }
+            ?></td>
+            </tr>
+        </tbody>
+    </table>
+
     
 </div>
 <style type="text/css">
