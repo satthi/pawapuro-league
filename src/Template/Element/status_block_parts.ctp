@@ -1,4 +1,4 @@
-        <div class="statusblockparts clearfix">
+        <div class="statusblockparts clearfix <?= $column;?>">
             <div class="statusname">
                 <?= $name;?>
             </div>

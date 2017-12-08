@@ -117,6 +117,7 @@ class CardsController extends AppController
         if ($count > 300){exit;}
         $this->set('count', $count);
         $this->set('userId', $userId);
+        $this->set('high', $high);
         $this->set('playerInfos', $playerInfos);
     }
     

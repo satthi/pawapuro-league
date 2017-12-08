@@ -51,5 +51,50 @@ $plusDefense = $card->defense_plus;
     
     
     </div>
+    <div class="back-score">
+        <?php if ($player->type_p === null):?>
+            <?= $this->element('player_card_back_record_b', ['player' => $player]);?>
+        <?php else :?>
+            <?= $this->element('player_card_back_record_p', ['player' => $player]);?>
+        <?php endif;?>
+    </div>
+    	
+    <?php 
+    $card_mappings = [];
+    if ($card->card_mappings != '') {
+        $card_mappings = unserialize($card->card_mappings);
+    }
+    ?>
+	<?php $skill_mapping = \Cake\Core\Configure::read('skill_mapping.' . $player->skill_type);?>
+    <div class="back-skill-block clearfix">
+        <div class="main-skill-block">
+	        <table>
+                <?php for ($i = 0;$i <= 3;$i++):?>
+	            <tr>
+	                <?php for ($j = 1;$j <= 4;$j++):?>
+	    			<?php $class = 'inactive';?>
+	    			<?php if (in_array($i * 4 +$j, $skill_mapping)) $class = 'active';?>
+	    			<?php if (!empty($card_mappings[$i * 4 +$j])):?>
+	    				<?php $thisclass = $card_mappings[$i * 4 +$j];?>
+	  				<?php else:?>
+	    				<?php $thisclass = $class . ' block_no_' . ($i * 4 +$j);?>
+	  				<?php endif;?>
+	                <td class="<?= $thisclass;?>" data-no="<?= $i * 4 +$j;?>"></td>
+	            	<?php endfor;?>
+	            </tr>
+            	<?php endfor;?>
+	        </table>
+        </div>
+        <div class="detail-skill-block">
+	        <table>
+                <?php for ($i = 1;$i <= 4;$i++):?>
+	            <tr>
+	                <td></td>
+	            </tr>
+            	<?php endfor;?>
+	        </table>
+        </div>
+    </div>
+
 
 </div>

@@ -15,7 +15,7 @@
         <thead>
             <tr>
                 <th scope="col"><?= $this->Paginator->sort('id') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('point') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('name') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('deleted') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('deleted_date') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('created') ?></th>
@@ -27,7 +27,7 @@
             <?php foreach ($users as $user): ?>
             <tr>
                 <td><?= $this->Number->format($user->id) ?></td>
-                <td><?= $this->Number->format($user->point) ?></td>
+                <td><?= $user->name ?></td>
                 <td><?= h($user->deleted) ?></td>
                 <td><?= h($user->deleted_date) ?></td>
                 <td><?= h($user->created) ?></td>

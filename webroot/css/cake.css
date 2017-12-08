@@ -651,6 +651,7 @@ table td {
         width: 270px;
         text-align:center;
         color: #FFF;
+        white-space: nowrap;
     }
     .playername.length_11{
         font-size: 22px;
@@ -796,7 +797,7 @@ table td {
 background-color: #000;
 color: #fff;
 text-align:center;
-margin:5px auto;
+margin:5px auto 0px;
 width: 150px;
 }
 
@@ -815,42 +816,43 @@ width: 150px;
 	position:absolute;
 	z-index: 2;
     width: 130px;
-    height: 52px;
+    height: 42px;
     border: 1px solid #555;
 }
 
 .sphere_block .sphere_l{
 	left: 10px;
-	top: 10px;
+	top: 0px;
 }
 
 .sphere_block .sphere_ld{
 	left: 10px;
-	top: 65px;
+	top: 45px;
 }
 
 .sphere_block .sphere_d{
-	left: 70px;
-	top: 120px;
+	left: 80px;
+	top: 90px;
 }
 
 .sphere_block .sphere_rd{
 	left: 160px;
-	top: 65px;
+	top: 45px;
 }
 
 .sphere_block .sphere_r{
 	left: 160px;
-	top: 10px;
+	top: 0px;
 }
 
 .sphere_detail_parts {
     background-color: rgba(220,220,220,0.5);
     border: 1px solid #999;
-    height: 25px;
+    height: 20px;
     background-position:right center;
     background-repeat:no-repeat;
     background-size: 20px;
+    font-size: 0.8em;
 }
 
 .position_block{
@@ -866,33 +868,33 @@ position:relative;
 }
 
 .position_c {
-    top: 140px;
-    left: 130px;
+    top: 135px;
+    left: 121px;
 }
 
 .position_1b{
-    top: 95px;
-    left: 170px;
+    top: 90px;
+    left: 161px;
 }
 
 .position_2b {
-    top: 70px;
-    left: 150px;
+    top: 65px;
+    left: 141px;
 }
 
 .position_3b {
-    top: 95px;
-    left: 90px;
+    top: 90px;
+    left: 81px;
 }
 
 .position_ss{
-    top: 70px;
-    left: 110px;
+    top: 65px;
+    left: 101px;
 }
 
 .position_of{
-    top: 30px;
-    left: 130px;
+    top: 25px;
+    left: 121px;
 }
 
 
@@ -1026,4 +1028,145 @@ background-color: #EE22EE;
 .cost_block {
 float:right;
 margin-right: 20px;
+}
+.back-score {
+	margin-top: 20px;
+}
+
+.back-score th, .back-score td{
+    color: #000;
+    font-weight: normal;
+    font-size: 0.8em;
+    white-space: nowrap;
+    text-align:center;
+}
+
+.team-MF .back-score th{
+    border-bottom: 3px solid #006400;
+}
+.team-FF .back-score th{
+    border-bottom: 3px solid #FFFF00;
+}
+.team-LB .back-score th{
+    border-bottom: 3px solid #4169E1;
+}
+.team-SN .back-score th{
+    border-bottom: 3px solid #191970;
+}
+.team-TF .back-score th{
+    border-bottom: 3px solid #FF8C00;
+}
+.team-TU .back-score th{
+    border-bottom: 3px solid #FF4500;
+}
+.main-skill-block {
+	float:left;
+	width: 200px;
+	margin-left: 20px;
+	margin-top: 20px;
+}
+
+.main-skill-block td {
+	width: 46px;
+	height: 46px;
+	border: 2px solid #444;
+}
+
+.detail-skill-block {
+	float:right;
+	width: 130px;
+	margin: 20px;
+}
+
+
+.detail-skill-block td{
+	height: 30px;
+}
+
+.active {
+    background-color: #999;
+}
+
+.inactive {
+    background-color: #222;
+}
+
+.card_set{
+background-color: #FFF;
+}
+
+.player_block_selected {
+    background-color: red;
+}
+
+.short_position_selected {
+    background-color: red;
+}
+
+
+.skill-parts-small table {
+width: auto;
+}
+.skill-parts-small td {
+    width: 6px;
+    height: 6px;
+    border: 1px solid #444;
+    padding: 0;
+}
+
+.skill-parts-small td.noneblock {
+    background-color: #DDD;
+}
+
+.skill-parts-11 td.setblock, td.setblock-11, td.detectblock-11 {
+background-color: #1E90FF;
+}
+
+.skill-parts-12 td.setblock, td.setblock-12, td.detectblock-12 {
+background-color: #000080;
+}
+
+.skill-parts-13 td.setblock, td.setblock-13, td.detectblock-13 {
+background-color: #00FF7F;
+}
+
+.skill-parts-14 td.setblock, td.setblock-14, td.detectblock-14 {
+background-color: #00FFFF;
+}
+
+.skill-parts-15 td.setblock, td.setblock-15, td.detectblock-15 {
+background-color: #006400;
+}
+
+.skill-parts-16 td.setblock, td.setblock-16, td.detectblock-16 {
+background-color: #9400D3;
+}
+
+.skill-parts-21 td.setblock, td.setblock-21, td.detectblock-21 {
+background-color: #A52A2A;
+}
+
+.skill-parts-22 td.setblock, td.setblock-22, td.detectblock-22 {
+background-color: #FFFF00;
+}
+
+.skill-parts-23 td.setblock, td.setblock-23, td.detectblock-23 {
+background-color: #FF0000;
+}
+
+.skill-parts-24 td.setblock, td.setblock-24, td.detectblock-24 {
+background-color: #FF8C00;
+}
+
+.skill-parts-25 td.setblock, td.setblock-25, td.detectblock-25 {
+background-color: #FF00FF;
+}
+
+.skill-parts-26 td.setblock, td.setblock-26, td.detectblock-26 {
+background-color: #9400D3;
+}
+
+
+.skill_selected > td {
+ background-color: red;
 }

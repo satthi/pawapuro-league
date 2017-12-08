@@ -45,19 +45,19 @@ $plusMental = $card->mental_plus;
     </div>
     <div class="statusblock">
         <?php if ($player->type_p === null):?>
-        <?= $this->element('status_block_parts', ['name' => '巧打力', 'point' => $player->status_meat, 'plus' => $plusMeat]);?>
-        <?= $this->element('status_block_parts', ['name' => '長打力', 'point' => $player->status_power, 'plus' => $plusPower]);?>
-        <?= $this->element('status_block_parts', ['name' => '走　力', 'point' => $player->status_speed, 'plus' => $plusSpeed]);?>
-        <?= $this->element('status_block_parts', ['name' => 'バント', 'point' => $player->status_bant, 'plus' => $plusBant]);?>
-        <?= $this->element('status_block_parts', ['name' => '守備力', 'point' => $player->status_defense, 'plus' => $plusDefense]);?>
+        <?= $this->element('status_block_parts', ['name' => '巧打力', 'point' => $player->status_meat, 'plus' => $plusMeat, 'column' => 'meat']);?>
+        <?= $this->element('status_block_parts', ['name' => '長打力', 'point' => $player->status_power, 'plus' => $plusPower, 'column' => 'power']);?>
+        <?= $this->element('status_block_parts', ['name' => '走　力', 'point' => $player->status_speed, 'plus' => $plusSpeed, 'column' => 'speed']);?>
+        <?= $this->element('status_block_parts', ['name' => 'バント', 'point' => $player->status_bant, 'plus' => $plusBant, 'column' => 'bant']);?>
+        <?= $this->element('status_block_parts', ['name' => '守備力', 'point' => $player->status_defense, 'plus' => $plusDefense, 'column' => 'defense']);?>
         <?php else:?>
-        <?= $this->element('status_block_parts', ['name' => '体　力', 'point' => $player->status_meat, 'plus' => $plusMeat]);?>
-        <?= $this->element('status_block_parts', ['name' => '球　速', 'point' => $player->status_power, 'plus' => $plusPower]);?>
-        <?= $this->element('status_block_parts', ['name' => '球　威', 'point' => $player->status_speed, 'plus' => $plusSpeed]);?>
-        <?= $this->element('status_block_parts', ['name' => '変化球', 'point' => $player->status_bant, 'plus' => $plusBant]);?>
-        <?= $this->element('status_block_parts', ['name' => '制球力', 'point' => $player->status_defense, 'plus' => $plusDefense]);?>
+        <?= $this->element('status_block_parts', ['name' => '体　力', 'point' => $player->status_meat, 'plus' => $plusMeat, 'column' => 'meat']);?>
+        <?= $this->element('status_block_parts', ['name' => '球　速', 'point' => $player->status_power, 'plus' => $plusPower, 'column' => 'power']);?>
+        <?= $this->element('status_block_parts', ['name' => '球　威', 'point' => $player->status_speed, 'plus' => $plusSpeed, 'column' => 'speed']);?>
+        <?= $this->element('status_block_parts', ['name' => '変化球', 'point' => $player->status_bant, 'plus' => $plusBant, 'column' => 'bant']);?>
+        <?= $this->element('status_block_parts', ['name' => '制球力', 'point' => $player->status_defense, 'plus' => $plusDefense, 'column' => 'defense']);?>
         <?php endif;?>
-        <?= $this->element('status_block_parts', ['name' => '精神力', 'point' => $player->status_mental, 'plus' => $plusMental]);?>
+        <?= $this->element('status_block_parts', ['name' => '精神力', 'point' => $player->status_mental, 'plus' => $plusMental, 'column' => 'mental']);?>
     </div>
     <div class="costblock">
         COST

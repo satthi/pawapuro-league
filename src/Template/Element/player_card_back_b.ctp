@@ -28,7 +28,7 @@ $positions = [
         $grade = 'f';
     }
     ?>
-<div class="back_position position_<?= $position;?> status_<?= $grade;?>"></div>
+<div class="back_position position_<?= $position;?> status_<?= $grade;?>" data-point="<?= $player->$positionKey + $plus;?>"></div>
 	<?php endif;?>
 <?php endforeach;?>
 

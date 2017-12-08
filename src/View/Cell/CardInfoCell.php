@@ -22,7 +22,7 @@ class CardInfoCell extends Cell
      *
      * @return void
      */
-    public function display($cardId, $position = null, $dajun = null)
+    public function display($cardId, $position = null, $dajun = null, $dataType = null)
     {
     	$this->loadModel('Cards');
     	$card = $this->Cards->get($cardId, [
@@ -38,6 +38,7 @@ class CardInfoCell extends Cell
     	$this->set('card', $card);
     	$this->set('position', $position);
     	$this->set('dajun', $dajun);
+    	$this->set('dataType', $dataType);
 		$this->set('statusPositionShortLists', Configure::read('statusPositionShortLists'));
 
     }

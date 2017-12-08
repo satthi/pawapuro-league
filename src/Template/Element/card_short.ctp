@@ -1,9 +1,12 @@
 <?php $player= $card->player;?>
-<div class="block_short">
+<?php if (empty($dataType)) $dataType = null;?>
+<div class="block_short" data-type="<?= $dataType;?>">
 	<?php if (!empty($dajun)):?>
 	<div class="short_dajun"><?= $dajun;?></div>
 	<?php endif;?>
-    <div class="short_image">
+	<div class="player_block_wrap">
+	<div class="player_block">
+    <div class="short_image" data-card_id="<?= $card->id;?>">
     <?php
 		if (file_exists(ROOT . '/webroot/img/player/' . $player->team->ryaku_name . '/' . $player->no . '.jpg')) {
 			echo $this->Html->image('player/' . $player->team->ryaku_name . '/' . $player->no . '.jpg', ['width' => 60]);
@@ -21,12 +24,14 @@
     </div>
     <div class="position_cost clearfix">
         <div class="position_block position_block_<?= $player->status_position;?>"><?= $statusPositionShortLists[$player->status_position];?></div>
-        <div class="cost_block">★<?= $player->status_cost;?></div>
+        <div class="cost_block">★<span class="cost_number"><?= $player->status_cost;?><span></div>
+    </div>
     </div>
     <div class="short_detail">
         <?= $this->Html->link('詳細', ['controller' => 'users', 'action' => 'carddetail', $card->id], ['target' => '_blank']);?>
     </div>
+    </div>
 	<?php if (!empty($position)):?>
-	<div class="short_position short_position_<?= $position;?>"><?= \Cake\Core\Configure::read('batterPositionName.' . $position);?></div>
+	<div class="short_position short_position_<?= $position;?>"><span class="position_data" data-position="<?= $position;?>"><?= \Cake\Core\Configure::read('batterPositionName.' . $position);?></span></div>
 	<?php endif;?>
 </div>
