@@ -3,6 +3,8 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use Cake\Core\Configure;
+use Cake\Routing\Router;
+use Cake\ORM\TableRegistry;
 
 /**
  * Users Controller
@@ -46,11 +48,136 @@ class UsersController extends AppController
         ]);
         
         $members = json_decode($user->card_member, true);
+        $usedCardId = [];
+        foreach ($members['dajun'] as $a) {
+            $usedCardId[] = $a['card_id'];
+        }
+        foreach ($members['hikaeBatters'] as $a) {
+            $usedCardId[] = $a;
+        }
+        foreach ($members['startPitcher'] as $a) {
+            $usedCardId[] = $a;
+        }
+        foreach ($members['nakatsugiPitchers'] as $a) {
+            $usedCardId[] = $a;
+        }
+        foreach ($members['setupperPitchers'] as $a) {
+            $usedCardId[] = $a;
+        }
+        foreach ($members['osaePitchers'] as $a) {
+            $usedCardId[] = $a;
+        }
+
+        $this->loadModel('Cards');
+        $cardLists = $this->Cards->find('all')
+        	->where(['Cards.user_id' => $id])
+        	->where(['Cards.id NOT IN' => $usedCardId])
+        	->contain([
+        		'Players' => [
+        			'Teams' => [
+        				'Seasons'
+        			]
+        		]
+        	])
+        	;
+	    $cardLists
+	    	->order(['Players.status_cost' => 'DESC'])
+	    	->order(['Players.id' => 'DESC']);
+        $this->set('cardLists', $cardLists);
 
         $this->set('user', $user);
         $this->set('members', $members);
+        $this->set('saveUrl', Router::url(['action' => 'ajaxSave', $id]));
         $this->set('_serialize', ['user']);
     }
+    
+    public function ajaxSave($userId = null)
+    {
+        $user = $this->Users->get($userId);
+        $user->card_member = json_encode($this->request->data);
+        $this->Users->save($user);
+        exit;
+    }
+    
+    
+    
+    public function skilladd($num = null, $userId = null, $high = false)
+    {
+    	$skills = [];
+    	$CardSkillsTable = TableRegistry::get('CardSkills');
+    	$skillTypeBase = Configure::read('skill_type');
+        $blockTypeBase = Configure::read('skill_block');
+        for ($i = 1;$i <= $num;$i++) {
+            // メインparameterに振る
+            $entity = $CardSkillsTable->newEntity();
+            $rank = $this->getRandomCost($high);
+            $blockType = array_rand($blockTypeBase);
+            $skillType = array_rand($skillTypeBase);
+            
+            //割合の抽出
+            $skillTypeInfo = $skillTypeBase[$skillType];
+            $skillPB = floor($skillTypeInfo / 10);
+            $skillParamater = $skillTypeInfo % 10;
+            
+            // ポイント割り振り
+            $pointBreak = Configure::read('skill_rank_wari.' . $rank);
+            shuffle($pointBreak);
+            $pointBreakDef = $pointBreak[0];
+            
+            
+            $entity->user_id = $userId;
+            $entity->shape_type = $blockType;
+            $entity->rank = $rank;
+            $entity->skill_type = $skillTypeInfo;
+            $fields = Configure::read('skill_point_field');
+            $entity->{$fields[$skillParamater]} = $pointBreakDef[0];
+            unset($fields[$skillParamater]);
+            shuffle($fields);
+            $key = 1;
+            while(true) {
+                if (empty($pointBreakDef[$key])) {
+                    break;
+                }
+                $entity->{$fields[$key - 1]} = $pointBreakDef[$key];
+                $key++;
+            }
+            $CardSkillsTable->save($entity);
+            $skills[] = $entity;
+        }
+        $this->set('skills', $skills);
+        $this->set('userId', $userId);
+    }
+    
+    private function getRandomCost($high)
+    {
+    	if ($high == false) {
+        $costCheck = [
+            1 => 3000, //30
+            2 => 7000, // 40
+            3 => 8500, //15
+            4 => 9500, //10
+            5 => 10000, //5
+        ];
+        } else {
+        $costCheck = [
+            2 => 2500, // 25
+            3 => 7500, // 50
+            4 => 9000, // 15
+            5 => 10000 // 10
+        ];
+        }
+        $random = rand(1, 10000);
+        foreach ($costCheck as $k => $v) {
+            if ($random <= $v) {
+                return $k;
+            }
+        }
+        
+        return $k;
+//        debug($random);
+//        exit;
+    }
+
 
     /**
      * Add method
@@ -319,7 +446,7 @@ class UsersController extends AppController
                    $checkIds = array_merge($checkIds, $this->Players->find('all')
                    	   ->where(['Teams.ryaku_name' => $player->team->ryaku_name])
                    	   ->where(['Players.no' => $player->no])
-                   	   ->contain(['Teams'])
+                  	   ->contain(['Teams'])
                    ->find('list',[
                        'valueField' => 'id'
                    ])->toArray()
@@ -409,11 +536,13 @@ class UsersController extends AppController
 	    $cardLists
 	    	->order(['Players.status_cost' => 'DESC'])
 	    	->order(['Players.id' => 'DESC']);
+	    
         $this->set('cardLists', $cardLists);
         $this->set('userId', $userId);
     }
     public function carddetail($cardId)
     {
+        $this->loadModel('CardSkills');
         $this->loadModel('Cards');
         $card = $this->Cards->find('all')
         	->where(['Cards.id' => $cardId])
@@ -426,8 +555,46 @@ class UsersController extends AppController
         	])
         	->first()
         	;
+        // スキルリスト
+        
+        $cardSkills = $this->CardSkills->find('all')
+            ->where(['CardSkills.user_id' => $card->user_id])
+            ->where(['CardSkills.card_id IS' => null])
+            ->order(['CardSkills.rank' => 'DESC'])
+            ->order(['CardSkills.skill_type' => 'ASC'])
+            ->order(['CardSkills.shape_type' => 'ASC'])
+            ->order(['CardSkills.id' => 'ASC'])
+            ;
+        if ($card->player->type_p == null) {
+            $cardSkills->where(['CardSkills.skill_type <' => 20]);
+        } else {
+            $cardSkills->where(['CardSkills.skill_type >=' => 20]);
+        }
         
         $this->set('card', $card);
+        $this->set('cardSkillSaveUrl', \Cake\Routing\Router::url(['action' => 'carddetailsave',$cardId]));
+        $this->set('cardSkills', $cardSkills);
+    }
+    
+    public function carddetailsave($cardId = null) {
+        $this->loadModel('CardSkills');
+        $this->loadModel('Cards');
+        $card = $this->Cards->get($cardId);
+        $card->meat_plus = $this->request->data['meatplus'];
+        $card->power_plus = $this->request->data['powerplus'];
+        $card->speed_plus = $this->request->data['speedplus'];
+        $card->bant_plus = $this->request->data['bantplus'];
+        $card->defense_plus = $this->request->data['defenseplus'];
+        $card->mental_plus = $this->request->data['mentalplus'];
+        $card->card_mappings = serialize($this->request->data['block']);
+        $this->Cards->save($card);
+        
+        foreach ($this->request->data['used'] as $usedId) {
+            $cardSkill = $this->CardSkills->get($usedId);
+            $cardSkill->card_id =$cardId;
+            $this->CardSkills->save($cardSkill);
+        }
+        exit;
     }
     
     public function autostamen($userId)

@@ -73,7 +73,7 @@ $sphereOptions = [
         $grade = 'f';
     }
     ?>
-    <div class="sphere_detail_parts status_<?= $grade?>"><?= $sphereOptions[$displaySphereKey];?></div>
+    <div class="sphere_detail_parts status_<?= $grade?>" data-point="<?= $displaySphere + $plus;?>"><?= $sphereOptions[$displaySphereKey];?></div>
     <?php endforeach;?>
     <?php for ($i = 1;$i <= 2 - count($displaySpheres);$i++):?>
     <div class="sphere_detail_parts status_none"></div>
