@@ -653,22 +653,22 @@ table td {
         color: #FFF;
     }
     .playername.length_11{
-        font-size: 22px;
-    }
-    .playername.length_12{
         font-size: 21px;
     }
-    .playername.length_13{
-        font-size: 22px;
-    }
-    .playername.length_14{
+    .playername.length_12{
         font-size: 20px;
     }
+    .playername.length_13{
+        font-size: 18px;
+    }
+    .playername.length_14{
+        font-size: 17px;
+    }
     .playername.length_15{
-        font-size: 19px;
+        font-size: 16px;
     }
     .playername.length_16{
-        font-size: 17px;
+        font-size: 15px;
     }
     .playername.length_20{
         font-size: 14px;

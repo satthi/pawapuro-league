@@ -216,7 +216,7 @@ class SeasonsController extends AppController
         if ($this->request->query['sort'] == 'avg'){
             $query = $query->where('Players.daseki >= Teams.game * 3.1');
         }
-        $players = $this->paginate($query, ['limit' => 30]);
+        $players = $this->paginate($query, ['limit' => 100]);
         $this->set('players', $players);
         $this->set('id', $id);
     }
@@ -242,7 +242,7 @@ class SeasonsController extends AppController
         if ($this->request->query['sort'] == 'win_ratio'){
             $query = $query->where('Players.inning >= Teams.game * 3');
         }
-        $players = $this->paginate($query, ['limit' => 30]);
+        $players = $this->paginate($query, ['limit' => 100]);
         $this->set('players', $players);
         $this->set('id', $id);
     }

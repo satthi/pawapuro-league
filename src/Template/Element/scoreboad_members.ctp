@@ -21,6 +21,7 @@
 			class="player"
 			data-position="<?= $member['position'];?>"
 			data-dajun="<?= $member['dajun'];?>"
+			style="white-space: nowrap;"
 		><?= $member['dajun'];?></td>
 		<td class="position color_<?= $positionColors[$member['position']];?>"><?= $positionLists[$member['position']];?></td>
         <td class="player_box_td">
@@ -28,7 +29,7 @@
         </td>
 
 		</td>
-		<td>
+		<td style="white-space: nowrap;">
 			<?php if (empty($playerData[$member['player']->id]['avg'])):?>
 				<?= $member['player']->real_avg;?>
 			<?php else:?>
@@ -36,7 +37,7 @@
 				<?= $playerData[$member['player']->id]['avg'];?>
 			<?php endif;?>
 		</td>
-		<td>
+		<td style="white-space: nowrap;">
 			<?php if (empty($playerData[$member['player']->id]['hr'])):?>
 				<?= $member['player']->real_hr;?>
 			<?php else:?>
