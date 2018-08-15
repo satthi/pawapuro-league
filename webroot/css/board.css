@@ -1,0 +1,501 @@
+.clearfix:before,.clearfix:after{content:" ";display:table}.clearfix:after{clear:both}
+.fleft {
+    float: left;
+}
+.fright {
+    float: right;
+}
+
+.body{
+    width: 1900px;
+    height:900px;
+    background-color: #000;
+    color: #FFF;
+}
+
+.member {
+    width: 450px;
+    height: 900px;
+}
+
+.main {
+    width: 994px;
+    border-left: 3px solid #FFF;
+    border-right: 3px solid #FFF;
+    height: 900px;
+}
+
+.score {
+    height: 200px;
+    border-bottom: 3px solid #FFF;
+    font-size: 24px;
+}
+
+
+.score_num {
+    width: 50px;
+}
+
+.score_logo {
+    width: 200px;
+    max-height: 75px;
+}
+
+.num_tr {
+    height: 75px;
+}
+
+.bso{
+    margin-top: 30px;
+    margin-right: 20px;
+}
+
+.bso .tr_b td{
+    color: #5E610B;
+}
+
+.bso .tr_b td.active{
+    color: #3ADF00;
+}
+
+.bso .tr_s td{
+    color: #5E610B;
+}
+
+.bso .tr_s td.active{
+    color: #F7FE2E;
+}
+
+.bso .tr_o td{
+    color: #8A0808;
+}
+
+.bso .tr_o td.active{
+    color: #FE2E2E;
+}
+
+.member_logo_div {
+    height: 100px;
+    text-align:center;
+}
+
+.member_logo {
+    width: 350px;
+    max-height: 100px;
+}
+
+.member_block{
+    height: 70px;
+    margin:0 10px;
+    font-size: 40px;
+}
+
+.member_block > div{
+    margin: 3px;
+    height: 60px;
+    line-height: 60px;
+    font-size: 30px;
+}
+
+.member_block > div > span{
+    visibility: hidden;
+}
+
+.team_LB .member_block > div{
+    background-color: #084B8A;
+}
+
+.team_LB .member_block > div.active{
+    background-color: #0040FF;
+}
+
+.team_TU .member_block > div{
+    background-color: #61380B;
+}
+
+.team_TU .member_block > div.active{
+    background-color: #DF7401;
+}
+
+.team_MF .member_block > div{
+    background-color: #0B3B17;
+}
+
+.team_MF .member_block > div.active{
+    background-color: #04B431;
+}
+
+.team_TF .member_block > div{
+    background-color: #610B0B;
+}
+
+.team_TF .member_block > div.active{
+    background-color: #DF013A;
+}
+
+.team_SN .member_block > div{
+    background-color: #210B61;
+}
+
+.team_SN .member_block > div.active{
+    background-color: #3A01DF;
+}
+
+.team_FF .member_block > div{
+    background-color: #393B0B;
+}
+
+.team_FF .member_block > div.active{
+    background-color: #AEB404;
+}
+
+.member_block > .position {
+    width: 25px;
+    text-align: center;
+}
+
+.member_block > .name {
+    width: 210px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.member_block > .avg {
+    width: 70px;
+    text-align:right;
+}
+
+.member_block > .hr {
+    width: 40px;
+    text-align:right;
+}
+
+.member_block > .rbi {
+    width: 55px;
+    text-align:right;
+}
+
+.member_block > .era {
+    width: 177px;
+    text-align:right;
+}
+.screen {
+    height: 700px;
+}
+
+.vs_screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.vs_screen_home {
+    position: absolute;
+    left : 100px;
+    top : 50px;
+}
+
+.vs_screen_vs {
+    position: absolute;
+    font-size: 100px;
+    left: 400px;
+    top: 300px;
+}
+
+.vs_screen_visitor {
+    position: absolute;
+    right : 100px;
+    bottom : 50px;
+}
+
+.vs_logo {
+    width: 250px;
+}
+
+.mark_home {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: none;
+}
+
+.mark_visitor {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: none;
+}
+
+.mark_logo {
+    width: 500px;
+    position: absolute;
+    left : 250px;
+    top : 50px;
+}
+
+.main_player {
+    position: relative;
+    width: 80%;
+    height: 80%;
+    padding: 68px 100px;
+    display: none;
+}
+
+.main_player > div.main_player_inner {
+    width: 100%;
+    height: 100%;
+}
+
+.main_player.team_LB > div.main_player_inner {
+    background-color: #A9D0F5;
+    color: #0B3861;
+}
+
+
+.main_player.team_TU > div.main_player_inner{
+    background-color: #F5DA81;
+    color: #B43104;
+}
+
+
+.main_player.team_MF > div.main_player_inner {
+    background-color: #A9F5BC;
+    color: #0B610B;
+}
+
+
+.main_player.team_TF > div.main_player_inner {
+    background-color: #F8E0E0;
+    color: #610B21;
+}
+
+
+.main_player.team_SN > div.main_player_inner {
+    background-color: #CECEF6;
+    color: #210B61;
+}
+
+
+.main_player.team_FF > div.main_player_inner {
+    background-color: #F5F6CE;
+    color: #5E610B;
+}
+
+div.main_player_inner .player_image_wrap {
+    position: absolute;
+    left: 130px;
+    top: 98px;
+}
+
+div.main_player_inner .player_image {
+    width: 420px;
+}
+
+div.main_player_inner .player_team_logo_wrap {
+    position: absolute;
+    left: 130px;
+    top: 530px;
+}
+
+div.main_player_inner .player_team_logo {
+    width: 90px;
+}
+
+div.main_player_inner .player_number {
+    position: absolute;
+    left: 230px;
+    top: 540px;
+    font-size: 40px;
+    width: 80px;
+    text-align: center;
+}
+
+div.main_player_inner .player_name{
+    position: absolute;
+    left: 310px;
+    top: 540px;
+    font-size: 40px;
+    width: 550px;
+    text-align: center;
+}
+
+div.main_player_inner .avg_label{
+    position: absolute;
+    left: 550px;
+    top: 100px;
+    font-size: 40px;
+    width: 100px;
+    text-align: center;
+}
+
+div.main_player_inner .avg{
+    position: absolute;
+    left: 670px;
+    top: 100px;
+    font-size: 40px;
+    width: 200px;
+    text-align: right;
+}
+
+div.main_player_inner .hr_label{
+    position: absolute;
+    left: 550px;
+    top: 220px;
+    font-size: 40px;
+    width: 100px;
+    text-align: center;
+}
+
+div.main_player_inner .hr{
+    position: absolute;
+    left: 670px;
+    top: 220px;
+    font-size: 40px;
+    width: 200px;
+    text-align: right;
+}
+
+div.main_player_inner .rbi_label{
+    position: absolute;
+    left: 550px;
+    top: 280px;
+    font-size: 40px;
+    width: 100px;
+    text-align: center;
+}
+
+div.main_player_inner .rbi{
+    position: absolute;
+    left: 670px;
+    top: 280px;
+    font-size: 40px;
+    width: 200px;
+    text-align: right;
+}
+
+div.main_player_inner .sb_label{
+    position: absolute;
+    left: 550px;
+    top: 340px;
+    font-size: 40px;
+    width: 100px;
+    text-align: center;
+}
+
+div.main_player_inner .sb{
+    position: absolute;
+    left: 670px;
+    top: 340px;
+    font-size: 40px;
+    width: 200px;
+    text-align: right;
+}
+
+div.main_player_inner .wl_label{
+    position: absolute;
+    left: 550px;
+    top: 100px;
+    font-size: 40px;
+    width: 100px;
+    text-align: center;
+}
+
+div.main_player_inner .wl{
+    position: absolute;
+    left: 670px;
+    top: 100px;
+    font-size: 40px;
+    width: 200px;
+    text-align: right;
+}
+
+div.main_player_inner .hs_label{
+    position: absolute;
+    left: 550px;
+    top: 160px;
+    font-size: 40px;
+    width: 100px;
+    text-align: center;
+}
+
+div.main_player_inner .hs{
+    position: absolute;
+    left: 670px;
+    top: 160px;
+    font-size: 40px;
+    width: 200px;
+    text-align: right;
+}
+
+div.main_player_inner .era_label{
+    position: absolute;
+    left: 550px;
+    top: 220px;
+    font-size: 40px;
+    width: 100px;
+    text-align: center;
+}
+
+div.main_player_inner .era{
+    position: absolute;
+    left: 670px;
+    top: 220px;
+    font-size: 40px;
+    width: 200px;
+    text-align: right;
+}
+
+div.main_player_inner .game_label{
+    position: absolute;
+    left: 550px;
+    top: 280px;
+    font-size: 40px;
+    width: 100px;
+    text-align: center;
+}
+
+div.main_player_inner .game{
+    position: absolute;
+    left: 670px;
+    top: 280px;
+    font-size: 40px;
+    width: 200px;
+    text-align: right;
+}
+
+div.main_player_inner .inning_label{
+    position: absolute;
+    left: 550px;
+    top: 340px;
+    font-size: 40px;
+    width: 100px;
+    text-align: center;
+}
+
+div.main_player_inner .inning{
+    position: absolute;
+    left: 670px;
+    top: 340px;
+    font-size: 40px;
+    width: 200px;
+    text-align: right;
+}
+
+div.main_player_inner .so_label{
+    position: absolute;
+    left: 550px;
+    top: 400px;
+    font-size: 40px;
+    width: 100px;
+    text-align: center;
+}
+
+div.main_player_inner .so{
+    position: absolute;
+    left: 670px;
+    top: 400px;
+    font-size: 40px;
+    width: 200px;
+    text-align: right;
+}
+

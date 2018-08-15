@@ -2,5 +2,7 @@
 /tmp/*
 /logs/*
 /webroot/img/player
+/webroot/img/logo_*
+/webroot/voice
 config/Migrations/schema-dump-default.lock
 game_next.sql
