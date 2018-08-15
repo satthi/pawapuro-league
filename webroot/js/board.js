@@ -15,23 +15,58 @@ $(function(){
 	});
 	var stamen_started = false;
 	var settime = 0;
+	// 各設定値
+	var first_time = 15000;
+	var visitor_first_time = 5000;
+	var home_first_time = 5000;
+	var last_time = 5000;
+	var member_all_time = 15000;
+	var name_display = 4000;
+	var kansei_timing = 1000;
+	
+	$("#voice_kansei").get(0).volume = 0.2;
+	$("#voice_visitor_team_bgm").get(0).volume = 0.1;
+	$("#voice_home_team_bgm").get(0).volume = 0.1;
+
 	function stamen_start() {
 		if (stamen_started == true) {
 			return;
 		}
 		stamen_started = true;
 		// set timeoutの仕込み時間
-		
-		var first_time = 1000;
+		// 初期音声
+		$("#voice_taihenomatase").get(0).play();
+		$("#voice_taihenomatase").on("ended", function(){
+			$("#voice_home_team_name").get(0).play();
+			$("#voice_home_team_name").on("ended", function(){
+				$("#voice_vs").get(0).play();
+				$("#voice_vs").on("ended", function(){
+					$("#voice_visitor_team_name").get(0).play();
+					$("#voice_visitor_team_name").on("ended", function(){
+						$("#voice_nostamen").get(0).play();
+					});
+				});
+			});
+		});
 		
 		// 先攻
 		settime += first_time;
 		setTimeout(function(){
+			// ここまで残っていると支障が出るのでイベントを消しておく
+			$("#voice_taihenomatase").off("ended");
+			$("#voice_home_team_name").off("ended");
+			$("#voice_vs").off("ended");
+			$("#voice_visitor_team_name").off("ended");
 			$('.screen > div').hide();
 			$('.mark_visitor').show();
+			$("#voice_visitor_team").get(0).play();
+			$("#voice_visitor_team").on('ended', function(){
+				$("#voice_visitor_team_name").get(0).play();
+			});
+			$("#voice_visitor_team_bgm").get(0).play();
+			
 		}, settime);
 		
-		var visitor_first_time = 1000;
 		settime += visitor_first_time;
 		setTimeout(function(){
 			for ($i = 1;$i <= 9;$i++) {
@@ -39,7 +74,7 @@ $(function(){
 			}
 		}, settime);
 		// この辺の設定値全部globalにすっかな
-		settime += 2000 * 9;
+		settime += member_all_time * 9;
 		setTimeout(function(){
 			$('.screen > div').hide();
 			$('.mark_visitor').show();
@@ -49,11 +84,16 @@ $(function(){
 		// 後攻
 		settime += first_time;
 		setTimeout(function(){
+			$("#voice_visitor_team_bgm").get(0).pause();
 			$('.screen > div').hide();
 			$('.mark_home').show();
+			$("#voice_home_team").get(0).play();
+			$("#voice_home_team").on('ended', function(){
+				$("#voice_home_team_name").get(0).play();
+			});
+			$("#voice_home_team_bgm").get(0).play();
 		}, settime);
 		
-		var home_first_time = 1000;
 		settime += home_first_time;
 		setTimeout(function(){
 			for ($i = 1;$i <= 9;$i++) {
@@ -61,37 +101,71 @@ $(function(){
 			}
 		}, settime);
 		// この辺の設定値全部globalにすっかな
-		settime += 2000 * 9;
+		settime += member_all_time * 9;
 		setTimeout(function(){
 			$('.screen > div').hide();
 			$('.mark_home').show();
 			$('.member_block .active').removeClass('active');
 		}, settime);
 		
-		var last_time = 1000;
 		settime += last_time;
 		setTimeout(function(){
+			$("#voice_home_team_bgm").get(0).pause();
 			$('.screen > div').hide();
 			$('.vs_screen').show();
+			$("#voice_soredehashiai").get(0).play();
 		}, settime);
 	}
 	
 	function member_set(type, i) {
-		var all_time = 2000;
-		var name_display = 1000;
 		setTimeout(function(){
 			$('.member_block .active').removeClass('active');
 			$('.screen > div').hide();
 			$('.mark_' + type).show();
-		}, all_time * (i - 1));
+			
+			$("#voice_dajun_" + i).get(0).play();
+			$("#voice_dajun_" + i).on('ended', function(){
+				$("#voice_" + type + "_player_positiond_" + i).get(0).play();
+			});
+		}, member_all_time * (i - 1));
 		
 		setTimeout(function(){
+			// 不要なイベントは消せるときに消す
+			$("#voice_dajun_" + i).off("ended");
+			
 			$('#' + type + '_' + i + '_side').find('span').css('visibility', 'visible');
 			$('#' + type + '_' + i + '_side div.position').addClass('active');
 			$('#' + type + '_' + i + '_side div.name').addClass('active');
 			
 			$('.screen > div').hide();
 			$('#' + type + '_' + i + '_main').show();
-		}, all_time * (i - 1) + name_display);
+			
+			$("#voice_" + type + "_playerd_" + i).get(0).play();
+			$("#voice_" + type + "_playerd_" + i).on('ended', function(){
+				$("#voice_" + type + "_player_position_" + i).get(0).play();
+				$("#voice_" + type + "_player_position_" + i).on('ended', function(){
+					$("#voice_" + type + "_player_" + i).get(0).play();
+					$("#voice_" + type + "_player_" + i).on('ended', function(){
+						$("#voice_back_number").get(0).play();
+						$("#voice_back_number").on('ended', function(){
+							$("#voice_" + type + "_no_" + i).get(0).play();
+						});
+					});
+				});
+			});
+		}, member_all_time * (i - 1) + name_display);
+		
+		setTimeout(function(){
+			$("#voice_kansei").get(0).play();
+		}, member_all_time * (i - 1) + name_display + kansei_timing);
+		
+		setTimeout(function(){
+			// 終わったイベントを解除
+			$("#voice_" + type + "_playerd_" + i).off('ended');
+			$("#voice_" + type + "_player_position_" + i).off('ended');
+			$("#voice_" + type + "_player_" + i).off('ended');
+			$("#voice_back_number").off('ended');
+		}, member_all_time * i);
+
 	}
 });
