@@ -102,6 +102,7 @@ return [
             'serialize' => true,
             'duration' => '+2 minutes',
             'url' => env('CACHE_CAKECORE_URL', null),
+            'mask' => 0666,
         ],
 
         /**
@@ -117,6 +118,7 @@ return [
             'serialize' => true,
             'duration' => '+2 minutes',
             'url' => env('CACHE_CAKEMODEL_URL', null),
+            'mask' => 0666,
         ],
     ],
 
@@ -292,6 +294,7 @@ return [
             'file' => 'debug',
             'levels' => ['notice', 'info', 'debug'],
             'url' => env('LOG_DEBUG_URL', null),
+            'mask' => 0666,
         ],
         'error' => [
             'className' => 'Cake\Log\Engine\FileLog',
@@ -299,6 +302,7 @@ return [
             'file' => 'error',
             'levels' => ['warning', 'error', 'critical', 'alert', 'emergency'],
             'url' => env('LOG_ERROR_URL', null),
+            'mask' => 0666,
         ],
     ],
 

@@ -2,6 +2,7 @@
     <ul class="side-nav">
         <li class="heading"><?= __('Actions') ?></li>
         <li><?= $this->Html->link(__('New Season'), ['action' => 'add']) ?></li>
+        <li><?= $this->Html->link('選手リスト出力', ['action' => 'player_export']) ?></li>
     </ul>
 </nav>
 <div class="seasons index large-9 medium-8 columns content">

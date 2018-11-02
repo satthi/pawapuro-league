@@ -5,6 +5,9 @@ use App\Controller\AppController;
 use PhpExcelWrapper\PhpExcelWrapper;
 use Cake\Core\Configure;
 use Cake\I18n\FrozenDate;
+use Cake\ORM\TableRegistry;
+use Cake\Filesystem\File;
+use Cake\Utility\Security;
 
 /**
  * Seasons Controller
@@ -330,5 +333,51 @@ class SeasonsController extends AppController
         $this->set('positionLists', Configure::read('positionLists'));
         $this->set('positionColors', Configure::read('positionColors'));
     }
+
+
+
+    public function playerExport()
+    {
+        $this->autoRender = false;
+        $basePlayers = TableRegistry::get('BasePlayers')->find()
+        ->order(['id' => 'ASC']);
+
+        $PhpExcelWrapper = new PhpExcelWrapper(ROOT . '/webroot/player_template.xlsx');
+
+        $row = 1;
+        foreach ($basePlayers as $basePlayer) {
+            $row++;
+            $PhpExcelWrapper->setVal($basePlayer->id, 0, $row);
+            $PhpExcelWrapper->setVal($basePlayer->team_ryaku_name, 1, $row);
+            $PhpExcelWrapper->setVal($basePlayer->no, 2, $row);
+            $PhpExcelWrapper->setVal($basePlayer->name, 3, $row);
+            $PhpExcelWrapper->setVal($basePlayer->name_short, 4, $row);
+            $PhpExcelWrapper->setVal($basePlayer->name_eng, 5, $row);
+            $PhpExcelWrapper->setVal($basePlayer->name_read, 6, $row);
+            $PhpExcelWrapper->setVal($basePlayer->name_short_read, 7, $row);
+            $PhpExcelWrapper->setVal($basePlayer->throw, 8, $row);
+            $PhpExcelWrapper->setVal($basePlayer->bat, 9, $row);
+            $PhpExcelWrapper->setVal($basePlayer->type_p, 10, $row);
+            $PhpExcelWrapper->setVal($basePlayer->type_c, 11, $row);
+            $PhpExcelWrapper->setVal($basePlayer->type_i, 12, $row);
+            $PhpExcelWrapper->setVal($basePlayer->type_o, 13, $row);
+        }
+
+        $this->response->type('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $filename = $this->fileName;
+        if (strstr(env('HTTP_USER_AGENT'), 'MSIE') || strstr(env('HTTP_USER_AGENT'), 'Trident') || strstr(env('HTTP_USER_AGENT'), 'Edge')) {
+            $filename = mb_convert_encoding($filename, "SJIS", "UTF-8");
+        }
+        $this->response->header('Content-Disposition', 'attachment;filename="' . $filename . '"');
+        $this->response->header('Cache-Control', 'max-age=0');
+        $tmpFile = TMP . Security::hash(time() . rand()) . '.xlsx';
+        $PhpExcelWrapper->write($tmpFile);
+        // ファイルの内容読み込み
+        $fp = new File($tmpFile);
+        $body = $fp->read();
+        // 一時ファイルの削除
+        $fp->delete();
+        $this->response->body($body);
+    } 
 
 }

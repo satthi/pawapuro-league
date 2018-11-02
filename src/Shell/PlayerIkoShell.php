@@ -28,6 +28,7 @@ class PlayerIkoShell extends Shell
             }
             if (empty($numberTeamList[$player->team->ryaku_name][$player->no])) {
                 $basePlayer = $BasePlayersTable->newEntity([
+                    'team_ryaku_name' => $player->team->ryaku_name,
                     'name' => $player->name,
                     'name_short' => $player->name_short,
                     'name_eng' => $player->name_eng,
