@@ -122,6 +122,7 @@ class GamesController extends AppController
     private function stamenSettingParts($gameInfo, $checkTeam, $dh_flag)
     {
         $this->loadModel('Games');
+        $this->loadModel('Accidents');
         // いなかったらセッティング
         $checkId = $checkTeam->id;
         $gameMemberInfo = $this->GameMembers->find('all')
@@ -137,6 +138,12 @@ class GamesController extends AppController
             // ここ10試合の成績も取得
             ->where(['Players.team_id' => $checkId])
         ;
+        // けが人を取得
+        $accidents = $this->Accidents->find('all')
+            ->contain('Players')
+            ->where(['Players.team_id' => $checkId])
+            ->where(['Accidents.start_date <=' => $gameInfo->date])
+            ->where(['Accidents.end_date >=' => $gameInfo->date]);
         
         // 前回のゲームがあればそのスタメンを取得する
         $recentGame = $this->Games->find('all')
@@ -296,6 +303,7 @@ class GamesController extends AppController
             ->order(['GameResults.game_id' => 'DESC'])
             ->order(['(SELECT OrderGameResults.id FROM game_results AS OrderGameResults WHERE OrderGameResults.pitcher_id = GameResults.pitcher_id AND OrderGameResults.game_id = GameResults.game_id LIMIT 1)' => 'ASC'])
         ;
+        $this->set('accidents', $accidents);
         $this->set('checkTeam', $checkTeam);
         $this->set('stamen', $stamen);
         $this->set('dh_flag', $dh_flag);
@@ -664,6 +672,7 @@ class GamesController extends AppController
     
     public function afterGameSave($gameId = null)
     {
+        $this->loadModel('Accidents');
         $this->loadModel('Teams');
         $this->loadModel('Games');
         $this->loadModel('Players');
@@ -678,6 +687,11 @@ class GamesController extends AppController
                 'VisitorTeams',
             ]
         ]);
+
+
+        // けが人の判定
+        $this->Accidents->accidentCheck($gameId);
+
         // 投手情報の保存
         $win_id = null;
         $lose_id = null;
@@ -720,6 +734,7 @@ class GamesController extends AppController
         $gameInfo->save_pitcher_id = $save_id;
         
         $this->Games->save($gameInfo);
+
         // 個人成績の後処理
         // 毎回全データ集計し直そうかｗこれくらいならｗ
         $this->Players->batterShukei($gameInfo->season_id);
@@ -796,6 +811,12 @@ class GamesController extends AppController
         $this->loadModel('GameInnings');
         $this->loadModel('GameMembers');
         $this->loadModel('GameResults');
+        $this->loadModel('Accidents');
+        // けが人発生
+        $accidents = $this->Accidents->find()
+            ->contain('Players')
+            ->where(['Accidents.start_date' => $gameInfo->date])
+            ->where(['Players.team_id IN' => [$gameInfo->visitor_team->id, $gameInfo->home_team->id]]);
         
         $visitorMemberInfos = $this->GameMembers->find('all')
             ->contain(['Players' => ['Teams']])
@@ -1035,7 +1056,7 @@ class GamesController extends AppController
             ->order(['Games.id' => 'ASC'])
             ->first()
         ;
-
+        $this->set('accidents', $accidents);
         $this->set('positionLists', Configure::read('positionLists'));
         $this->set('positionColors', Configure::read('positionColors'));
         $this->set('resultSet', Configure::read('resultSet'));

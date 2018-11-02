@@ -163,6 +163,7 @@ class PlayersTable extends Table
             $playerInfo['type_c'] = $PositionCheck[$PhpExcelWrapper->getVal(11, $row)];
             $playerInfo['type_i'] = $PositionCheck[$PhpExcelWrapper->getVal(12, $row)];
             $playerInfo['type_o'] = $PositionCheck[$PhpExcelWrapper->getVal(13, $row)];
+            $playerInfo['accident_type'] = $PhpExcelWrapper->getVal(14, $row);
 
             $playerInfo['base_player_id'] = $PhpExcelWrapper->getVal(0, $row);
             if (empty($playerInfo['base_player_id'])) {

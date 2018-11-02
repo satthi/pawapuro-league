@@ -68,6 +68,20 @@
 			<?php endforeach;?>
 		</table>
 	</div>
+
+	<div style="float:left;margin-left:30px;">
+		<h4>けが人</h4>
+		<table style="width:auto;">
+			<?php foreach ($accidents as $accident):?>
+			<tr>
+				<td data-player_id="<?= $accident['player']->id;?>" class="player_box_td member">
+					<?= $this->element('player_block', ['player' => $accident['player'], 'nolink' => true]);?>
+				</td>
+				<td class="member_info"><?= $accident->end_date;?>まで</td>
+			</tr>
+			<?php endforeach;?>
+		</table>
+	</div>
 		
 	<div style="float:left;margin-left:30px;">
 		<p>最近の先発ピッチャー</p>

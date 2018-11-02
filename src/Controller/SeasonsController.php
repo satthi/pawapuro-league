@@ -366,6 +366,7 @@ class SeasonsController extends AppController
             $PhpExcelWrapper->setVal($PositionCheck[$basePlayer->type_c], 11, $row);
             $PhpExcelWrapper->setVal($PositionCheck[$basePlayer->type_i], 12, $row);
             $PhpExcelWrapper->setVal($PositionCheck[$basePlayer->type_o], 13, $row);
+            $PhpExcelWrapper->setVal($basePlayer->accident_type, 14, $row);
         }
 
         $this->response->type('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');

@@ -135,6 +135,16 @@
 		<?php endforeach;?>
 			</td>
 		</tr>
+		<?php if (!$accidents->isEmpty()):?>
+			<tr>
+				<th>けが人</th>
+				<td>
+					<?php foreach ($accidents as $accident) :?>
+						<?= $accident->player->name;?>(<?= $accident->end_date->format('Y/m/d');?>まで)
+					<?php endforeach;?>
+				</td>
+			</tr>
+		<?php endif;?>
 		</table>
 	</div>
 	<div class="tab_body" data-type="2">
