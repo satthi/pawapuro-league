@@ -477,6 +477,9 @@
     <table cellpadding="0" cellspacing="0" style="width:auto;">
         <tr>
             <th>シーズン</th>
+            <th>名前</th>
+            <th>チーム</th>
+            <th>背番号</th>
             <th>打率</th>
             <th>HR</th>
             <th>打点</th>
@@ -513,6 +516,9 @@
         <?php foreach ($histories as $history):?>
         <tr>
             <td><?= $history->team->season->name; ?></td>
+            <td><?= $history->name; ?></td>
+            <td><?= $history->team->ryaku_name; ?></td>
+            <td><?= $history->no; ?></td>
             <td><?= preg_replace('/^0/', '', sprintf('%0.3f', $history->avg)); ?></td>
             <td><?= $this->Number->format($history->hr) ?></td>
             <td><?= $this->Number->format($history->rbi) ?></td>
@@ -550,7 +556,7 @@
         <?php endif;?>
         <?php endforeach;?>
         <tr>
-            <td>シーズン合計</td>
+            <td colspan="4">シーズン合計</td>
                 <td>
 		        <?php if (!empty($total['dasu'])):?>
 		        <?= preg_replace('/^0/', '', sprintf('%0.3f', $total['hit'] / $total['dasu'])); ?>
@@ -586,6 +592,9 @@
         <thead>
             <tr>
                 <th>シーズン</th>
+                <th>名前</th>
+                <th>チーム</th>
+                <th>背番号</th>
                 <th scope="col"><?= $this->Paginator->sort('bougyo') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('inning') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('jiseki') ?></th>
@@ -618,6 +627,9 @@
         <?php foreach ($histories as $history):?>
             <tr>
                 <td><?= $history->team->season->name; ?></td>
+                <td><?= $history->name; ?></td>
+                <td><?= $history->team->ryaku_name; ?></td>
+                <td><?= $history->no; ?></td>
                 <td>
 		        <?php if (!empty($history->inning)):?>
 		        <?= sprintf('%0.2f', $history->jiseki / ($history->inning / 27)); ?>
@@ -665,7 +677,7 @@
         <?php endif;?>
         <?php endforeach;?>
             <tr>
-                <td>シーズン合計</td>
+                <td colspan="4">シーズン合計</td>
                 <td>
 		        <?php if (!empty($total['inning'])):?>
 		        <?= sprintf('%0.2f', $total['jiseki'] / ($total['inning'] / 27)); ?>

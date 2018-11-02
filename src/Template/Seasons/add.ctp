@@ -10,6 +10,7 @@
         <legend><?= __('Add Season') ?></legend>
         <?php
             echo $this->Form->input('name', ['type' => 'text']);
+            echo $this->Form->input('regular_flag', ['type' => 'checkbox']);
         ?>
         チーム
         <table>

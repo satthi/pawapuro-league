@@ -294,8 +294,7 @@ class PlayersController extends AppController
             ;
         // 歴代成績
         $histories = $this->Players->find('all')
-        	->where(['Teams.ryaku_name' => $player->team->ryaku_name])
-        	->where(['Players.no' => $player->no])
+        	->where(['Players.base_player_id' => $player->base_player_id])
         	->contain(['Teams' => ['Seasons']])
         	->order(['Teams.season_id' => 'ASC'])
         	;
