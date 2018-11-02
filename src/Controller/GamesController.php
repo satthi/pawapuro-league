@@ -152,6 +152,7 @@ class GamesController extends AppController
             ->first()
         ;
         $stamen = [];
+        $dh_plus_flag = false;
         if (is_null($recentGame)) {
             // ない場合は適当に
             $dajun = 1;
@@ -202,8 +203,6 @@ class GamesController extends AppController
                 ->order(['GameMembers.dajun' => 'ASC'])
                 ;
 
-
-            $dh_plus_flag = false;
             foreach ($gameMemberInfos as $gameMemberInfo) {
                 // DHなし
                 if ($dh_flag == false) {
