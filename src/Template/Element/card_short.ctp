@@ -8,12 +8,8 @@
 	<div class="player_block">
     <div class="short_image" data-card_id="<?= $card->id;?>">
     <?php
-		if (file_exists(ROOT . '/webroot/img/player/' . $player->team->ryaku_name . '/' . $player->no . '.jpg')) {
-			echo $this->Html->image('player/' . $player->team->ryaku_name . '/' . $player->no . '.jpg', ['width' => 60]);
-		} elseif (file_exists(ROOT . '/webroot/img/player/' . $player->team->ryaku_name . '/' . $player->no . '.gif')) {
-			echo $this->Html->image('player/' . $player->team->ryaku_name . '/' . $player->no . '.gif', ['width' => 60]);
-		} elseif (file_exists(ROOT . '/webroot/img/player/' . $player->team->ryaku_name . '/' . $player->no . '.png')) {
-			echo $this->Html->image('player/' . $player->team->ryaku_name . '/' . $player->no . '.png', ['width' => 60]);
+		if (file_exists(ROOT . '/webroot/img/base_player/' . $player->base_player_id . '/file')) {
+			echo $this->Html->image('base_player/' . $player->base_player_id . '/file', ['width' => 60]);
 		} else {
 			echo $this->Html->image('noimage.jpg', ['width' => 60]);
 		}

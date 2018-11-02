@@ -1,5 +1,10 @@
 <div class="players view columns content">
-    <h3><?= h($player->name) ?></h3>
+    <div class="clearfix">
+        <h3 style="float:left"><?= h($player->name) ?></h3>
+        <?php if (file_exists(ROOT . '/webroot/img/base_player/' . $player->base_player_id . '/file')):?>
+            <?= $this->Html->image('base_player/' . $player->base_player_id . '/file', ['style' => 'float:right;']);?>
+        <?php endif;?>
+    </div>
     <table class="vertical-table">
         <tr>
             <th>打率</th>

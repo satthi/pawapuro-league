@@ -14,12 +14,8 @@ $plusDefense = $card->defense_plus;
     <div class="clearfix back-body">
         <div class="back-left">
 	    	<?php
-			if (file_exists(ROOT . '/webroot/img/player/' . $player->team->ryaku_name . '/' . $player->no . '.jpg')) {
-				echo $this->Html->image('player/' . $player->team->ryaku_name . '/' . $player->no . '.jpg', ['width' => 100]);
-			} elseif (file_exists(ROOT . '/webroot/img/player/' . $player->team->ryaku_name . '/' . $player->no . '.gif')) {
-				echo $this->Html->image('player/' . $player->team->ryaku_name . '/' . $player->no . '.gif', ['width' => 100]);
-			} elseif (file_exists(ROOT . '/webroot/img/player/' . $player->team->ryaku_name . '/' . $player->no . '.png')) {
-				echo $this->Html->image('player/' . $player->team->ryaku_name . '/' . $player->no . '.png', ['width' => 100]);
+			if (file_exists(ROOT . '/webroot/img/base_player/' . $player->base_player_id . '/file')) {
+				echo $this->Html->image('base_player/' . $player->base_player_id . '/file', ['width' => 100]);
 			} else {
 				echo $this->Html->image('noimage.jpg', ['width' => 100]);
 			}

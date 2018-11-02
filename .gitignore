@@ -2,6 +2,8 @@
 /tmp/*
 /logs/*
 /webroot/img/player
+/webroot/img/_player
+/webroot/img/base_player
 /webroot/img/logo_*
 /webroot/voice
 config/Migrations/schema-dump-default.lock

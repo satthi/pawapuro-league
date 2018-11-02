@@ -7,12 +7,8 @@
 打者：[<?= $playerInfo->no;?>] <?= $playerInfo->name;?>[<?= $playerInfo->team->ryaku_name;?>]
 <br />
 <?php
-if (file_exists(ROOT . '/webroot/img/player/' . $playerInfo->team->ryaku_name . '/' . $playerInfo->no . '.jpg')) {
-	echo $this->Html->image('player/' . $playerInfo->team->ryaku_name . '/' . $playerInfo->no . '.jpg', ['width' => 120]);
-} elseif (file_exists(ROOT . '/webroot/img/player/' . $playerInfo->team->ryaku_name . '/' . $playerInfo->no . '.gif')) {
-	echo $this->Html->image('player/' . $playerInfo->team->ryaku_name . '/' . $playerInfo->no . '.gif', ['width' => 120]);
-} elseif (file_exists(ROOT . '/webroot/img/player/' . $playerInfo->team->ryaku_name . '/' . $playerInfo->no . '.png')) {
-	echo $this->Html->image('player/' . $playerInfo->team->ryaku_name . '/' . $playerInfo->no . '.png', ['width' => 120]);
+if (file_exists(ROOT . '/webroot/img/base_player/' . $playerInfo->base_player_id . '/file')) {
+	echo $this->Html->image('base_player/' . $playerInfo->base_player_id . '/file', ['width' => 120]);
 } else {
 	echo $this->Html->image('noimage.jpg', ['width' => 120]);
 }

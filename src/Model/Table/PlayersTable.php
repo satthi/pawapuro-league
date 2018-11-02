@@ -51,6 +51,9 @@ class PlayersTable extends Table
         $this->belongsTo('Teams', [
             'foreignKey' => 'team_id'
         ]);
+        $this->belongsTo('BasePlayers', [
+            'foreignKey' => 'base_player_id'
+        ]);
     }
 
     /**

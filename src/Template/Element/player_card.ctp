@@ -23,12 +23,8 @@ $plusMental = $card->mental_plus;
     </div>
     <div class="image">
     <?php
-		if (file_exists(ROOT . '/webroot/img/player/' . $player->team->ryaku_name . '/' . $player->no . '.jpg')) {
+		if (file_exists(ROOT . '/webroot/img/base_player/' . $player->base_player_id . '/file')) {
 			echo $this->Html->image('player/' . $player->team->ryaku_name . '/' . $player->no . '.jpg', ['width' => 350]);
-		} elseif (file_exists(ROOT . '/webroot/img/player/' . $player->team->ryaku_name . '/' . $player->no . '.gif')) {
-			echo $this->Html->image('player/' . $player->team->ryaku_name . '/' . $player->no . '.gif', ['width' => 350]);
-		} elseif (file_exists(ROOT . '/webroot/img/player/' . $player->team->ryaku_name . '/' . $player->no . '.png')) {
-			echo $this->Html->image('player/' . $player->team->ryaku_name . '/' . $player->no . '.png', ['width' => 350]);
 		} else {
 			echo $this->Html->image('noimage.jpg', ['width' => 350]);
 		}
