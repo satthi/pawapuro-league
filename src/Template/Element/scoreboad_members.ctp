@@ -9,6 +9,10 @@
 		$memberEntity = $member;
 		$member['player'] = $memberEntity->player;
 		$member['dajun'] = $memberEntity->dajun;
+		// DH解除後のポジションは表示しない
+		if ($member['position'] == '') {
+			continue;
+		}
 	}?>
 	<tr>
 		<td

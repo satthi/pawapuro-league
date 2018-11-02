@@ -4,6 +4,7 @@
 		<h3>今の打順</h3>
 		<table id="stamen_table" class="change_dajun" style="width:auto">
 			<?php foreach ($nowMembers as $nowMember):?>
+			<?php if ($nowMember['position'] == '') continue;?>
 			<tr>
 				<td class="dajun" data-dajun="<?= $nowMember['member_info']->dajun;?>">
 				<?php if ($nowMember['member_info']->dajun != 10):?>
@@ -107,7 +108,8 @@
 						selected_dom_table_id == 'stamen_table' &&
 						self_table_id == 'stamen_table'
 					) {
-						return false;
+						// 運用でカバーするために消す
+						// return false;
 					}
 					
 					if (selected_dom_table_id == 'stamen_table') {
@@ -124,14 +126,14 @@
 					selected_info_dom.remove();
 					
 					if (selected_dom_table_id == 'stamen_table') {
-						self.parents('tr').remove();
+						selected_dom.remove();
 					} else {
-						self.remove();
+						selected_dom.parents('tr').remove();
 					}
 					if (self_table_id == 'stamen_table') {
-						selected_dom.parents('tr').remove();
+						self.remove();
 					} else {
-						selected_dom.remove();
+						self.parents('tr').remove();
 					}
 					
 
@@ -150,11 +152,18 @@
 				$('#position_' + dajun).val(position);
 			});
 
+			// DHなしのとき
 			if ($('#player_id_10').val() == '') {
 				$('#player_id_10').remove();
 			}
 			if ($('#position_10').val() == '') {
 				$('#position_10').remove();
+			}
+
+			// DH解除時は空にして返す
+			if ($('#position_10').val() == '99') {
+				$('#player_id_10').val('');
+				$('#position_10').val('');
 			}
 		});
 	});

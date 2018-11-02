@@ -4,6 +4,8 @@
 		<h3>今の打順</h3>
 		<table class="change_dajun">
 			<?php foreach ($nowMembers as $nowMember):?>
+			<?php // 10番は無視でOK;?>
+			<?php if ($nowMember->dajun == 10) continue;?>
 			<tr>
                 <td class="player_box_td" data-dajun="<?= $nowMember->dajun;?>">
                     <?= $this->element('player_block', ['player' => $nowMember->player, 'nolink' => true]);?>

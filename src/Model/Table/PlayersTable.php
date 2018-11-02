@@ -451,7 +451,9 @@ class PlayersTable extends Table
         // すでに出場済みの選手
         $notListPlayers = $this->GameMembers->find('list', ['valueField' => 'player_id'])
         	->where(['GameMembers.team_id' => $team_id])
-        	->where(['GameMembers.game_id' => $game_id])
+            ->where(['GameMembers.game_id' => $game_id])
+            // DH解除を除く
+            ->where(['GameMembers.player_id IS NOT' => null])
         	->toArray()
         	;
         // 交代候補選手

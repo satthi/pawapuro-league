@@ -194,7 +194,6 @@ class GamesController extends AppController
             }
         } else {
             //前回のゲームがある場合は前回のゲームのスタメン
-            // @Todoまだ
             $gameMemberInfos = $this->GameMembers->find('all')
                 ->where(['GameMembers.game_id' => $recentGame->id])
                 ->where(['GameMembers.team_id' => $checkId])
@@ -221,7 +220,7 @@ class GamesController extends AppController
                     // DHあり
                     // DHなし＞DHありとしたときの対応
                     // ピッチャーはDHとする
-                    if ($gameMemberInfo->position == 1) {
+                    if ($gameMemberInfo->dajun != 10 && $gameMemberInfo->position == 1) {
                         $gameMemberInfo->position = 99;
                         $dh_plus_flag = true;
                     }
@@ -356,6 +355,7 @@ class GamesController extends AppController
                 $batter_dajun = 1;
             }
         }
+
         if ($gameInfo->status == 0  || $gameInfo->out_num == 3) {
             $batterId = null;
         } elseif ($gameInfo->status % 2 == 1) {
@@ -567,7 +567,7 @@ class GamesController extends AppController
             ->where(['GameResults.game_id' => $game_id])
             ->order(['GameResults.id' => 'DESC'])
             // 20個以上一気に巻き戻るようなことはないので
-            ->limit(20)
+            ->limit(40)
             // ここで確定させちゃう
             ->all()
         ;
@@ -1161,6 +1161,12 @@ class GamesController extends AppController
                 $nowMembers[$memberInfo->dajun]['position'] = $memberInfo->position;
             }
         }
+        $dh_flag = false;
+        foreach ($nowMembers as $nowMember) {
+            if ($nowMember['position'] == 99) {
+                $dh_flag = true;
+            }
+        }
         ksort($nowMembers);
         if ($this->request->is('post')) {
             // 変更しない人をリストから外していく
@@ -1186,6 +1192,7 @@ class GamesController extends AppController
         $pinchHitterLists = $this->Players->changePlayerLists($game_id, $team_id);
         $this->set('nowMembers', $nowMembers);
         $this->set('pinchHitterLists', $pinchHitterLists);
+        $this->set('dh_flag', $dh_flag);
         $this->set('positionLists', Configure::read('positionLists'));
         $this->set('positionColors', Configure::read('positionColors'));
     }

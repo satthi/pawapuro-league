@@ -1,10 +1,12 @@
-<h2>代走</h2>
+<h2>盗塁</h2>
 <?= $this->Form->create();?>
 <div class="clearfix">
 	<div style="float:left;width:33%;">
 		<h3>今の打順</h3>
 		<table class="change_dajun">
 			<?php foreach ($nowMembers as $nowMember):?>
+			<?php // 10番は無視でOK;?>
+			<?php if ($nowMember->dajun == 10) continue;?>
 			<tr>
                 <td class="player_box_td" data-id="<?= $nowMember->player->id;?>">
                     <?= $this->element('player_block', ['player' => $nowMember->player, 'nolink' => true]);?>

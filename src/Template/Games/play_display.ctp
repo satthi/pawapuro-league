@@ -428,8 +428,10 @@
 				<?php if ($changeMember->dajun != 10):?>
 					onseiYomiage('<?= $changeMember->dajun;?>ばん');
 				<?php endif;?>
-				onseiYomiage(positionOnsei[<?= $changeMember->position;?>]);
-				onseiYomiage('<?= $changeMember->batter->name_read;?>');
+				<?php if ($changeMember->position != ''):?>
+					onseiYomiage(positionOnsei[<?= $changeMember->position;?>]);
+					onseiYomiage('<?= $changeMember->batter->name_read;?>');
+				<?php endif;?>
 				<?php endforeach;?>
 				onseiYomiage('以上です');
 			<?php endif;?>

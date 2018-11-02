@@ -151,6 +151,8 @@
 			<?php // この打順内で調整;?>
 			<?php $visitorMemberLists = [];?>
 			<?php foreach ($visitorMemberParts as $visitorMember) :?>
+				<?php // DH解除データは無視;?>
+				<?php if ($visitorMember->position == '') continue;?>
 				<?php $visitorMemberLists[$visitorMember->player->id]['info'] = $visitorMember->player;?>
 			    <?php
 			        if($visitorMember->dasu_count == 0) {
@@ -240,6 +242,8 @@
 			<?php // この打順内で調整;?>
 			<?php $homeMemberLists = [];?>
 			<?php foreach ($homeMemberParts as $homeMember) :?>
+				<?php // DH解除データは無視;?>
+				<?php if ($homeMember->position == '') continue;?>
 				<?php $homeMemberLists[$homeMember->player->id]['info'] = $homeMember->player;?>
 			    <?php
 			        if($homeMember->dasu_count == 0) {
