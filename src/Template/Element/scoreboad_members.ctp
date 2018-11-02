@@ -22,7 +22,11 @@
 			data-position="<?= $member['position'];?>"
 			data-dajun="<?= $member['dajun'];?>"
 			style="white-space: nowrap;"
-		><?= $member['dajun'];?></td>
+		>
+		<?php if ($member['dajun'] != 10):?>
+			<?= $member['dajun'];?>
+		<?php endif;?>
+		</td>
 		<td class="position color_<?= $positionColors[$member['position']];?>"><?= $positionLists[$member['position']];?></td>
         <td class="player_box_td">
             <?= $this->element('player_block', ['player' => $member['player']]);?>

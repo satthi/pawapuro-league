@@ -11,7 +11,7 @@
         <h4>次の試合</h4>
         	<?= $nextGame->date->format('Y/m/d(D)');?><br />
         	<?= $nextGame->home_team->ryaku_name;?> VS <?= $nextGame->visitor_team->ryaku_name;?>
-    <?= $this->Html->link('進行', ['controller' => 'games', 'action' => 'play', $nextGame->id]);?>
+    <?= $this->Html->link('進行', ['controller' => 'games', 'action' => 'play', $nextGame->id, $nextGame->dh_flag]);?>
     </div>
     <?= $this->Html->link('日程一覧', ['controller' => 'games', 'action' => 'index', $season->id, '#' => 'd' . $nextGame->date->format('Ymd')]) ?>
     <?php else:?>

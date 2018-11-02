@@ -4,14 +4,27 @@
 		<li><?= $this->Html->link('日程一覧', ['controller' => 'games', 'action' => 'index', $gameInfo->season_id]);?></li>
 	</ul>
 </div>
-<h3><?= $checkTeam->name;?>(<?= $gameInfo->date->format('Y/m/d(D)');?>)</h3>
+<h3>
+	<?= $checkTeam->name;?>(<?= $gameInfo->date->format('Y/m/d(D)');?>)
+	<?php if ($dh_flag):?>
+		DHあり [ <?= $this->Html->link('DHなしにする', ['action' => 'play', $gameInfo->id, false]);?> ]
+	<?php else:?>
+		DHなし [ <?= $this->Html->link('DHありにする', ['action' => 'play', $gameInfo->id, true]);?> ]
+	<?php endif;?>
+</h3>
 <div class="clearfix">
 	<div style="float:left;">
-		<h4>スタメン</h4>
+		<h4>
+		スタメン
+		</h4>
 		<table style="width:auto;" id="stamen_table">
 			<?php foreach ($stamen as $stamenParts):?>
 			<tr>
-				<td data-dajun="<?= $stamenParts['dajun'];?>" class="dajun"><?= $stamenParts['dajun'];?></td>
+				<td data-dajun="<?= $stamenParts['dajun'];?>" class="dajun">
+					<?php if ($stamenParts['dajun'] != 10):?>
+						<?= $stamenParts['dajun'];?>
+					<?php endif;?>
+				</td>
 				<td data-position="<?= $stamenParts['position'];?>" class="position color_<?= $positionColors[$stamenParts['position']];?>"><?= $positionLists[$stamenParts['position']];?></td>
 				<td data-player_id="<?= $stamenParts['player']->id;?>" class="player_box_td member">
 					<?= $this->element('player_block', ['player' => $stamenParts['player'], 'nolink' => true]);?>

@@ -39,7 +39,7 @@ class GamesController extends AppController
         $this->set('_serialize', ['games']);
     }
     
-    public function play($gameID = null)
+    public function play($gameID = null, $dh_flag = false)
     {
         $this->loadModel('GameInnings');
         $gameInfo = $this->Games->get($gameID, [
@@ -61,7 +61,7 @@ class GamesController extends AppController
         */
         $this->set('gameInfo', $gameInfo);
         // スタメンの設定 
-        if (!$this->stamenSetting($gameInfo)) {
+        if (!$this->stamenSetting($gameInfo, $dh_flag)) {
             return;
         }
         // そのイニングが最初かどうかを判定
@@ -100,26 +100,26 @@ class GamesController extends AppController
         return;
     }
     
-    private function stamenSetting($gameInfo)
+    private function stamenSetting($gameInfo, $dh_flag)
     {
         //メンバーがセットされているかチェック
         $this->loadModel('GameMembers');
         $this->loadModel('Players');
         // ビジターから
         $checkTeam = $gameInfo->visitor_team;
-        if (!$this->stamenSettingParts($gameInfo, $checkTeam)) {
+        if (!$this->stamenSettingParts($gameInfo, $checkTeam, $dh_flag)) {
             return false;
         }
         // ホームチーム
         $checkTeam = $gameInfo->home_team;
-        if (!$this->stamenSettingParts($gameInfo, $checkTeam)) {
+        if (!$this->stamenSettingParts($gameInfo, $checkTeam, $dh_flag)) {
             return false;
         }
         // 両方設定完了
         return true;
     }
     
-    private function stamenSettingParts($gameInfo, $checkTeam)
+    private function stamenSettingParts($gameInfo, $checkTeam, $dh_flag)
     {
         $this->loadModel('Games');
         // いなかったらセッティング
@@ -156,18 +156,45 @@ class GamesController extends AppController
             // ない場合は適当に
             $dajun = 1;
             foreach($players as $player) {
-                $stamen[$player->id] = [
-                    'dajun' => $dajun,
-                    'position' => $dajun,
-                    'player' => $player
-                ];
-                if ($dajun == 9) {
-                    break;
+                // DHじゃないときとP/DH以外は普通
+                if ($dh_flag == false || ($dajun != 1 && $dajun != 10)) {
+                    $stamen[$player->id] = [
+                        'dajun' => $dajun,
+                        'position' => $dajun,
+                        'player' => $player
+                    ];
+                } else {
+                    if ($dajun == 1) {
+                        // 指名打者
+                        $stamen[$player->id] = [
+                            'dajun' => 1,
+                            'position' => 99,
+                            'player' => $player
+                        ];
+                    } else {
+                        // P
+                        $stamen[$player->id] = [
+                            'dajun' => 10,
+                            'position' => 1,
+                            'player' => $player
+                        ];
+                    }
+                }
+                if ($dh_flag == false) {
+                    if ($dajun == 9) {
+                        break;
+                    }
+                } else {
+                    // 指名打者対策
+                    if ($dajun == 10) {
+                        break;
+                    }
                 }
                 $dajun++;
             }
         } else {
             //前回のゲームがある場合は前回のゲームのスタメン
+            // @Todoまだ
             $gameMemberInfos = $this->GameMembers->find('all')
                 ->where(['GameMembers.game_id' => $recentGame->id])
                 ->where(['GameMembers.team_id' => $checkId])
@@ -175,7 +202,30 @@ class GamesController extends AppController
                 ->contain('Players')
                 ->order(['GameMembers.dajun' => 'ASC'])
                 ;
+
+
+            $dh_plus_flag = false;
             foreach ($gameMemberInfos as $gameMemberInfo) {
+                // DHなし
+                if ($dh_flag == false) {
+                    // DHあり＞DHなしとしたときの対応
+                    // 10番は飛ばす
+                    if ($gameMemberInfo->dajun == 10) {
+                        continue;
+                    }
+                    // DHはピッチャーにする
+                    if ($gameMemberInfo->position == 99) {
+                        $gameMemberInfo->position = 1;
+                    }
+                } else {
+                    // DHあり
+                    // DHなし＞DHありとしたときの対応
+                    // ピッチャーはDHとする
+                    if ($gameMemberInfo->position == 1) {
+                        $gameMemberInfo->position = 99;
+                        $dh_plus_flag = true;
+                    }
+                }
                 $stamen[$gameMemberInfo->player->id] = [
                     'dajun' => $gameMemberInfo->dajun,
                     'position' => $gameMemberInfo->position,
@@ -186,6 +236,19 @@ class GamesController extends AppController
         $hikae = [];
         foreach($players as $player) {
             if (!empty($stamen[$player->id])) continue;
+            // DHなし＞DHありの場合Pをセットする
+            if ($dh_plus_flag == true) {
+                // 
+                $stamen[$player->id] = [
+                    'dajun' => 10,
+                    'position' => 1,
+                    'player' => $player
+                ];
+                $dh_plus_flag = false;
+                // 控えには追加しない
+                continue;
+            }
+
             $hikae[$player->id] = [
                 'player' => $player
             ];
@@ -237,6 +300,7 @@ class GamesController extends AppController
         ;
         $this->set('checkTeam', $checkTeam);
         $this->set('stamen', $stamen);
+        $this->set('dh_flag', $dh_flag);
         $this->set('hikae', $hikae);
         $this->set('pitcherDatas', $pitcherDatas);
         $this->set('positionLists', Configure::read('positionLists'));

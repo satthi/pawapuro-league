@@ -17,7 +17,7 @@
 	<table>
 		<tr>
 			<td><?= $gameLists[$nowDate->format('Y-m-d')][$position]->home_team->ryaku_name;?></td>
-			<td><?= $this->Html->link($now, ['controller' => 'games', 'action' => 'play', $gameLists[$nowDate->format('Y-m-d')][$position]->id]);?></td>
+			<td><?= $this->Html->link($now, ['controller' => 'games', 'action' => 'play', $gameLists[$nowDate->format('Y-m-d')][$position]->id, $gameLists[$nowDate->format('Y-m-d')][$position]->dh_flag]);?></td>
 			<td><?= $gameLists[$nowDate->format('Y-m-d')][$position]->visitor_team->ryaku_name;?></td>
 		</tr>
 		<tr>

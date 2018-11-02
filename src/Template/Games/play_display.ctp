@@ -338,6 +338,7 @@
 			9: 'right',
 			10: 'ピンチヒッター',
 			11: 'runner',
+			99: '指名打者',
 		};
 		
 			setTimeout(
@@ -424,7 +425,9 @@
 				<?php 
 					foreach ($changeMembers as $changeMember):
 				?>
-				onseiYomiage('<?= $changeMember->dajun;?>ばん');
+				<?php if ($changeMember->dajun != 10):?>
+					onseiYomiage('<?= $changeMember->dajun;?>ばん');
+				<?php endif;?>
 				onseiYomiage(positionOnsei[<?= $changeMember->position;?>]);
 				onseiYomiage('<?= $changeMember->batter->name_read;?>');
 				<?php endforeach;?>

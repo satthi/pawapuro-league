@@ -254,6 +254,7 @@ Configure::write('positionLists', [
     9 => '右',
     10 => '打',
     11 => '走',
+    99 => 'DH',
 ]);
 
 Configure::write('positionColors', [
@@ -268,6 +269,7 @@ Configure::write('positionColors', [
     9 => 'o',
     10 => 'p',
     11 => 'p',
+    99 => 'p',
 ]);
 
 

@@ -99,6 +99,7 @@
 			7: 'left',
 			8: 'center',
 			9: 'right',
+			99 : '指名打者',
 		};
 		var playerData = <?= json_encode($playerData);?>;
 		$('.card_frame').hide();

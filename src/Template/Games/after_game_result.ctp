@@ -172,7 +172,7 @@
 			<?php $first_flag = true;?>
 			<?php foreach ($visitorMemberLists as $player_id => $visitorMemberList) :?>
 			<tr>
-				<td><?php if ($first_flag == true) {
+				<td><?php if ($first_flag == true && $dajun != 10) {
 					echo $dajun;
 					$first_flag = false;
 				}

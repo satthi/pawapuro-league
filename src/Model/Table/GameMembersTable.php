@@ -82,6 +82,7 @@ class GameMembersTable extends Table
             ->where([$this->alias() . '.team_id' => $teamId])
             ->order([$this->alias() . '.id' => 'ASC'])
         ;
+
         $members = [];
         $pitcherId = null;
         foreach ($memberInfos as $memberInfo) {

@@ -5,7 +5,11 @@
 		<table id="stamen_table" class="change_dajun" style="width:auto">
 			<?php foreach ($nowMembers as $nowMember):?>
 			<tr>
-				<td class="dajun" data-dajun="<?= $nowMember['member_info']->dajun;?>"><?= $nowMember['member_info']->dajun;?></td>
+				<td class="dajun" data-dajun="<?= $nowMember['member_info']->dajun;?>">
+				<?php if ($nowMember['member_info']->dajun != 10):?>
+					<?= $nowMember['member_info']->dajun;?>
+				<?php endif;?>
+				</td>
 				
 				<td data-position="<?= $nowMember['position'];?>" class="position color_<?= $positionColors[$nowMember['position']];?>"><?= $positionLists[$nowMember['position']];?></td>
                 <td class="member player_box_td" data-player_id="<?= $nowMember['member_info']->player->id;?>">
@@ -57,7 +61,7 @@
 </div>
 
 <?= $this->Form->create(null, ['id' => 'change_form']);?>
-<?php for ($i = 1;$i <= 9; $i++):?>
+<?php for ($i = 1;$i <= 10; $i++):?>
 <?= $this->Form->input('Players.' . $i . '.player_id',['id' => 'player_id_' . $i, 'type' => 'hidden']);?>
 <?= $this->Form->input('Players.' . $i . '.position',['id' => 'position_' . $i, 'type' => 'hidden']);?>
 <?php endfor;?>
@@ -145,6 +149,13 @@
 				$('#player_id_' + dajun).val(player_id);
 				$('#position_' + dajun).val(position);
 			});
+
+			if ($('#player_id_10').val() == '') {
+				$('#player_id_10').remove();
+			}
+			if ($('#position_10').val() == '') {
+				$('#position_10').remove();
+			}
 		});
 	});
 </script>
