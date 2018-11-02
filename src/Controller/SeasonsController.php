@@ -34,7 +34,9 @@ class SeasonsController extends AppController
      */
     public function index()
     {
-        $seasons = $this->paginate($this->Seasons);
+        $query = $this->Seasons->find()
+            ->order(['id' => 'DESC']);
+        $seasons = $this->paginate($query);
 
         $this->set(compact('seasons'));
         $this->set('_serialize', ['seasons']);
@@ -344,6 +346,9 @@ class SeasonsController extends AppController
 
         $PhpExcelWrapper = new PhpExcelWrapper(ROOT . '/webroot/player_template.xlsx');
 
+        $Hand = array_flip(Configure::read('Hand'));
+        $PositionCheck = array_flip(Configure::read('PositionCheck'));
+
         $row = 1;
         foreach ($basePlayers as $basePlayer) {
             $row++;
@@ -355,16 +360,16 @@ class SeasonsController extends AppController
             $PhpExcelWrapper->setVal($basePlayer->name_eng, 5, $row);
             $PhpExcelWrapper->setVal($basePlayer->name_read, 6, $row);
             $PhpExcelWrapper->setVal($basePlayer->name_short_read, 7, $row);
-            $PhpExcelWrapper->setVal($basePlayer->throw, 8, $row);
-            $PhpExcelWrapper->setVal($basePlayer->bat, 9, $row);
-            $PhpExcelWrapper->setVal($basePlayer->type_p, 10, $row);
-            $PhpExcelWrapper->setVal($basePlayer->type_c, 11, $row);
-            $PhpExcelWrapper->setVal($basePlayer->type_i, 12, $row);
-            $PhpExcelWrapper->setVal($basePlayer->type_o, 13, $row);
+            $PhpExcelWrapper->setVal($Hand[$basePlayer->throw], 8, $row);
+            $PhpExcelWrapper->setVal($Hand[$basePlayer->bat], 9, $row);
+            $PhpExcelWrapper->setVal($PositionCheck[$basePlayer->type_p], 10, $row);
+            $PhpExcelWrapper->setVal($PositionCheck[$basePlayer->type_c], 11, $row);
+            $PhpExcelWrapper->setVal($PositionCheck[$basePlayer->type_i], 12, $row);
+            $PhpExcelWrapper->setVal($PositionCheck[$basePlayer->type_o], 13, $row);
         }
 
         $this->response->type('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        $filename = $this->fileName;
+        $filename = 'export.xlsx';
         if (strstr(env('HTTP_USER_AGENT'), 'MSIE') || strstr(env('HTTP_USER_AGENT'), 'Trident') || strstr(env('HTTP_USER_AGENT'), 'Edge')) {
             $filename = mb_convert_encoding($filename, "SJIS", "UTF-8");
         }

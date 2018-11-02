@@ -146,8 +146,9 @@ class GamesTable extends Table
             }
             $checkDate = $baseDate->addDays($date - 2);
             for ($i =1; $i <= 3;$i++){
-                $home_team = $PhpExcelWrapper->getVal(2 * $i - 1, $row);
-                $visitor_team = $PhpExcelWrapper->getVal(2 * $i, $row);
+                $home_team = $PhpExcelWrapper->getVal(3 * $i - 2, $row);
+                $visitor_team = $PhpExcelWrapper->getVal(3 * $i - 1, $row);
+                $dh_flag = $PhpExcelWrapper->getVal(3 * $i, $row);
                 if ($home_team == '' || $visitor_team == '') {
                     continue;
                 }
@@ -156,6 +157,7 @@ class GamesTable extends Table
                 $gameInfo['date'] = $checkDate;
                 $gameInfo['home_team_id'] = $teamLists[$home_team];
                 $gameInfo['visitor_team_id'] = $teamLists[$visitor_team];
+                $gameInfo['dh_flag'] = $dh_flag == 'ã€‡';
                 $gameInfo['status'] = 0;
                 $gameEntity = $this->newEntity($gameInfo);
                 if (!$this->Save($gameEntity, ['atomic' => false])) {
@@ -180,7 +182,7 @@ class GamesTable extends Table
         	->group('Games.home_team_id')
         	->group('Games.visitor_team_id')
         	;
-        // ®Œ`
+        // ÂÂ®Å’`
         $shukei_seikei = [];
         foreach ($shukei as $a) {
             // home
@@ -215,24 +217,24 @@ class GamesTable extends Table
     
     public function gameNextInning($gameId)
     {
-        // ƒQ[ƒ€î•ñ‚ÌŽæ“¾
+        // Æ’QÂ[Æ’â‚¬ÂÃ®â€¢Ã±â€šÃŒÅ½Ã¦â€œÂ¾
         $gameInfo = $this->get($gameId, [
             'contain' => [
                 'HomeTeams', 'VisitorTeams'
             ]
         ]);
-        // ‚±‚Ìó‘Ô‚Å‚±‚±‚Í—ˆ‚Ä‚Í‚¢‚¯‚È‚¢
+        // â€šÂ±â€šÃŒÂÃ³â€˜Ã”â€šÃ…â€šÂ±â€šÂ±â€šÃâ€”Ë†â€šÃ„â€šÃâ€šÂ¢â€šÂ¯â€šÃˆâ€šÂ¢
         if ($gameInfo->status != 0 && $gameInfo->out_num != 3) {
             exit;
         }
         $inning = $gameInfo->status;
-        // ƒCƒjƒ“ƒO‚ÌXV
+        // Æ’CÆ’jÆ’â€œÆ’Oâ€šÃŒÂXÂV
         $gameInfo->status++;
         $gameInfo->out_num = 0;;
         $this->save($gameInfo);
         
         $this->GameInnings = TableRegistry::get('GameInnings');
-        // ƒCƒjƒ“ƒOî•ñ‚ÌXV(‚Í‚¶‚ßˆÈŠO)
+        // Æ’CÆ’jÆ’â€œÆ’OÂÃ®â€¢Ã±â€šÃŒÂXÂV(â€šÃâ€šÂ¶â€šÃŸË†ÃˆÅ O)
         if ($inning != 0) {
 	        $inningInfo = $this->GameInnings->find('all')
 	            ->where(['GameInnings.game_id' => $gameId])
@@ -248,15 +250,15 @@ class GamesTable extends Table
     
     public function gameInfoUpdate($gameId, $point, $outNum, $inning, $hitFlag)
     {
-        // ƒQ[ƒ€î•ñ‚ÌŽæ“¾
+        // Æ’QÂ[Æ’â‚¬ÂÃ®â€¢Ã±â€šÃŒÅ½Ã¦â€œÂ¾
         $gameInfo = $this->get($gameId, [
             'contain' => [
                 'HomeTeams', 'VisitorTeams'
             ]
         ]);
         
-        // ¡‚ÌƒCƒjƒ“ƒO‚ðŽæ“¾
-        // ŽŽ‡ŠJŽn‘O‚Í1‰ñ•\‚ÆŽæ‚èˆµ‚¤
+        // ÂÂ¡â€šÃŒÆ’CÆ’jÆ’â€œÆ’Oâ€šÃ°Å½Ã¦â€œÂ¾
+        // Å½Å½Ââ€¡Å JÅ½nâ€˜Oâ€šÃ1â€°Ã±â€¢\â€šÃ†Å½Ã¦â€šÃ¨Ë†Âµâ€šÂ¤
         
         if ($gameInfo->status % 2 == 1) {
             $gameInfo->visitor_point += $point;
@@ -268,7 +270,7 @@ class GamesTable extends Table
         
         $this->save($gameInfo);
         $this->GameInnings = TableRegistry::get('GameInnings');
-        // ƒCƒjƒ“ƒOî•ñ‚ÌXV
+        // Æ’CÆ’jÆ’â€œÆ’OÂÃ®â€¢Ã±â€šÃŒÂXÂV
         $inningInfo = $this->GameInnings->find('all')
             ->where(['GameInnings.game_id' => $gameId])
             ->where(['GameInnings.inning' => $inning])

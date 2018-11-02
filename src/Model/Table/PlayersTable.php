@@ -140,28 +140,39 @@ class PlayersTable extends Table
         $PhpExcelWrapper = new PhpExcelWrapper($data['player_excel']['tmp_name']);
         $row = 2;
         while(true) {
-            $teamCode = $PhpExcelWrapper->getVal(0, $row);
+            $teamCode = $PhpExcelWrapper->getVal(1, $row);
             if ($teamCode == '') {
                 break;
             }
+            // debug($teamCode);
             if (empty($teamLists[$teamCode])) {
                 $row++;
                 continue;
             }
             $playerInfo = [];
+
+            $playerInfo['no'] = $PhpExcelWrapper->getVal(2, $row);
+            $playerInfo['name'] = $PhpExcelWrapper->getVal(3, $row);
+            $playerInfo['name_short'] = $PhpExcelWrapper->getVal(4, $row);
+            $playerInfo['name_eng'] = $PhpExcelWrapper->getVal(5, $row);
+            $playerInfo['name_read'] = $PhpExcelWrapper->getVal(6, $row);
+            $playerInfo['name_short_read'] = $PhpExcelWrapper->getVal(7, $row);
+            $playerInfo['throw'] = $Hand[$PhpExcelWrapper->getVal(8, $row)];
+            $playerInfo['bat'] = $Hand[$PhpExcelWrapper->getVal(9, $row)];
+            $playerInfo['type_p'] = $PositionCheck[$PhpExcelWrapper->getVal(10, $row)];
+            $playerInfo['type_c'] = $PositionCheck[$PhpExcelWrapper->getVal(11, $row)];
+            $playerInfo['type_i'] = $PositionCheck[$PhpExcelWrapper->getVal(12, $row)];
+            $playerInfo['type_o'] = $PositionCheck[$PhpExcelWrapper->getVal(13, $row)];
+
+            $playerInfo['base_player_id'] = $PhpExcelWrapper->getVal(0, $row);
+            if (empty($playerInfo['base_player_id'])) {
+                $basePlayeInfo = $playerInfo;
+                $basePlayeInfo['team_ryaku_name'] = $teamCode;
+                $basePlayerEntity = $this->BasePlayers->newEntity($basePlayeInfo);
+                $this->BasePlayers->save($basePlayerEntity);
+                $playerInfo['base_player_id'] = $basePlayerEntity->id;
+            }
             $playerInfo['team_id'] = $teamLists[$teamCode];
-            $playerInfo['no'] = $PhpExcelWrapper->getVal(1, $row);
-            $playerInfo['name'] = $PhpExcelWrapper->getVal(2, $row);
-            $playerInfo['name_short'] = $PhpExcelWrapper->getVal(3, $row);
-            $playerInfo['name_eng'] = $PhpExcelWrapper->getVal(4, $row);
-            $playerInfo['name_read'] = $PhpExcelWrapper->getVal(5, $row);
-            $playerInfo['name_short_read'] = $PhpExcelWrapper->getVal(6, $row);
-            $playerInfo['throw'] = $Hand[$PhpExcelWrapper->getVal(7, $row)];
-            $playerInfo['bat'] = $Hand[$PhpExcelWrapper->getVal(8, $row)];
-            $playerInfo['type_p'] = $PositionCheck[$PhpExcelWrapper->getVal(9, $row)];
-            $playerInfo['type_c'] = $PositionCheck[$PhpExcelWrapper->getVal(10, $row)];
-            $playerInfo['type_i'] = $PositionCheck[$PhpExcelWrapper->getVal(11, $row)];
-            $playerInfo['type_o'] = $PositionCheck[$PhpExcelWrapper->getVal(12, $row)];
             $playerEntity = $this->newEntity($playerInfo);
             if (!$this->Save($playerEntity, ['atomic' => false])) {
                 $saveFlag = false;

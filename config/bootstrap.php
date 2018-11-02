@@ -237,7 +237,7 @@ Configure::write('HandOptoins', [
 ]);
 
 Configure::write('PositionCheck', [
-    '' => null,
+    '' => '',
     '○' => 1,
     '◎' => 2,
 ]);
