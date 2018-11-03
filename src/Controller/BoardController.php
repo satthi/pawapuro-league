@@ -21,10 +21,12 @@ class BoardController extends AppController
      */
     public function index($id = null)
     {
+        $this->set('gameId', $id);
         $this->viewBuilder()->layout('ajax');
         $this->loadModel('Players');
         $this->loadModel('Teams');
         $this->loadModel('Games');
+        if ($id !== 'random') {
         $game = $this->Games->get($id, [
             'contain' => [
                 'HomeTeams',
@@ -36,6 +38,21 @@ class BoardController extends AppController
                 ],
             ]
         ]);
+        } else {
+        $game = $this->Games->find()
+            ->contain([
+                'HomeTeams',
+                'VisitorTeams',
+                'GameMembers' => [
+                    'Players' => [
+                        'Teams'
+                    ]
+                ],
+            ])
+            ->order('random()')
+            ->first();
+        $id = $game->id;
+        }
         
         // player‚Ì®—
         $players = [];
@@ -99,11 +116,11 @@ class BoardController extends AppController
         $avg = preg_replace('/^0/', '', $avg);
 
         $displayPlayerInfoAvg = $avg;
-        $displayPlayerInfoHr = $batterInfo->hr_count ;
-        $displayPlayerInfoRbi = $batterInfo->rbi_count ;
-        $displayPlayerInfoSteal = $batterInfo->steal_count ;
-        $displayPlayerInfoDasu= $batterInfo->dasu_count ;
-        $displayPlayerInfoHit = $batterInfo->hit_count ;
+        $displayPlayerInfoHr = (int) $batterInfo->hr_count ;
+        $displayPlayerInfoRbi = (int) $batterInfo->rbi_count ;
+        $displayPlayerInfoSteal = (int) $batterInfo->steal_count ;
+        $displayPlayerInfoDasu= (int) $batterInfo->dasu_count ;
+        $displayPlayerInfoHit = (int) $batterInfo->hit_count ;
         $performData = [];
         $pitcherData = [];
         $era = '';
@@ -154,13 +171,21 @@ class BoardController extends AppController
 		        } else {
 		           $era = sprintf('%0.2f', round($pitcherData->total_jiseki / ($pitcherData->total_inning) * 27, 2));
 		        }
+		        if (!empty($performData)) {
 		        $gameSum = $performData->game_sum;
 		        $winSum = $performData->win_sum ;
 		        $loseSum = $performData->lose_sum;
 		        $saveSum = $performData->save_sum;
 		        $holdSum = $performData->hold_sum;
-		        $sansinSum = $pitcherData->sansin_count;
-		        $inningSum = $pitcherData->total_inning;
+		        } else {
+		        $gameSum = 0;
+		        $winSum = 0;
+		        $loseSum = 0;
+		        $saveSum = 0;
+		        $holdSum = 0;
+		        }
+		        $sansinSum = (int) $pitcherData->sansin_count;
+		        $inningSum = (int) $pitcherData->total_inning;
 				/*
 	            $displayPlayerInfo = $era . ' ';
 	            $displayPlayerInfo .= $performData->game_sum . '‡';

@@ -7,6 +7,7 @@
     <?= $this->Html->meta('icon') ?>
     <?= $this->Html->css('board.css') ?>
     <?= $this->Html->script('jquery') ?>
+    <script>var gameId = "<?= $gameId;?>";</script>
     <?= $this->Html->script('board') ?>
 </head>
 <body>
@@ -186,7 +187,7 @@
 		<?php endfor;?>
 	</div>
 </div>
-
+<?= $game->date;?>
 <div style="display:none;">
 <?php // 大変お待たせいたしました?>
 <audio src="<?= $this->Url->build('/voice/other/taihenomatase.wav');?>" id="voice_taihenomatase" controls></audio>

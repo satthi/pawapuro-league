@@ -7,11 +7,6 @@ $(function(){
 			$(this).css('font-size', (now_font_size * div_width / span_width) + 'px');
 		}
 		
-		$(window).keyup(function(e){
-			if (e.which == 13) {
-				stamen_start();
-			}
-		});
 	});
 	var stamen_started = false;
 	var settime = 0;
@@ -23,12 +18,24 @@ $(function(){
 	var member_all_time = 15000;
 	var name_display = 4000;
 	var kansei_timing = 1000;
-	
+
 	$("#voice_kansei").get(0).volume = 0.2;
 	$("#voice_visitor_team_bgm").get(0).volume = 0.1;
 	$("#voice_home_team_bgm").get(0).volume = 0.1;
 
+
+	$(window).keyup(function(e){
+		if (e.which == 13) {
+			stamen_start();
+		}
+	});
+	
+	if (gameId == 'random') {
+		stamen_start();
+	}
+	
 	function stamen_start() {
+		console.log('hoge');
 		if (stamen_started == true) {
 			return;
 		}
@@ -115,6 +122,13 @@ $(function(){
 			$('.vs_screen').show();
 			$("#voice_soredehashiai").get(0).play();
 		}, settime);
+		
+		if (gameId == 'random') {
+			setTimeout(function(){
+				location.reload();
+			}, settime + 10000);
+		}
+
 	}
 	
 	function member_set(type, i) {
