@@ -232,7 +232,7 @@ return [
              */
             //'port' => 'non_standard_port_number',
             'username' => 'postgres',
-            'password' => '',
+            'password' => 'postgres',
             'database' => 'game_next',
             'encoding' => 'utf8',
             'timezone' => 'UTC',

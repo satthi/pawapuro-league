@@ -259,6 +259,23 @@ Configure::write('positionLists', [
     99 => 'DH',
 ]);
 
+
+Configure::write('positionListShorts', [
+    1 => '1',
+    2 => '2',
+    3 => '3',
+    4 => '4',
+    5 => '5',
+    6 => '6',
+    7 => '7',
+    8 => '8',
+    9 => '9',
+    10 => 'H',
+    11 => 'R',
+    99 => 'D',
+]);
+
+
 Configure::write('positionColors', [
     1 => 'p',
     2 => 'c',
