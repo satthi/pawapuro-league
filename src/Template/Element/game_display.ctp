@@ -24,6 +24,8 @@
 				<?php if ($stamenDemo == true):?>
 					<br />
 					<?= $this->Html->link('デモ', ['controller' => 'board', 'action' => 'index', $gameLists[$nowDate->format('Y-m-d')][$position]->id]);?>
+					<br />
+					<?= $this->Html->link('ログ', ['controller' => 'games', 'action' => 'playlog', $gameLists[$nowDate->format('Y-m-d')][$position]->id]);?>
 				<?php endif;?>
 			</td>
 			<td><?= $gameLists[$nowDate->format('Y-m-d')][$position]->visitor_team->ryaku_name;?></td>

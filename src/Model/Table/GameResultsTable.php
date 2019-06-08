@@ -55,6 +55,10 @@ class GameResultsTable extends Table
             'className' => 'Players',
             'foreignKey' => 'target_player_id'
         ]);
+        $this->belongsTo('TargetPlayers', [
+            'className' => 'Players',
+            'foreignKey' => 'target_player_id'
+        ]);
         $this->belongsTo('Pitchers', [
             'className' => 'Players',
             'foreignKey' => 'pitcher_id'

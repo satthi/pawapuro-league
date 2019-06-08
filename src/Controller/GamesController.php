@@ -1689,4 +1689,212 @@ class GamesController extends AppController
     }
 
 
+    public function playlog($gameId)
+    {
+        $this->layout = false;
+        $game = $this->Games->get($gameId, [
+            'contain' => [
+                'HomeTeams',
+                'VisitorTeams',
+                'GameResults',
+            ]
+        ]);
+
+        // イニングの最初の数字を取っておく
+        $inningStart = [];
+        foreach ($game->game_results as $gameResultkey => $gameResult) {
+            if (!array_key_exists($gameResult->inning, $inningStart) ) {
+                $inningStart[$gameResult->inning] = $gameResultkey;
+            }
+        }
+
+        $this->set('game', $game);
+        $this->set('inningStart', $inningStart);
+        // debug($game);
+        // exit;
+    }
+
+    public function playlogInfo($gameId, $targetNumber)
+    {
+        $this->layout = false;
+        $game = $this->Games->get($gameId, [
+            'contain' => [
+                'HomeTeams',
+                'VisitorTeams',
+                'GameResults' => function($q) {
+                    return $q->order(['GameResults.id' => 'ASC'])
+                        ->contain([
+                            'Results',
+                            'TargetPlayers' => function($q) {
+                                return $q
+                                    ->select('TargetPlayers.name')
+                                    ->select(['dasu_sum' => '(SELECT count(SumResults.id) FROM game_results as SumGameResults LEFT JOIN results AS SumResults ON SumGameResults.result_id = SumResults.id WHERE SumResults.dasu_flag = true AND SumGameResults.target_player_id = GameResults.target_player_id AND SumGameResults.id <= GameResults.id)'])
+                                    ->select(['hit_sum' => '(SELECT count(SumResults.id) FROM game_results as SumGameResults LEFT JOIN results AS SumResults ON SumGameResults.result_id = SumResults.id WHERE SumResults.hit_flag = true AND SumGameResults.target_player_id = GameResults.target_player_id AND SumGameResults.id <= GameResults.id)'])
+                                    ->select(['hr_sum' => '(SELECT count(SumResults.id) FROM game_results as SumGameResults LEFT JOIN results AS SumResults ON SumGameResults.result_id = SumResults.id WHERE SumResults.hr_flag = true AND SumGameResults.target_player_id = GameResults.target_player_id AND SumGameResults.id <= GameResults.id)'])
+                                    ->select(['point_sum' => '(SELECT sum(SumGameResults.point) FROM game_results as SumGameResults WHERE SumGameResults.target_player_id = GameResults.target_player_id AND SumGameResults.id <= GameResults.id)'])
+                                    ->select(['win_sum' => '(SELECT count(game_pitcher_results.id) FROM game_pitcher_results WHERE game_pitcher_results.win = true AND game_pitcher_results.pitcher_id = GameResults.target_player_id AND game_pitcher_results.game_id < GameResults.game_id)'])
+                                    ->select(['lose_sum' => '(SELECT count(game_pitcher_results.id) FROM game_pitcher_results WHERE game_pitcher_results.lose = true AND game_pitcher_results.pitcher_id = GameResults.target_player_id AND game_pitcher_results.game_id < GameResults.game_id)'])
+                                    ->select(['inning_sum' => '(SELECT sum(game_pitcher_results.inning) FROM game_pitcher_results WHERE game_pitcher_results.pitcher_id = GameResults.target_player_id AND game_pitcher_results.game_id < GameResults.game_id)'])
+                                    ->select(['jiseki_sum' => '(SELECT sum(game_pitcher_results.jiseki) FROM game_pitcher_results WHERE game_pitcher_results.pitcher_id = GameResults.target_player_id AND game_pitcher_results.game_id < GameResults.game_id)'])
+                                    ;
+                            },
+                        ]);
+                },
+            ]
+        ]);
+
+        $startingMemberFlag = $targetNumber == 0;
+        $activeMembers = [];
+        $activePositions = [];
+        $resultSet = null;
+        // 進める場所はtype = 1の最後かそれ以外
+        $memberChange = false;
+        $result = null;
+        while(true) {
+            if ($game->game_results[$targetNumber]->type == 1) {
+                $memberChange = true;
+                if (!$startingMemberFlag) {
+                    $activeMembers[] = $game->game_results[$targetNumber]->target_player_id;
+                    $resultSet = [
+                        'type' => 1,
+                        'result' => null,
+                        'result_code' => null,
+                        'result_hit' => null,
+                        'outNum' => null,
+                        'point' => null,
+                        'activeInning' => $game->game_results[$targetNumber]->inning,
+                    ];
+                }
+            }
+            if ($game->game_results[$targetNumber]->type != 1) {
+                if (!$memberChange) {
+                    $activePositions[] = $game->game_results[$targetNumber]->target_player_id;
+                    $resultSet = [
+                        'type' => $game->game_results[$targetNumber]->type,
+                        'result' => !is_null($game->game_results[$targetNumber]->result) ? $game->game_results[$targetNumber]->result->name : null,
+                        'result_code' => !is_null($game->game_results[$targetNumber]->result) ? $game->game_results[$targetNumber]->result->id : null,
+                        'result_hit' => !is_null($game->game_results[$targetNumber]->result) ? $game->game_results[$targetNumber]->result->hit_flag : null,
+                        'outNum' => $game->game_results[$targetNumber]->out_num,
+                        'point' => $game->game_results[$targetNumber]->point,
+                        'activeInning' => $game->game_results[$targetNumber]->inning,
+                    ];
+                } else {
+                    $targetNumber--;
+                }
+                break;
+            }
+            $targetNumber++;
+        }
+
+        $members = [
+            'home' => [],
+            'visitor' => [],
+        ];
+
+        // スコアボード
+        $scoreBoards = [
+            'home' => [
+                1 => '',
+                2 => '',
+                3 => '',
+                4=> '',
+                5 => '',
+                6 => '',
+                7 => '',
+                8 => '',
+                9 => '',
+                10 => '',
+                11 => '',
+                12 => '',
+                'R' => 0,
+                'H' => 0,
+            ],
+            'visitor' => [
+                1 => '',
+                2 => '',
+                3 => '',
+                4 => '',
+                5 => '',
+                6 => '',
+                7 => '',
+                8 => '',
+                9 => '',
+                10 => '',
+                11 => '',
+                12 => '',
+                'R' => 0,
+                'H' => 0,
+            ],
+        ];
+
+        $dajunCheck = [];
+        $outCountCheck = [];
+        // 得点のみ動作用
+        $beforeDajun = null;
+        $nowOut = 0;
+        for ($i = 0;$i <= $targetNumber;$i++) {
+            if ($game->game_results[$i]->team_id == $game->home_team_id) {
+                $teamType = 'home';
+            } else {
+                $teamType = 'visitor';
+            }
+            // 盗塁には打順が（なぜか）埋まってないので埋める
+            if (is_null($game->game_results[$i]->target_player_id)) {
+                $game->game_results[$i]->dajun = $beforeDajun;
+            } else {
+                if (is_null($game->game_results[$i]->dajun)) {
+                    $game->game_results[$i]->dajun = $dajunCheck[$game->game_results[$i]->target_player_id];
+                }
+                $beforeDajun = $game->game_results[$i]->dajun;
+            }
+            if ($game->game_results[$i]->type == 1) {
+                $members[$teamType][$game->game_results[$i]->dajun]['dajun'] = $game->game_results[$i]->dajun;
+                $members[$teamType][$game->game_results[$i]->dajun]['position'] = Configure::read('positionListShorts.' . $game->game_results[$i]->position);
+                $members[$teamType][$game->game_results[$i]->dajun]['player_id'] = $game->game_results[$i]->target_player_id;
+                $members[$teamType][$game->game_results[$i]->dajun]['player'] = $game->game_results[$i]->target_player->name;
+                $dajunCheck[$game->game_results[$i]->target_player_id] = $game->game_results[$i]->dajun;
+            }
+            $members[$teamType][$game->game_results[$i]->dajun]['avg'] = $game->game_results[$i]->dasu_sum == 0 ? '-' : preg_replace('/^0\./', '.', sprintf('%.3f', round($game->game_results[$i]->hit_sum / $game->game_results[$i]->dasu_sum, 3)));
+            $members[$teamType][$game->game_results[$i]->dajun]['hr'] = (int) $game->game_results[$i]->hr_sum;
+            $members[$teamType][$game->game_results[$i]->dajun]['rbi'] = (int) $game->game_results[$i]->point_sum;
+            $members[$teamType][$game->game_results[$i]->dajun]['win'] = (int) $game->game_results[$i]->win_sum;
+            $members[$teamType][$game->game_results[$i]->dajun]['lose'] = (int) $game->game_results[$i]->lose_sum;
+            $members[$teamType][$game->game_results[$i]->dajun]['era'] = $game->game_results[$i]->inning_sum == 0 ? '-' : sprintf('%.2f', round($game->game_results[$i]->jiseki_sum / $game->game_results[$i]->inning_sum * 27, 2));
+            
+            if (!is_null($game->game_results[$i]->result) && $game->game_results[$i]->result->hit_flag == true) {
+                $scoreBoards[$teamType]['H']++;
+            }
+            $inning = ceil($game->game_results[$i]->inning / 2);
+            if ($game->game_results[$i]->point > 0) {
+                $scoreBoards[$teamType][$inning] = (int) $scoreBoards[$teamType][$inning] + $game->game_results[$i]->point;
+                $scoreBoards[$teamType]['R'] += (int) $game->game_results[$i]->point;
+            }
+            if (empty($outCountCheck[$teamType][$inning])) {
+                $outCountCheck[$teamType][$inning] = 0;
+            }
+            $outCountCheck[$teamType][$inning] += $game->game_results[$i]->out_num;
+            $nowOut = $outCountCheck[$teamType][$inning];
+            if ($outCountCheck[$teamType][$inning] == 3 && $scoreBoards[$teamType][$inning] == '') {
+                $scoreBoards[$teamType][$inning] = 0;
+            }
+        }
+
+        // debug($activePositions);
+        // debug($activeMembers);
+        // debug($members);
+        // exit;
+
+        echo json_encode([
+            'member' => $members,
+            'nextNumber' => $targetNumber + 1,
+            'activePositions' => $activePositions,
+            'activeMembers' => $activeMembers,
+            'resultSet' => $resultSet,
+            'scoreBoards' => $scoreBoards,
+            'nowOut' => $nowOut,
+        ]);
+        exit;
+
+    }
+
 }
