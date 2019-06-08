@@ -227,6 +227,10 @@ class Player extends Entity
         
         return (int) $shukeiData->hr_count;
     }
+    protected function _getDisplayName()
+    {
+        return $this->team->ryaku_name . ': (' . $this->_properties['no'] . ')' . $this->_properties['name'];
+    }
 
     protected function _getRealBatterPlayerInfo()
     {

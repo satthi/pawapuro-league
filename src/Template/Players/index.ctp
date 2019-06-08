@@ -32,7 +32,9 @@
         </thead>
         <tbody>
             <?php foreach ($players as $player): ?>
-            <tr>
+            <tr <?php if ($player->trade_flag == true) :?>
+                style="background-color:#DDD;"
+            <?php endif;?>>
                 <td class="player_box_td">
                     <?= $this->element('player_block', ['player' => $player]);?>
                 </td>
@@ -85,7 +87,9 @@
         <tbody>
             <?php foreach ($players as $player): ?>
             <?php if ($player->type_p === null) continue;?>
-            <tr>
+            <tr <?php if ($player->trade_flag == true) :?>
+                style="background-color:#DDD;"
+            <?php endif;?>>
                 <td class="player_box_td">
                     <?= $this->element('player_block', ['player' => $player]);?>
                 </td>

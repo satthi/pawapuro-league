@@ -57,11 +57,16 @@ $plusDefense = $card->defense_plus;
     	
     <?php 
     $card_mappings = [];
-    if ($card->card_mappings != '') {
+    if (!empty($card) && $card->card_mappings != '') {
         $card_mappings = unserialize($card->card_mappings);
     }
     ?>
-	<?php $skill_mapping = \Cake\Core\Configure::read('skill_mapping.' . $player->skill_type);?>
+	<?php
+	$skill_mapping = \Cake\Core\Configure::read('skill_mapping.' . $player->skill_type);
+	if (is_null($skill_mapping)) {
+		$skill_mapping = [];
+	}
+	?>
     <div class="back-skill-block clearfix">
         <div class="main-skill-block">
 	        <table>

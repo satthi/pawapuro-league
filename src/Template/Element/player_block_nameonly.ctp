@@ -31,6 +31,6 @@ $positionCount = count($positionInfo['sub']) + 1;
 <div class="player_namebox"
 
 >
-<?= $this->Html->link($player->name_short, ['controller' => 'cards', 'action' => 'view', $player->team->ryaku_name,$player->no]); ?>
+<?= $this->Html->link($player->name_short, ['controller' => 'cards', 'action' => 'view', $player->id]); ?>
 </div>
 	

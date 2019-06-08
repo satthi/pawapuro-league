@@ -97,9 +97,9 @@ class AccidentsTable extends Table
         // 設定値
         $basePoint = 0.3;
         // 打席数に応じたポイント
-        $dasekiPoint = 0.2;
+        $dasekiPoint = 0.1;
         // イニングに応じたポイント
-        $inningPoint = 0.2;
+        $inningPoint = 0.3;
 
         $rentoCheckDay = 20;
         // 連投に関するポイント
@@ -188,7 +188,7 @@ class AccidentsTable extends Table
                 $accidentEntity = $this->newEntity();
                 $accidentEntity->player_id = $playerId;
                 $accidentEntity->start_date = $game->date;
-                $accidentEntity->end_date = $game->date->addDay(rand(3, 60));
+                $accidentEntity->end_date = $game->date->addDay(floor(mt_rand(0, 10000)**2/100000000*60) + 3);
                 $this->save($accidentEntity);
             }
         }

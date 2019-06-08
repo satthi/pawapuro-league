@@ -11,6 +11,11 @@
         <h4>次の試合</h4>
         	<?= $nextGame->date->format('Y/m/d(D)');?><br />
         	<?= $nextGame->home_team->ryaku_name;?> VS <?= $nextGame->visitor_team->ryaku_name;?>
+    		<?php if ($nextGame->dh_flag == true) :?>
+    			(DHあり)
+		    <?php else:?>
+    			(DHなし)
+		    <?php endif;?>
     <?= $this->Html->link('進行', ['controller' => 'games', 'action' => 'play', $nextGame->id, $nextGame->dh_flag]);?>
     </div>
     <?= $this->Html->link('日程一覧', ['controller' => 'games', 'action' => 'index', $season->id, '#' => 'd' . $nextGame->date->format('Ymd')]) ?>
@@ -24,6 +29,7 @@
     <?= $this->Html->link('投手成績', ['controller' => 'seasons', 'action' => 'pitcher_detail', $season->id]) ?>
     <?= $this->Html->link('スタメンデモ', ['controller' => 'games', 'action' => 'stamen_demo', $season->id]) ?>
     <?= $this->Html->link('解析', ['controller' => 'seasons', 'action' => 'analyze', $season->id]) ?>
+    <?= $this->Html->link('トレード', ['controller' => 'seasons', 'action' => 'trade', $season->id]) ?>
     <div class="related">
         <h4>順位表</h4>
         <table cellpadding="0" cellspacing="0" style="width:auto;">

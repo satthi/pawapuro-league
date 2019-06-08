@@ -157,7 +157,7 @@ class GamesTable extends Table
                 $gameInfo['date'] = $checkDate;
                 $gameInfo['home_team_id'] = $teamLists[$home_team];
                 $gameInfo['visitor_team_id'] = $teamLists[$visitor_team];
-                $gameInfo['dh_flag'] = $dh_flag == '〇';
+                $gameInfo['dh_flag'] = $dh_flag == '○';
                 $gameInfo['status'] = 0;
                 $gameEntity = $this->newEntity($gameInfo);
                 if (!$this->Save($gameEntity, ['atomic' => false])) {

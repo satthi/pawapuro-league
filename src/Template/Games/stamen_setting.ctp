@@ -77,7 +77,18 @@
 				<td data-player_id="<?= $accident['player']->id;?>" class="player_box_td member">
 					<?= $this->element('player_block', ['player' => $accident['player'], 'nolink' => true]);?>
 				</td>
-				<td class="member_info"><?= $accident->end_date;?>まで</td>
+				<td class="member_info"><?= $accident->end_date->format('Y/m/d');?>まで</td>
+			</tr>
+			<?php endforeach;?>
+		</table>
+		<h4>けが人復帰</h4>
+		<table style="width:auto;">
+			<?php foreach ($accidentEnds as $accident):?>
+			<tr>
+				<td data-player_id="<?= $accident['player']->id;?>" class="player_box_td member">
+					<?= $this->element('player_block', ['player' => $accident['player'], 'nolink' => true]);?>
+				</td>
+				<td class="member_info"><?= $accident->end_date->format('Y/m/d');?>まで</td>
 			</tr>
 			<?php endforeach;?>
 		</table>

@@ -12,7 +12,7 @@
                 <td class="player_box_td">
                     <?= $this->element('player_block_nameonly', ['player' => $player]);?>
                 </td>
-                <td><?= h($player->team->ryaku_name) ?></td>
+                <td><?= h($player->team_ryaku_name) ?></td>
                 <td><?= h($player->no) ?></td>
             </tr>
             <?php endforeach; ?>

@@ -137,13 +137,22 @@ class GamesController extends AppController
         $players = $this->Players->find('all')
             // ここ10試合の成績も取得
             ->where(['Players.team_id' => $checkId])
+            ->where(['Players.trade_flag' => false])
         ;
         // けが人を取得
         $accidents = $this->Accidents->find('all')
             ->contain('Players')
             ->where(['Players.team_id' => $checkId])
             ->where(['Accidents.start_date <=' => $gameInfo->date])
-            ->where(['Accidents.end_date >=' => $gameInfo->date]);
+            ->where(['Accidents.end_date >=' => $gameInfo->date])
+            ->order(['Accidents.end_date' => 'ASC']);
+        // けが人復帰者
+        $accidentEnds = $this->Accidents->find('all')
+            ->contain('Players')
+            ->where(['Players.team_id' => $checkId])
+            ->where(['Accidents.end_date <' => $gameInfo->date])
+            ->where(['Accidents.end_date >' => $gameInfo->date->subDay(7)])
+            ->order(['Accidents.end_date' => 'ASC']);
         
         // 前回のゲームがあればそのスタメンを取得する
         $recentGame = $this->Games->find('all')
@@ -306,6 +315,8 @@ class GamesController extends AppController
         $this->set('accidents', $accidents);
         $this->set('checkTeam', $checkTeam);
         $this->set('stamen', $stamen);
+        $this->set('accidentEnds', $accidentEnds);
+        
         $this->set('dh_flag', $dh_flag);
         $this->set('hikae', $hikae);
         $this->set('pitcherDatas', $pitcherDatas);

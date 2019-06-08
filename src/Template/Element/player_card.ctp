@@ -24,7 +24,7 @@ $plusMental = $card->mental_plus;
     <div class="image">
     <?php
 		if (file_exists(ROOT . '/webroot/img/base_player/' . $player->base_player_id . '/file')) {
-			echo $this->Html->image('player/' . $player->team->ryaku_name . '/' . $player->no . '.jpg', ['width' => 350]);
+			echo $this->Html->image('base_player/' . $player->base_player_id . '/file', ['width' => 350]);
 		} else {
 			echo $this->Html->image('noimage.jpg', ['width' => 350]);
 		}

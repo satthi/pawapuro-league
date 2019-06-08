@@ -342,6 +342,9 @@ class SeasonsController extends AppController
     {
         $this->autoRender = false;
         $basePlayers = TableRegistry::get('BasePlayers')->find()
+        ->order(['team_ryaku_name' => 'ASC'])
+        ->order(['type_p IS NULL' => 'ASC'])
+        ->order(['no::integer' => 'ASC'])
         ->order(['id' => 'ASC']);
 
         $PhpExcelWrapper = new PhpExcelWrapper(ROOT . '/webroot/player_template.xlsx');
@@ -384,6 +387,50 @@ class SeasonsController extends AppController
         // 一時ファイルの削除
         $fp->delete();
         $this->response->body($body);
-    } 
+    }
+    
+    public function trade($id)
+    {
+        $players = $this->Players->find('list', [
+                'valueField' => 'display_name'
+            ])
+            ->contain('Teams')
+            ->where(['Teams.season_id' => $id])
+            ->where(['Players.trade_flag' => false])
+            ->order(['Teams.id' => 'ASC'])
+            ->order(['Players.no::integer' => 'ASC']);
+        
+        if ($this->request->is('post')) {
+            // 元データを止める
+            $beforePlayer = $this->Players->get($this->request->data['before_player_id']);
+            $beforePlayer->trade_flag = true;
+            $this->Players->save($beforePlayer);
+            
+            $newPlayer = $this->Players->newEntity([
+                'team_id' => $this->request->data['new_team_id'],
+                'no' => $this->request->data['new_no'],
+                'name' => $beforePlayer->name,
+                'name_short' => $beforePlayer->name_short,
+                'throw' => $beforePlayer->throw,
+                'bat' => $beforePlayer->bat,
+                'type_p' => $beforePlayer->type_p,
+                'type_c' => $beforePlayer->type_c,
+                'type_i' => $beforePlayer->type_i,
+                'type_o' => $beforePlayer->type_o,
+                'name_eng' => $beforePlayer->name_eng,
+                'name_read' => $beforePlayer->name_read,
+                'name_short_read' => $beforePlayer->name_short_read,
+                'base_player_id' => $beforePlayer->base_player_id,
+            ]);
+            
+            $this->Players->save($newPlayer);
+        }
+        
+        $teams = $this->Teams->find('list')
+            ->where(['Teams.season_id' => $id]);
+        $this->set('id', $id);
+        $this->set('players', $players);
+        $this->set('teams', $teams);
+    }
 
 }

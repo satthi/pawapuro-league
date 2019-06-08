@@ -24,36 +24,19 @@ class CardsController extends AppController
      */
     public function index()
     {
-        $this->loadModel('Players');
-        $players = $this->Players->find('all')
-            ->contain(['Teams' => ['Seasons']])
-            ->where(['Seasons.regular_flag' => true])
-            ->select('Players.no')
-            ->select('Teams.ryaku_name')
-            ->select(['name_short' => '(select Players.name_short from players as a WHERE Players.team_id = a.team_id AND Players.no = a.no ORDER BY a.id DESC LIMIT 1)'])
-            ->select(['type_p' => '(select Players.type_p from players as a WHERE Players.team_id = a.team_id AND Players.no = a.no ORDER BY a.id DESC LIMIT 1)'])
-            ->select(['type_c' => '(select Players.type_c from players as a WHERE Players.team_id = a.team_id AND Players.no = a.no ORDER BY a.id DESC LIMIT 1)'])
-            ->select(['type_i' => '(select Players.type_i from players as a WHERE Players.team_id = a.team_id AND Players.no = a.no ORDER BY a.id DESC LIMIT 1)'])
-            ->select(['type_o' => '(select Players.type_o from players as a WHERE Players.team_id = a.team_id AND Players.no = a.no ORDER BY a.id DESC LIMIT 1)'])
-            ->group('Teams.ryaku_name')
-            ->group('Players.no')
-            ->group('(select Players.name_short from players as a WHERE Players.team_id = a.team_id AND Players.no = a.no ORDER BY a.id DESC LIMIT 1)')
-            ->group('(select Players.type_p from players as a WHERE Players.team_id = a.team_id AND Players.no = a.no ORDER BY a.id DESC LIMIT 1)')
-            ->group('(select Players.type_c from players as a WHERE Players.team_id = a.team_id AND Players.no = a.no ORDER BY a.id DESC LIMIT 1)')
-            ->group('(select Players.type_i from players as a WHERE Players.team_id = a.team_id AND Players.no = a.no ORDER BY a.id DESC LIMIT 1)')
-            ->group('(select Players.type_o from players as a WHERE Players.team_id = a.team_id AND Players.no = a.no ORDER BY a.id DESC LIMIT 1)')
-            ->order(['Teams.ryaku_name' => 'ASC'])
-            ->order(['Players.no::integer' => 'ASC'])
+        $this->loadModel('BasePlayers');
+        $players = $this->BasePlayers->find('all')
+            ->order(['team_ryaku_name' => 'ASC'])
+            ->order(['BasePlayers.no::integer' => 'ASC'])
         ;
         $this->set('players', $players);
     }
     
-    public function view($ryakuName, $no)
+    public function view($basePlayerId)
     {
         $this->loadModel('Players');
         $playerInfos = $this->Players->find('all')
-            ->where(['Teams.ryaku_name' => $ryakuName])
-            ->where(['Players.no' => $no])
+            ->where(['Players.base_player_id' => $basePlayerId])
             ->contain(['Teams' => ['Seasons']])
             ->where(['Seasons.regular_flag' => true])
             ->order(['Seasons.id' => 'ASC'])
@@ -63,7 +46,7 @@ class CardsController extends AppController
         	$entity = $this->Players->get($this->request->data['id']);
         	$entity = $this->Players->patchEntity($entity, $this->request->data);
             $this->Players->save($entity);
-            return $this->redirect(['action' => 'view',$ryakuName, $no]);
+            return $this->redirect(['action' => 'view',$basePlayerId]);
         }
     }
     

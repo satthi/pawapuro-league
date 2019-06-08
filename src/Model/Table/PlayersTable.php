@@ -141,10 +141,12 @@ class PlayersTable extends Table
         $row = 2;
         while(true) {
             $teamCode = $PhpExcelWrapper->getVal(1, $row);
+            if (is_object($teamCode)) {
+                $teamCode = $teamCode->getPlainText();
+            }
             if ($teamCode == '') {
                 break;
             }
-            // debug($teamCode);
             if (empty($teamLists[$teamCode])) {
                 $row++;
                 continue;
@@ -172,6 +174,12 @@ class PlayersTable extends Table
                 $basePlayerEntity = $this->BasePlayers->newEntity($basePlayeInfo);
                 $this->BasePlayers->save($basePlayerEntity);
                 $playerInfo['base_player_id'] = $basePlayerEntity->id;
+            } else {
+                // 情報の更新
+                $basePlayerEntity = $this->BasePlayers->get($playerInfo['base_player_id']);
+                $basePlayerEntity = $this->BasePlayers->patchEntity($basePlayerEntity, $playerInfo);
+                $basePlayerEntity->team_ryaku_name = $teamCode;
+                $this->BasePlayers->save($basePlayerEntity);
             }
             $playerInfo['team_id'] = $teamLists[$teamCode];
             $playerEntity = $this->newEntity($playerInfo);

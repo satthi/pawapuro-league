@@ -297,6 +297,7 @@ class PlayersController extends AppController
         	->where(['Players.base_player_id' => $player->base_player_id])
         	->contain(['Teams' => ['Seasons']])
         	->order(['Teams.season_id' => 'ASC'])
+        	->order(['Players.trade_flag' => 'DESC'])
         	;
         
         $this->set('player', $player);

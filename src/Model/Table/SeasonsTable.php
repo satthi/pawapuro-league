@@ -114,6 +114,7 @@ class SeasonsTable extends Table
                 $saveFlag =false;
             }
         }
+        
         if ($saveFlag == true) {
             $connection->commit();
             return true;
