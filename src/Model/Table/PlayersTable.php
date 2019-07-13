@@ -263,6 +263,34 @@ class PlayersTable extends Table
     		->select(['lose_count' => 'count(CASE WHEN GamePitcherResults.lose = true THEN 1 ELSE null END)'])
     		->select(['save_count' => 'count(CASE WHEN GamePitcherResults.save = true THEN 1 ELSE null END)'])
     		->select(['hold_count' => 'count(CASE WHEN GamePitcherResults.hold = true THEN 1 ELSE null END)'])
+    		->select(['kanto_count' => 'count(CASE WHEN 
+    			NOT EXISTS(
+    				SELECT 1 FROM game_pitcher_results as OtherGamePitcherResults WHERE GamePitcherResults.game_id = OtherGamePitcherResults.game_id AND GamePitcherResults.team_id = OtherGamePitcherResults.team_id AND GamePitcherResults.pitcher_id != OtherGamePitcherResults.pitcher_id
+    			)
+    		 THEN 1 ELSE null END)'])
+    		->select(['kanpu_count' => 'count(CASE WHEN 
+    			NOT EXISTS(
+    				SELECT 1 FROM game_pitcher_results as OtherGamePitcherResults WHERE GamePitcherResults.game_id = OtherGamePitcherResults.game_id AND GamePitcherResults.team_id = OtherGamePitcherResults.team_id AND GamePitcherResults.pitcher_id != OtherGamePitcherResults.pitcher_id
+    			)
+    			AND 
+    			(
+    				(
+    				Games.home_team_id = GamePitcherResults.team_id
+    					AND
+    				Games.home_point > 0
+    					AND
+    				Games.visitor_point = 0
+    				)
+    				OR
+    				(
+    				Games.visitor_team_id = GamePitcherResults.team_id
+    					AND
+    				Games.home_point = 0
+    					AND
+    				Games.visitor_point > 0
+    				)
+    			)
+    		 THEN 1 ELSE null END)'])
     		->select(['jiseki_count' => 'sum(GamePitcherResults.jiseki)'])
     		->where(['Games.season_id' => $seasonId])
     		->group('GamePitcherResults.pitcher_id')
@@ -316,6 +344,8 @@ class PlayersTable extends Table
     		$playerInfo->p_dasu = $inningInfos[$player_id]['p_dasu'];
     		$playerInfo->p_hit = $inningInfos[$player_id]['p_hit'];
     		$playerInfo->p_hr = $inningInfos[$player_id]['p_hr'];
+    		$playerInfo->kanto = $resultData->kanto_count;
+    		$playerInfo->kanpu = $resultData->kanpu_count;
     		
     		$this->save($playerInfo);
     	}

@@ -77,6 +77,8 @@
                 <th scope="col"><?= $this->Paginator->sort('lose') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('hold') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('save') ?></th>
+                <th scope="col">完投</th>
+                <th scope="col">完封</th>
                 <th scope="col">被安打</th>
                 <th scope="col">被打率</th>
                 <th scope="col">被本塁打</th>
@@ -106,6 +108,8 @@
                 <td><?= $this->Number->format($player->lose) ?></td>
                 <td><?= $this->Number->format($player->hold) ?></td>
                 <td><?= $this->Number->format($player->save) ?></td>
+                <td><?= $this->Number->format($player->kanto) ?></td>
+                <td><?= $this->Number->format($player->kanpu) ?></td>
                 <td><?= $this->Number->format($player->p_hit) ?></td>
                 <td><?= $player->p_avg ?></td>
                 <td><?= $this->Number->format($player->p_hr) ?></td>

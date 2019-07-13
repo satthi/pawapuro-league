@@ -21,6 +21,8 @@
                 <th><?= $this->Html->link('勝率', [$id, 'sort' => 'win_ratio']) ?></th>
                 <th><?= $this->Html->link('hold', [$id, 'sort' => 'hold']) ?></th>
                 <th><?= $this->Html->link('save', [$id, 'sort' => 'save']) ?></th>
+                <th><?= $this->Html->link('完投', [$id, 'sort' => 'kanto']) ?></th>
+                <th><?= $this->Html->link('完封', [$id, 'sort' => 'kanpu']) ?></th>
                 <th><?= $this->Html->link('被安打', [$id, 'sort' => 'p_hit']) ?></th>
                 <th scope="col">被打率</th>
                 <th><?= $this->Html->link('被本塁打', [$id, 'sort' => 'p_hr']) ?></th>
@@ -50,6 +52,8 @@
                 <td><?= $player->display_win_ratio ?></td>
                 <td><?= $this->Number->format($player->hold) ?></td>
                 <td><?= $this->Number->format($player->save) ?></td>
+                <td><?= $this->Number->format($player->kanto) ?></td>
+                <td><?= $this->Number->format($player->kanpu) ?></td>
                 <td><?= $this->Number->format($player->p_hit) ?></td>
                 <td><?= $player->p_avg ?></td>
                 <td><?= $this->Number->format($player->p_hr) ?></td>

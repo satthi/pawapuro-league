@@ -517,26 +517,26 @@
         <?php foreach ($histories as $history):?>
         <tr>
             <td><?= $history->team->season->name; ?></td>
-            <td><?= $history->name; ?></td>
+            <td><?= $this->Html->link($history->name, [$history->id]); ?></td>
             <td><?= $history->team->ryaku_name; ?></td>
             <td nowrap><?= $history->no; ?></td>
             <td nowrap><?= $history->yashu_game; ?></td>
-            <td nowrap><?= preg_replace('/^0/', '', sprintf('%0.3f', $history->avg)); ?></td>
-            <td nowrap><?= $this->Number->format($history->hr) ?></td>
-            <td nowrap><?= $this->Number->format($history->rbi) ?></td>
-            <td nowrap><?= $this->Number->format($history->daseki) ?></td>
-            <td nowrap><?= $this->Number->format($history->dasu) ?></td>
-            <td nowrap><?= $this->Number->format($history->hit) ?></td>
-            <td nowrap><?= $this->Number->format($history->base2) ?></td>
-            <td nowrap><?= $this->Number->format($history->base3) ?></td>
-            <td nowrap><?= $this->Number->format($history->walk) ?></td>
-            <td nowrap><?= $this->Number->format($history->deadball) ?></td>
+            <td nowrap <?= $history->avg_is_top ? 'style="font-weight:bold;"' : '';?>><?= preg_replace('/^0/', '', sprintf('%0.3f', $history->avg)); ?></td>
+            <td nowrap <?= $history->hr_is_top ? 'style="font-weight:bold;"' : '';?>><?= $this->Number->format($history->hr) ?></td>
+            <td nowrap <?= $history->rbi_is_top ? 'style="font-weight:bold;"' : '';?>><?= $this->Number->format($history->rbi) ?></td>
+            <td nowrap <?= $history->daseki_is_top ? 'style="font-weight:bold;"' : '';?>><?= $this->Number->format($history->daseki) ?></td>
+            <td nowrap <?= $history->dasu_is_top ? 'style="font-weight:bold;"' : '';?>><?= $this->Number->format($history->dasu) ?></td>
+            <td nowrap <?= $history->hit_is_top ? 'style="font-weight:bold;"' : '';?>><?= $this->Number->format($history->hit) ?></td>
+            <td nowrap <?= $history->base2_is_top ? 'style="font-weight:bold;"' : '';?>><?= $this->Number->format($history->base2) ?></td>
+            <td nowrap <?= $history->base3_is_top ? 'style="font-weight:bold;"' : '';?>><?= $this->Number->format($history->base3) ?></td>
+            <td nowrap <?= $history->walk_is_top ? 'style="font-weight:bold;"' : '';?>><?= $this->Number->format($history->walk) ?></td>
+            <td nowrap <?= $history->deadball_is_top ? 'style="font-weight:bold;"' : '';?>><?= $this->Number->format($history->deadball) ?></td>
             <td nowrap><?= $history->obp; ?></td>
-            <td nowrap><?= $this->Number->format($history->bant) ?></td>
-            <td nowrap><?= $this->Number->format($history->sacrifice_fly) ?></td>
-            <td nowrap><?= $this->Number->format($history->sansin) ?></td>
-            <td nowrap><?= $this->Number->format($history->heisatsu) ?></td>
-            <td nowrap><?= $this->Number->format($history->steal) ?></td>
+            <td nowrap <?= $history->bant_is_top ? 'style="font-weight:bold;"' : '';?>><?= $this->Number->format($history->bant) ?></td>
+            <td nowrap <?= $history->sacrifice_fly_is_top ? 'style="font-weight:bold;"' : '';?>><?= $this->Number->format($history->sacrifice_fly) ?></td>
+            <td nowrap <?= $history->sansin_is_top ? 'style="font-weight:bold;"' : '';?>><?= $this->Number->format($history->sansin) ?></td>
+            <td nowrap <?= $history->heisatsu_is_top ? 'style="font-weight:bold;"' : '';?>><?= $this->Number->format($history->heisatsu) ?></td>
+            <td nowrap <?= $history->steal_is_top ? 'style="font-weight:bold;"' : '';?>><?= $this->Number->format($history->steal) ?></td>
         </tr>
             <?php if ($history->team->season->regular_flag):?>
         <?php $total = [
@@ -603,8 +603,11 @@
                 <th nowrap scope="col"><?= $this->Paginator->sort('game') ?></th>
                 <th nowrap scope="col"><?= $this->Paginator->sort('win') ?></th>
                 <th nowrap scope="col"><?= $this->Paginator->sort('lose') ?></th>
+                <th nowrap scope="col"><?= $this->Paginator->sort('win_rate') ?></th>
                 <th nowrap scope="col"><?= $this->Paginator->sort('hold') ?></th>
                 <th nowrap scope="col"><?= $this->Paginator->sort('save') ?></th>
+                <th nowrap scope="col">完投</th>
+                <th nowrap scope="col">完封</th>
                 <th nowrap scope="col">被安打</th>
                 <th nowrap scope="col">被打率</th>
                 <th nowrap scope="col">被本塁打</th>
@@ -621,6 +624,8 @@
             'lose' => 0,
             'hold' => 0,
             'save' => 0,
+            'kanto' => 0,
+            'kanpu' => 0,
             'p_hit' => 0,
             'p_dasu' => 0,
             'p_hr' => 0,
@@ -629,31 +634,34 @@
         <?php foreach ($histories as $history):?>
             <tr>
                 <td><?= $history->team->season->name; ?></td>
-                <td><?= $history->name; ?></td>
+                <td><?= $this->Html->link($history->name, [$history->id]); ?></td>
                 <td nowrap><?= $history->team->ryaku_name; ?></td>
                 <td nowrap><?= $history->no; ?></td>
-                <td nowrap>
+                <td nowrap <?= $history->era_is_top ? 'style="font-weight:bold;"' : '';?>>
 		        <?php if (!empty($history->inning)):?>
 		        <?= sprintf('%0.2f', $history->jiseki / ($history->inning / 27)); ?>
 				<?php else:?>
 		        -
 		        <?php endif;?>
         </td>
-                <td nowrap><?= floor($history->inning / 3);?>
+                <td nowrap <?= $history->inning_is_top ? 'style="font-weight:bold;"' : '';?>><?= floor($history->inning / 3);?>
         		<?php if ($history->inning % 3 != 0) :?>
         			<?= $history->inning % 3 . '/3'?>
         		<?php endif;?>
         		</td>
-                <td nowrap><?= $this->Number->format($history->jiseki) ?></td>
-                <td nowrap><?= $this->Number->format($history->game) ?></td>
-                <td nowrap><?= $this->Number->format($history->win) ?></td>
-                <td nowrap><?= $this->Number->format($history->lose) ?></td>
-                <td nowrap><?= $this->Number->format($history->hold) ?></td>
-                <td nowrap><?= $this->Number->format($history->save) ?></td>
-                <td nowrap><?= $this->Number->format($history->p_hit) ?></td>
+                <td nowrap <?= $history->jiseki_is_top ? 'style="font-weight:bold;"' : '';?>><?= $this->Number->format($history->jiseki) ?></td>
+                <td nowrap <?= $history->game_is_top ? 'style="font-weight:bold;"' : '';?>><?= $this->Number->format($history->game) ?></td>
+                <td nowrap <?= $history->win_is_top ? 'style="font-weight:bold;"' : '';?>><?= $this->Number->format($history->win) ?></td>
+                <td nowrap <?= $history->lose_is_top ? 'style="font-weight:bold;"' : '';?>><?= $this->Number->format($history->lose) ?></td>
+                <td nowrap <?= $history->win_ratio_is_top ? 'style="font-weight:bold;"' : '';?>><?= $this->Number->format($history->win_ratio) ?></td>
+                <td nowrap <?= $history->hold_is_top ? 'style="font-weight:bold;"' : '';?>><?= $this->Number->format($history->hold) ?></td>
+                <td nowrap <?= $history->save_is_top ? 'style="font-weight:bold;"' : '';?>><?= $this->Number->format($history->save) ?></td>
+                <td nowrap <?= $history->kanto_is_top ? 'style="font-weight:bold;"' : '';?>><?= $this->Number->format($history->kanto) ?></td>
+                <td nowrap <?= $history->kanpu_is_top ? 'style="font-weight:bold;"' : '';?>><?= $this->Number->format($history->kanpu) ?></td>
+                <td nowrap <?= $history->p_hit_is_top ? 'style="font-weight:bold;"' : '';?>><?= $this->Number->format($history->p_hit) ?></td>
                 <td nowrap><?= $history->p_avg ?></td>
-                <td nowrap><?= $this->Number->format($history->p_hr) ?></td>
-                <td nowrap><?= $this->Number->format($history->get_sansin) ?></td>
+                <td nowrap <?= $history->p_hr_is_top ? 'style="font-weight:bold;"' : '';?>><?= $this->Number->format($history->p_hr) ?></td>
+                <td nowrap <?= $history->get_sansin_is_top ? 'style="font-weight:bold;"' : '';?>><?= $this->Number->format($history->get_sansin) ?></td>
                 <td nowrap><?php
                 if ($history->inning > 0) {
              echo sprintf('%0.2f', round($history->get_sansin / $history->inning * 27, 2));
@@ -674,6 +682,8 @@
             'p_hit' => $total['p_hit'] + $history->p_hit,
             'p_dasu' => $total['p_dasu'] + $history->p_dasu,
             'p_hr' => $total['p_hr'] + $history->p_hr,
+            'kanto' => $total['kanto'] + $history->kanto,
+            'kanpu' => $total['kanpu'] + $history->kanpu,
             'get_sansin' => $total['get_sansin'] + $history->get_sansin,
         ];?>
         <?php endif;?>
@@ -696,8 +706,11 @@
                 <td nowrap><?= $this->Number->format($total['game']) ?></td>
                 <td nowrap><?= $this->Number->format($total['win']) ?></td>
                 <td nowrap><?= $this->Number->format($total['lose']) ?></td>
+                <td nowrap><?= $total['win'] == 0 ? '.000' : preg_replace('/^0/', '', sprintf('%0.3f', round($total['win'] / ($total['win'] + $total['lose']), 3)));?></td>
                 <td nowrap><?= $this->Number->format($total['hold']) ?></td>
                 <td nowrap><?= $this->Number->format($total['save']) ?></td>
+                <td nowrap><?= $this->Number->format($total['kanto']) ?></td>
+                <td nowrap><?= $this->Number->format($total['kanpu']) ?></td>
                 <td nowrap><?= $this->Number->format($total['p_hit']) ?></td>
                 <td nowrap>
 		        <?php if (!empty($total['p_dasu'])):?>

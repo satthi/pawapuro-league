@@ -28,6 +28,7 @@
         ?>
         <?= $this->element('playlog/player', $options);?>
         <?php endfor;?>
+        <?= $game->date;?>
     </div>
     <div class="fleft main">
         <div class="score clearfix">

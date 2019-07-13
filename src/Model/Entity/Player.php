@@ -323,5 +323,190 @@ class Player extends Entity
     	}
         return 'count(CASE WHEN (GameResults.type = 2 AND GameResults.result IN (' . implode(',' , $conditions) . ')) THEN 1 ELSE null END)';
     }
+    
+    protected function _getAvgIsTop()
+    {
+    	if (empty($this->_properties['avg']) || $this->_properties['daseki'] < $this->_properties['team']->game * 3.1) {
+    		return false;
+    	}
+    	
+        return TableRegistry::get('Players')->find()
+        	->contain('Teams')
+        	->where(['Teams.season_id' => $this->_properties['team']->season_id])
+        	->where(['Players.avg >' => $this->_properties['avg']])
+        	->where('Players.daseki::numeric >= (Teams.game::numeric * 3.1)')
+        	->count() == 0;
+    }
+    
+    protected function _getHrIsTop()
+    {
+        return $this->simpleIsTop('hr');
+    }
+    
+    protected function _getRbiIsTop()
+    {
+        return $this->simpleIsTop('rbi');
+    }
+    
+    protected function _getDasekiIsTop()
+    {
+        return $this->simpleIsTop('daseki');
+    }
+    
+    protected function _getDasuIsTop()
+    {
+        return $this->simpleIsTop('dasu');
+    }
+    
+    protected function _getHitIsTop()
+    {
+        return $this->simpleIsTop('hit');
+    }
+    
+    protected function _getBase2IsTop()
+    {
+        return $this->simpleIsTop('base2');
+    }
+    
+    protected function _getBase3IsTop()
+    {
+        return $this->simpleIsTop('base3');
+    }
+    
+    protected function _getWalkIsTop()
+    {
+        return $this->simpleIsTop('walk');
+    }
+    
+    protected function _getDeadballIsTop()
+    {
+        return $this->simpleIsTop('deadball');
+    }
+    
+    protected function _getBantIsTop()
+    {
+        return $this->simpleIsTop('bant');
+    }
+    
+    protected function _getSacrificeFlyIsTop()
+    {
+        return $this->simpleIsTop('sacrifice_fly');
+    }
+    
+    protected function _getSansinIsTop()
+    {
+        return $this->simpleIsTop('sansin');
+    }
+    
+    protected function _getHeisatsuIsTop()
+    {
+        return $this->simpleIsTop('heisatsu');
+    }
+
+    
+    protected function _getStealIsTop()
+    {
+        return $this->simpleIsTop('steal');
+    }
+    
+    protected function _getEraIsTop()
+    {
+    	if (is_null($this->_properties['era']) || $this->_properties['inning'] < $this->_properties['team']->game * 3) {
+    		return false;
+    	}
+    	
+        return TableRegistry::get('Players')->find()
+        	->contain('Teams')
+        	->where(['Teams.season_id' => $this->_properties['team']->season_id])
+        	->where(['Players.era <' => $this->_properties['era']])
+        	->where('Players.inning >= (Teams.game * 3)')
+        	->count() == 0;
+    }
+    
+    protected function _getWinRatioIsTop()
+    {
+    	if (is_null($this->_properties['win_ratio']) || $this->_properties['win'] < 13) {
+    		return false;
+    	}
+    	
+        return TableRegistry::get('Players')->find()
+        	->contain('Teams')
+        	->where(['Teams.season_id' => $this->_properties['team']->season_id])
+        	->where(['Players.win_ratio >' => $this->_properties['win_ratio']])
+        	->where('Players.win >= 13')
+        	->count() == 0;
+    }
+    protected function _getInningIsTop()
+    {
+        return $this->simpleIsTop('inning');
+    }    
+    
+    protected function _getJisekiIsTop()
+    {
+        return $this->simpleIsTop('jiseki');
+    }    
+    
+    protected function _getGameIsTop()
+    {
+        return $this->simpleIsTop('game');
+    }    
+    
+    protected function _getWinIsTop()
+    {
+        return $this->simpleIsTop('win');
+    }    
+    
+    protected function _getLoseIsTop()
+    {
+        return $this->simpleIsTop('lose');
+    }    
+    
+    protected function _getHoldIsTop()
+    {
+        return $this->simpleIsTop('hold');
+    }    
+    
+    protected function _getKantoIsTop()
+    {
+        return $this->simpleIsTop('kanto');
+    }    
+    
+    protected function _getKanpuIsTop()
+    {
+        return $this->simpleIsTop('kanpu');
+    }    
+    
+    protected function _getSaveIsTop()
+    {
+        return $this->simpleIsTop('save');
+    }    
+    
+    protected function _getPHitIsTop()
+    {
+        return $this->simpleIsTop('p_hit');
+    }    
+    
+    protected function _getPHrIsTop()
+    {
+        return $this->simpleIsTop('p_hr');
+    }    
+    
+    protected function _getGetSansinIsTop()
+    {
+        return $this->simpleIsTop('get_sansin');
+    }    
+    
+    private function simpleIsTop($field)
+    {
+    	if (is_null($this->_properties[$field])) {
+    		return false;
+    	}
+        return TableRegistry::get('Players')->find()
+        	->contain('Teams')
+        	->where(['Teams.season_id' => $this->_properties['team']->season_id])
+        	->where(['Players.' . $field . ' >' => $this->_properties[$field]])
+        	->count() == 0;
+    }
+    
 
 }

@@ -1692,6 +1692,7 @@ class GamesController extends AppController
     public function playlog($gameId)
     {
         $this->layout = false;
+        if ($gameId !== 'random') {
         $game = $this->Games->get($gameId, [
             'contain' => [
                 'HomeTeams',
@@ -1699,6 +1700,16 @@ class GamesController extends AppController
                 'GameResults',
             ]
         ]);
+        } else {
+        $game = $this->Games->find()
+            ->order('random()')
+            ->contain([
+                'HomeTeams',
+                'VisitorTeams',
+                'GameResults',
+            ])
+            ->firstOrFail();
+        }
 
         // イニングの最初の数字を取っておく
         $inningStart = [];
