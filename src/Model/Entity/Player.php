@@ -324,177 +324,227 @@ class Player extends Entity
         return 'count(CASE WHEN (GameResults.type = 2 AND GameResults.result IN (' . implode(',' , $conditions) . ')) THEN 1 ELSE null END)';
     }
     
-    protected function _getAvgIsTop()
+    protected function _getAvgTopCheck()
     {
     	if (empty($this->_properties['avg']) || $this->_properties['daseki'] < $this->_properties['team']->game * 3.1) {
     		return false;
     	}
     	
-        return TableRegistry::get('Players')->find()
+        if (
+			TableRegistry::get('Players')->find()
+        	->contain(['Teams' => ['Seasons']])
+        	->where(['Seasons.regular_flag' => true])
+        	->where(['Players.avg >' => $this->_properties['avg']])
+        	->where('Players.daseki::numeric >= (Teams.game::numeric * 3.1)')
+        	->count() == 0
+    	) {
+            return 'style="font-weight:bold;color:red;"';
+    	} elseif (
+			TableRegistry::get('Players')->find()
         	->contain('Teams')
         	->where(['Teams.season_id' => $this->_properties['team']->season_id])
         	->where(['Players.avg >' => $this->_properties['avg']])
         	->where('Players.daseki::numeric >= (Teams.game::numeric * 3.1)')
-        	->count() == 0;
+        	->count() == 0
+        ) {
+            return 'style="font-weight:bold;color:black;"';
+        }
+
     }
     
-    protected function _getHrIsTop()
+    protected function _getHrTopCheck()
     {
-        return $this->simpleIsTop('hr');
+        return $this->simpleTopCheck('hr');
     }
     
-    protected function _getRbiIsTop()
+    protected function _getRbiTopCheck()
     {
-        return $this->simpleIsTop('rbi');
+        return $this->simpleTopCheck('rbi');
     }
     
-    protected function _getDasekiIsTop()
+    protected function _getDasekiTopCheck()
     {
-        return $this->simpleIsTop('daseki');
+        return $this->simpleTopCheck('daseki');
     }
     
-    protected function _getDasuIsTop()
+    protected function _getDasuTopCheck()
     {
-        return $this->simpleIsTop('dasu');
+        return $this->simpleTopCheck('dasu');
     }
     
-    protected function _getHitIsTop()
+    protected function _getHitTopCheck()
     {
-        return $this->simpleIsTop('hit');
+        return $this->simpleTopCheck('hit');
     }
     
-    protected function _getBase2IsTop()
+    protected function _getBase2TopCheck()
     {
-        return $this->simpleIsTop('base2');
+        return $this->simpleTopCheck('base2');
     }
     
-    protected function _getBase3IsTop()
+    protected function _getBase3TopCheck()
     {
-        return $this->simpleIsTop('base3');
+        return $this->simpleTopCheck('base3');
     }
     
-    protected function _getWalkIsTop()
+    protected function _getWalkTopCheck()
     {
-        return $this->simpleIsTop('walk');
+        return $this->simpleTopCheck('walk');
     }
     
-    protected function _getDeadballIsTop()
+    protected function _getDeadballTopCheck()
     {
-        return $this->simpleIsTop('deadball');
+        return $this->simpleTopCheck('deadball');
     }
     
-    protected function _getBantIsTop()
+    protected function _getBantTopCheck()
     {
-        return $this->simpleIsTop('bant');
+        return $this->simpleTopCheck('bant');
     }
     
-    protected function _getSacrificeFlyIsTop()
+    protected function _getSacrificeFlyTopCheck()
     {
-        return $this->simpleIsTop('sacrifice_fly');
+        return $this->simpleTopCheck('sacrifice_fly');
     }
     
-    protected function _getSansinIsTop()
+    protected function _getSansinTopCheck()
     {
-        return $this->simpleIsTop('sansin');
+        return $this->simpleTopCheck('sansin');
     }
     
-    protected function _getHeisatsuIsTop()
+    protected function _getHeisatsuTopCheck()
     {
-        return $this->simpleIsTop('heisatsu');
+        return $this->simpleTopCheck('heisatsu');
     }
 
     
-    protected function _getStealIsTop()
+    protected function _getStealTopCheck()
     {
-        return $this->simpleIsTop('steal');
+        return $this->simpleTopCheck('steal');
     }
     
-    protected function _getEraIsTop()
+    protected function _getEraTopCheck()
     {
     	if (is_null($this->_properties['era']) || $this->_properties['inning'] < $this->_properties['team']->game * 3) {
     		return false;
     	}
     	
-        return TableRegistry::get('Players')->find()
+    	if (
+    		TableRegistry::get('Players')->find()
+        	->contain(['Teams' => ['Seasons']])
+        	->where(['Seasons.regular_flag' => true])
+        	->where(['Players.era <' => $this->_properties['era']])
+        	->where('Players.inning >= (Teams.game * 3)')
+        	->count() == 0
+    	) {
+            return 'style="font-weight:bold;color:red;"';
+    	} elseif (
+    		TableRegistry::get('Players')->find()
         	->contain('Teams')
         	->where(['Teams.season_id' => $this->_properties['team']->season_id])
         	->where(['Players.era <' => $this->_properties['era']])
         	->where('Players.inning >= (Teams.game * 3)')
-        	->count() == 0;
+        	->count() == 0
+        ) {
+            return 'style="font-weight:bold;color:black;"';
+        }
     }
     
-    protected function _getWinRatioIsTop()
+    protected function _getWinRatioTopCheck()
     {
     	if (is_null($this->_properties['win_ratio']) || $this->_properties['win'] < 13) {
     		return false;
     	}
     	
-        return TableRegistry::get('Players')->find()
+    	if (
+			TableRegistry::get('Players')->find()
+        	->contain(['Teams' => ['Seasons']])
+        	->where(['Seasons.regular_flag' => true])
+        	->where(['Players.win_ratio >' => $this->_properties['win_ratio']])
+        	->where('Players.win >= 13')
+        	->count() == 0
+    	) {
+            return 'style="font-weight:bold;color:red;"';
+    	} elseif (
+			TableRegistry::get('Players')->find()
         	->contain('Teams')
         	->where(['Teams.season_id' => $this->_properties['team']->season_id])
         	->where(['Players.win_ratio >' => $this->_properties['win_ratio']])
         	->where('Players.win >= 13')
-        	->count() == 0;
+        	->count() == 0
+        ) {
+            return 'style="font-weight:bold;color:black;"';
+        }
+
     }
-    protected function _getInningIsTop()
+    protected function _getInningTopCheck()
     {
-        return $this->simpleIsTop('inning');
+        return $this->simpleTopCheck('inning');
     }    
     
-    protected function _getJisekiIsTop()
+    protected function _getJisekiTopCheck()
     {
-        return $this->simpleIsTop('jiseki');
+        return $this->simpleTopCheck('jiseki');
     }    
     
-    protected function _getGameIsTop()
+    protected function _getGameTopCheck()
     {
-        return $this->simpleIsTop('game');
+        return $this->simpleTopCheck('game');
     }    
     
-    protected function _getWinIsTop()
+    protected function _getWinTopCheck()
     {
-        return $this->simpleIsTop('win');
+        return $this->simpleTopCheck('win');
     }    
     
-    protected function _getLoseIsTop()
+    protected function _getLoseTopCheck()
     {
-        return $this->simpleIsTop('lose');
+        return $this->simpleTopCheck('lose');
     }    
     
-    protected function _getHoldIsTop()
+    protected function _getHoldTopCheck()
     {
-        return $this->simpleIsTop('hold');
+        return $this->simpleTopCheck('hold');
     }    
     
-    protected function _getKantoIsTop()
+    protected function _getKantoTopCheck()
     {
-        return $this->simpleIsTop('kanto');
+        return $this->simpleTopCheck('kanto');
     }    
     
-    protected function _getKanpuIsTop()
+    protected function _getKanpuTopCheck()
     {
-        return $this->simpleIsTop('kanpu');
+        return $this->simpleTopCheck('kanpu');
     }    
     
-    protected function _getSaveIsTop()
+    protected function _getSaveTopCheck()
     {
-        return $this->simpleIsTop('save');
+        return $this->simpleTopCheck('save');
     }    
     
-    protected function _getPHitIsTop()
+    protected function _getPHitTopCheck()
     {
-        return $this->simpleIsTop('p_hit');
+        return $this->simpleTopCheck('p_hit');
     }    
     
-    protected function _getPHrIsTop()
+    protected function _getPHrTopCheck()
     {
-        return $this->simpleIsTop('p_hr');
+        return $this->simpleTopCheck('p_hr');
     }    
     
-    protected function _getGetSansinIsTop()
+    protected function _getGetSansinTopCheck()
     {
-        return $this->simpleIsTop('get_sansin');
-    }    
+        return $this->simpleTopCheck('get_sansin');
+    }
+    
+    private function simpleTopCheck($field)
+    {
+        if ($this->simpleIsAllTop($field)) {
+            return 'style="font-weight:bold;color:red;"';
+        } elseif ($this->simpleIsTop($field)) {
+            return 'style="font-weight:bold;color:black;"';
+        }
+    }
     
     private function simpleIsTop($field)
     {
@@ -504,6 +554,18 @@ class Player extends Entity
         return TableRegistry::get('Players')->find()
         	->contain('Teams')
         	->where(['Teams.season_id' => $this->_properties['team']->season_id])
+        	->where(['Players.' . $field . ' >' => $this->_properties[$field]])
+        	->count() == 0;
+    }
+    
+    private function simpleIsAllTop($field)
+    {
+    	if (is_null($this->_properties[$field])) {
+    		return false;
+    	}
+        return TableRegistry::get('Players')->find()
+        	->contain(['Teams' => ['Seasons']])
+        	->where(['Seasons.regular_flag' => true])
         	->where(['Players.' . $field . ' >' => $this->_properties[$field]])
         	->count() == 0;
     }
