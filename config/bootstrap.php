@@ -221,10 +221,10 @@ Type::build('datetime')
  * Debug Kit should not be installed on a production system
  */
 if (Configure::read('debug')) {
-    Application::addPlugin('DebugKit', ['bootstrap' => true]);
+    //Application::addPlugin('DebugKit', ['bootstrap' => true]);
 }
 
-Application::addPlugin('Migrations');
+//Application::addPlugin('Migrations');
 
 Configure::write('Hand', [
     '右' => 1,

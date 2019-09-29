@@ -81,12 +81,8 @@ class BoardController extends AppController
         $this->loadModel('Players');
         $this->loadModel('GameMembers');
         //‰æ‘œƒpƒX
-        if (file_exists(ROOT . '/webroot/img/player/' . $playerInfo->team->ryaku_name . '/' . $playerInfo->no . '.jpg')) {
-            $imgPath = Router::url('/img/player/' . $playerInfo->team->ryaku_name . '/' . $playerInfo->no . '.jpg');
-        } elseif (file_exists(ROOT . '/webroot/img/player/T' . $playerInfo->team->ryaku_name . '/' . $playerInfo->no . '.gif')) {
-            $imgPath = Router::url('/img/player/' . $playerInfo->team->ryaku_name . '/' . $playerInfo->no . '.gif');
-        } elseif (file_exists(ROOT . '/webroot/img/player/' . $playerInfo->team->ryaku_name . '/' . $playerInfo->no . '.png')) {
-            $imgPath = Router::url('/img/player/' . $playerInfo->team->ryaku_name . '/' . $playerInfo->no . '.png');
+        if (file_exists(ROOT . '/webroot/img/base_player/' . $playerInfo->base_player_id . '/file')) {
+            $imgPath = Router::url('/img/base_player/' . $playerInfo->base_player_id . '/file');
         } else {
             $imgPath = Router::url('/img/noimage.jpg');
         }

@@ -221,16 +221,16 @@
 <audio src="<?= $this->Url->build('/voice/common/position_' . $players[$game->visitor_team->id][$i]->position . '.wav');?>" id="voice_visitor_player_position_<?= $i;?>" controls></audio>
 <audio src="<?= $this->Url->build('/voice/common/positiond_' . $players[$game->visitor_team->id][$i]->position . '.wav');?>" id="voice_visitor_player_positiond_<?= $i;?>" controls></audio>
 <audio src="<?= $this->Url->build('/voice/number/' . $players[$game->visitor_team->id][$i]->player->no . '.wav');?>" id="voice_visitor_no_<?= $i;?>" controls></audio>
-<audio src="<?= $this->Url->build('/voice/team/' . $game->visitor_team->ryaku_name . '/' . $players[$game->visitor_team->id][$i]->player->no . '.wav');?>" id="voice_visitor_player_<?= $i;?>" controls></audio>
-<audio src="<?= $this->Url->build('/voice/team/' . $game->visitor_team->ryaku_name . '/' . $players[$game->visitor_team->id][$i]->player->no . 'd.wav');?>" id="voice_visitor_playerd_<?= $i;?>" controls></audio>
+<audio src="<?= $this->Url->build('/voice/member/' . $players[$game->visitor_team->id][$i]->player->base_player_id . '/base.wav');?>" id="voice_visitor_player_<?= $i;?>" controls></audio>
+<audio src="<?= $this->Url->build('/voice/member/' . $players[$game->visitor_team->id][$i]->player->base_player_id . '/full.wav');?>" id="voice_visitor_playerd_<?= $i;?>" controls></audio>
 <?php endfor;?>
 <?php // ホーム?>
 <?php for($i = 1;$i <= 9;$i++):?>
 <audio src="<?= $this->Url->build('/voice/common/position_' . $players[$game->home_team->id][$i]->position . '.wav');?>" id="voice_home_player_position_<?= $i;?>" controls></audio>
 <audio src="<?= $this->Url->build('/voice/common/positiond_' . $players[$game->home_team->id][$i]->position . '.wav');?>" id="voice_home_player_positiond_<?= $i;?>" controls></audio>
 <audio src="<?= $this->Url->build('/voice/number/' . $players[$game->home_team->id][$i]->player->no . '.wav');?>" id="voice_home_no_<?= $i;?>" controls></audio>
-<audio src="<?= $this->Url->build('/voice/team/' . $game->home_team->ryaku_name . '/' . $players[$game->home_team->id][$i]->player->no . '.wav');?>" id="voice_home_player_<?= $i;?>" controls></audio>
-<audio src="<?= $this->Url->build('/voice/team/' . $game->home_team->ryaku_name . '/' . $players[$game->home_team->id][$i]->player->no . 'd.wav');?>" id="voice_home_playerd_<?= $i;?>" controls></audio>
+<audio src="<?= $this->Url->build('/voice/member/' . $players[$game->home_team->id][$i]->player->base_player_id . '/base.wav');?>" id="voice_home_player_<?= $i;?>" controls></audio>
+<audio src="<?= $this->Url->build('/voice/member/' . $players[$game->home_team->id][$i]->player->base_player_id . '/full.wav');?>" id="voice_home_playerd_<?= $i;?>" controls></audio>
 <?php endfor;?>
 </div>
 </body>
