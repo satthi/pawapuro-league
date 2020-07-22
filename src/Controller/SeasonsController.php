@@ -22,6 +22,7 @@ class SeasonsController extends AppController
         $this->loadModel('Teams');
         $this->loadModel('Games');
         $this->loadModel('Players');
+        $this->loadModel('BasePlayers');
         $this->loadModel('VMonthTeamInfos');
         $this->loadModel('VMonthBatterInfos');
         $this->loadModel('VMonthPitcherInfos');
@@ -432,5 +433,107 @@ class SeasonsController extends AppController
         $this->set('players', $players);
         $this->set('teams', $teams);
     }
+    
+    public function batterTotal()
+    {
+    	$sort = $this->request->query('sort');
+    	if (!$sort) {
+    	    $sort ='display_avg'; 
+    	}
+        $basePlayers = $this->BasePlayers->find()
+            ->select($this->BasePlayers)
+			->select(['daseki' => 'sum(Players.daseki)'])
+			->select(['dasu' => 'sum(Players.dasu)'])
+			->select(['hit' => 'sum(Players.hit)'])
+			->select(['hr' => 'sum(Players.hr)'])
+			->select(['rbi' => 'sum(Players.rbi)'])
+			->select(['game' => 'sum(Players.game)'])
+			->select(['inning' => 'sum(Players.inning)'])
+			->select(['jiseki' => 'sum(Players.jiseki)'])
+			->select(['win' => 'sum(Players.win)'])
+			->select(['lose' => 'sum(Players.lose)'])
+			->select(['hold' => 'sum(Players.hold)'])
+			->select(['save' => 'sum(Players.save)'])
+			->select(['sansin' => 'sum(Players.sansin)'])
+			->select(['steal' => 'sum(Players.steal)'])
+			->select(['get_sansin' => 'sum(Players.get_sansin)'])
+			->select(['base2' => 'sum(Players.base2)'])
+			->select(['base3' => 'sum(Players.base3)'])
+			->select(['walk' => 'sum(Players.walk)'])
+			->select(['deadball' => 'sum(Players.deadball)'])
+			->select(['heisatsu' => 'sum(Players.heisatsu)'])
+			->select(['bant' => 'sum(Players.bant)'])
+			->select(['sacrifice_fly' => 'sum(Players.sacrifice_fly)'])
+			->select(['p_dasu' => 'sum(Players.p_dasu)'])
+			->select(['p_hit' => 'sum(Players.p_hit)'])
+			->select(['p_hr' => 'sum(Players.p_hr)'])
+			->select(['yashu_game' => 'sum(Players.yashu_game)'])
+			->select(['kanto' => 'sum(Players.kanto)'])
+			->select(['kanpu' => 'sum(Players.kanpu)'])
+            ->leftJoinWith('Players.Teams.Seasons')
+            ->group('BasePlayers.id')
+            ->where(['Seasons.regular_flag' => true])
+            ->sortBy($sort, SORT_DESC)
+        ;
+        
+//        debug($basePlayers->first());
+//        exit;
+
+		$this->set('players', $basePlayers);
+    }
+
+    
+    public function pitcherTotal()
+    {
+    	$sort = $this->request->query('sort');
+    	if (!$sort) {
+    	    $sort ='display_era'; 
+    	}
+    	$ascDesc = SORT_DESC;
+    	if ($sort == 'display_era') {
+    	    $ascDesc = SORT_ASC;
+    	}
+        $basePlayers = $this->BasePlayers->find()
+            ->select($this->BasePlayers)
+			->select(['daseki' => 'sum(Players.daseki)'])
+			->select(['dasu' => 'sum(Players.dasu)'])
+			->select(['hit' => 'sum(Players.hit)'])
+			->select(['hr' => 'sum(Players.hr)'])
+			->select(['rbi' => 'sum(Players.rbi)'])
+			->select(['game' => 'sum(Players.game)'])
+			->select(['inning' => 'sum(Players.inning)'])
+			->select(['jiseki' => 'sum(Players.jiseki)'])
+			->select(['win' => 'sum(Players.win)'])
+			->select(['lose' => 'sum(Players.lose)'])
+			->select(['hold' => 'sum(Players.hold)'])
+			->select(['save' => 'sum(Players.save)'])
+			->select(['sansin' => 'sum(Players.sansin)'])
+			->select(['steal' => 'sum(Players.steal)'])
+			->select(['get_sansin' => 'sum(Players.get_sansin)'])
+			->select(['base2' => 'sum(Players.base2)'])
+			->select(['base3' => 'sum(Players.base3)'])
+			->select(['walk' => 'sum(Players.walk)'])
+			->select(['deadball' => 'sum(Players.deadball)'])
+			->select(['heisatsu' => 'sum(Players.heisatsu)'])
+			->select(['bant' => 'sum(Players.bant)'])
+			->select(['sacrifice_fly' => 'sum(Players.sacrifice_fly)'])
+			->select(['p_dasu' => 'sum(Players.p_dasu)'])
+			->select(['p_hit' => 'sum(Players.p_hit)'])
+			->select(['p_hr' => 'sum(Players.p_hr)'])
+			->select(['yashu_game' => 'sum(Players.yashu_game)'])
+			->select(['kanto' => 'sum(Players.kanto)'])
+			->select(['kanpu' => 'sum(Players.kanpu)'])
+            ->leftJoinWith('Players.Teams.Seasons')
+            ->group('BasePlayers.id')
+            ->where(['Seasons.regular_flag' => true])
+            ->sortBy($sort, $ascDesc)
+        ;
+        
+//        debug($basePlayers->first());
+//        exit;
+
+		$this->set('players', $basePlayers);
+    }
+
 
 }

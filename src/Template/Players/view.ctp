@@ -228,6 +228,7 @@
             <tr>
                 <th scope="col">日付</th>
                 <th scope="col">対戦相手</th>
+                <th scope="col">出場</th>
                 <th scope="col">打席</th>
                 <th scope="col">打数</th>
                 <th scope="col">安打</th>
@@ -257,6 +258,7 @@
             <tr>
                 <td><?= $this->Html->link($batterResultSet['date']->format('m/d'), ['controller' => 'games', 'action' => 'play', $gameId]);?></td>
                 <td><?= $batterResultSet['vsTeam'];?></td>
+                <td><?= $batterResultSet['start_result'];?></td>
                 <td><?= $batterResultSet['daseki'];?></td>
                 <td><?= $batterResultSet['dasu'];?></td>
                 <td><?= $batterResultSet['hit'];?></td>

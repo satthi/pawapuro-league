@@ -93,7 +93,22 @@ class PlayersController extends AppController
             		'rbi' => 0,
             		'steal' => 0,
             		'results' => [],
+            		'start_result' => '',
             	];
+            }
+            // 出場情報
+            if ($batterResult->type == 1) {
+                if ($batterResultSets[$batterResult->game_id]['start_result'] === '') {
+                    if ($batterResult->inning == 0 || $batterResult->inning == 1) {
+                        $batterResultSets[$batterResult->game_id]['start_result'] = $batterResult->dajun . '番' . Configure::read('positionLists.' . $batterResult->position);
+                    } else {
+                        $batterResultSets[$batterResult->game_id]['start_result'] = '途中出場 ' . Configure::read('positionLists.' . $batterResult->position);
+                    }
+                } else {
+                    if ($batterResult->inning != 0 && $batterResult->inning != 1) {
+                        $batterResultSets[$batterResult->game_id]['start_result'] .= ' ' . Configure::read('positionLists.' . $batterResult->position);
+                    }
+                }
             }
             // 打撃成績
             if ($batterResult->type == 2) {

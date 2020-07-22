@@ -3,6 +3,8 @@
         <li class="heading"><?= __('Actions') ?></li>
         <li><?= $this->Html->link(__('New Season'), ['action' => 'add']) ?></li>
         <li><?= $this->Html->link('選手リスト出力', ['action' => 'player_export']) ?></li>
+        <li><?= $this->Html->link('通算成績(野手)', ['action' => 'batter_total']) ?></li>
+        <li><?= $this->Html->link('通算成績(投手)', ['action' => 'pitcher_total']) ?></li>
     </ul>
 </nav>
 <div class="seasons index large-9 medium-8 columns content">
