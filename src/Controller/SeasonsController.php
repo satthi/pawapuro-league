@@ -207,48 +207,59 @@ class SeasonsController extends AppController
     
     public function batterDetail($id = null)
     {
+    	$sort = $this->request->query('sort');
+    	if (!$sort) {
+    	    $sort ='display_avg'; 
+    	}
+
         $season = $this->Seasons->get($id);
         //野手成績
         $this->loadModel('Players');
         $query = $this->Players->find('all')
             ->contain('Teams')
             ->where(['Teams.season_id' => $id])
+            ->where(['Players.yashu_game IS NOT' => null])
             ;
-        if (empty($this->request->query['sort'])) {
-            $this->request->query['sort'] = 'avg';
-        }
-        $this->request->query['direction'] = 'desc';
-        $query = $query->where([$this->request->query['sort'] . ' IS NOT' => null]);
-        if ($this->request->query['sort'] == 'avg'){
+
+        if ($sort == 'display_avg' || $sort == 'obp' || $sort == 'slg' || $sort == 'ops'){
             $query = $query->where('Players.daseki >= Teams.game * 3.1');
         }
-        $players = $this->paginate($query, ['limit' => 100]);
+        
+        $players = $query->sortBy($sort, SORT_DESC);
         $this->set('players', $players);
         $this->set('id', $id);
     }
     
     public function pitcherDetail($id = null)
     {
+    	$sort = $this->request->query('sort');
+    	if (!$sort) {
+    	    $sort ='display_era'; 
+    	}
+    	$ascDesc = SORT_DESC;
+    	if ($sort == 'display_era' || $sort == 'p_avg') {
+    	    $ascDesc = SORT_ASC;
+    	}
+
         $season = $this->Seasons->get($id);
         //野手成績
         $this->loadModel('Players');
         $query = $this->Players->find('all')
             ->contain('Teams')
             ->where(['Teams.season_id' => $id])
+            ->where(['Players.game IS NOT' => null])
             ;
-        if (empty($this->request->query['sort'])) {
-            $this->request->query['sort'] = 'era';
-        }
-        $this->request->query['direction'] = 'desc';
-        $query = $query->where(['Players.' . $this->request->query['sort'] . ' IS NOT' => null]);
-        if ($this->request->query['sort'] == 'era'){
+
+        if ($sort == 'display_era' || $sort == 'p_avg' || $sort == 'sansin_ritsu' ){
             $query = $query->where('Players.inning >= Teams.game * 3');
             $this->request->query['direction'] = 'asc';
         }
-        if ($this->request->query['sort'] == 'win_ratio'){
+        if ($sort == 'display_win_ratio'){
             $query = $query->where('Players.inning >= Teams.game * 3');
         }
-        $players = $this->paginate($query, ['limit' => 100]);
+
+
+        $players = $query->sortBy($sort, $ascDesc);
         $this->set('players', $players);
         $this->set('id', $id);
     }
@@ -371,6 +382,8 @@ class SeasonsController extends AppController
             $PhpExcelWrapper->setVal($PositionCheck[$basePlayer->type_i], 12, $row);
             $PhpExcelWrapper->setVal($PositionCheck[$basePlayer->type_o], 13, $row);
             $PhpExcelWrapper->setVal($basePlayer->accident_type, 14, $row);
+            $PhpExcelWrapper->setVal($basePlayer->walk_ritsu, 15, $row);
+            $PhpExcelWrapper->setVal($basePlayer->p_walk_ritsu, 16, $row);
         }
 
         $this->response->type('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -520,6 +533,7 @@ class SeasonsController extends AppController
 			->select(['p_dasu' => 'sum(Players.p_dasu)'])
 			->select(['p_hit' => 'sum(Players.p_hit)'])
 			->select(['p_hr' => 'sum(Players.p_hr)'])
+			->select(['p_walk' => 'sum(Players.p_walk)'])
 			->select(['yashu_game' => 'sum(Players.yashu_game)'])
 			->select(['kanto' => 'sum(Players.kanto)'])
 			->select(['kanpu' => 'sum(Players.kanpu)'])

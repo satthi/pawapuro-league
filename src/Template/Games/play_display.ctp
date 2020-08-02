@@ -85,6 +85,25 @@
 		</tr>
 	</table>
 	<h4>結果</h4>
+	<div>
+		<table>
+			<tr>
+				<th>四球判定</th>
+				<th>通常</th>
+				<td style="font-weight:bold;font-size:20px;color:red;">
+					<?php if ($walKCheck) :?>
+						〇
+					<?php endif;?>
+				</td>
+				<th>満塁</th>
+				<td style="font-weight:bold;font-size:20px;color:red;">
+					<?php if ($manruiWalKCheck) :?>
+						〇
+					<?php endif;?>
+				</td>
+			</tr>
+		</table>
+	</div>
 	<?php if ($gameInfo->status != 0 && $gameInfo->out_num != 3):?>
 	<div class="clearfix">
 		<div style="float:left;">
@@ -440,6 +459,8 @@
 			,100);
 		
 		function onseiYomiage(word) {
+			// 音声を止める
+			return;
 		    var synthes = new SpeechSynthesisUtterance();
 		    var voices = speechSynthesis.getVoices();
 		    synthes.voice = voices[12];

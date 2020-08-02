@@ -439,6 +439,18 @@ class GamesController extends AppController
 	    
 	    }
 	    
+	    $walKCheck = 0;
+	    $manruiWalKCheck = 0;
+	    if (!is_null($batterId) && !is_null($pitcherId)) {
+		    $batter = $this->Players->get($batterId);
+		    $pitcher = $this->Players->get($pitcherId);
+		    $rand = rand(0, 10000);
+		    $pWalkRitsu = $pitcher->p_walk_ritsu;
+		    $walkRitsu = $batter->walk_ritsu;
+		    $walKCheck = $pWalkRitsu * $walkRitsu * 100 > $rand;
+		    $manruiWalKCheck = $pWalkRitsu * $walkRitsu * 50 > $rand;
+	    }
+	    
         
         $this->set('positionLists', Configure::read('positionLists'));
         $this->set('positionColors', Configure::read('positionColors'));
@@ -456,6 +468,8 @@ class GamesController extends AppController
         $this->set('inningInfos', $inningInfos);
         $this->set('inningLastType', $inningLastType);
         $this->set('resultsSets', $resultsSets);
+        $this->set('walKCheck', $walKCheck);
+        $this->set('manruiWalKCheck', $manruiWalKCheck);
         $this->render('play_display');
     }
     

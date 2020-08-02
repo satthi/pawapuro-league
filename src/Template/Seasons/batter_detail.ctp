@@ -13,7 +13,7 @@
                 <th scope="col">T</th>
                 <th scope="col">no</th>
 	            <th><?= $this->Html->link('試合', [$id, 'sort' => 'yashu_game']) ?></th>
-	            <th><?= $this->Html->link('打率', [$id, 'sort' => 'avg']) ?></th>
+	            <th><?= $this->Html->link('打率', [$id, 'sort' => 'display_avg']) ?></th>
 	            <th><?= $this->Html->link('HR', [$id, 'sort' => 'hr']) ?></th>
 	            <th><?= $this->Html->link('打点', [$id, 'sort' => 'rbi']) ?></th>
 	            <th><?= $this->Html->link('打席', [$id, 'sort' => 'daseki']) ?></th>
@@ -23,9 +23,9 @@
 	            <th><?= $this->Html->link('3塁打', [$id, 'sort' => 'base3']) ?></th>
 	            <th><?= $this->Html->link('四球', [$id, 'sort' => 'walk']) ?></th>
 	            <th><?= $this->Html->link('死球', [$id, 'sort' => 'deadball']) ?></th>
-	            <th>出塁率</th>
-	            <th>長打率</th>
-	            <th>ops</th>
+	            <th><?= $this->Html->link('出塁率', [$id, 'sort' => 'obp']) ?></th>
+	            <th><?= $this->Html->link('長打率', [$id, 'sort' => 'slg']) ?></th>
+	            <th><?= $this->Html->link('ops', [$id, 'sort' => 'ops']) ?></th>
 	            <th><?= $this->Html->link('犠打', [$id, 'sort' => 'bant']) ?></th>
 	            <th><?= $this->Html->link('犠飛', [$id, 'sort' => 'sacrifice_fly']) ?></th>
 	            <th><?= $this->Html->link('三振', [$id, 'sort' => 'sansin']) ?></th>

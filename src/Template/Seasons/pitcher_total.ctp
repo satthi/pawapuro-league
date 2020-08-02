@@ -18,6 +18,7 @@
                 <th><?= $this->Html->link('完投', ['sort' => 'kanto']) ?></th>
                 <th><?= $this->Html->link('完封', ['sort' => 'kanpu']) ?></th>
                 <th><?= $this->Html->link('被安打', ['sort' => 'p_hit']) ?></th>
+                <th><?= $this->Html->link('四球', ['sort' => 'p_walk']) ?></th>
                 <th><?= $this->Html->link('被打率', ['sort' => 'p_avg']) ?></th>
                 <th><?= $this->Html->link('被本塁打', ['sort' => 'p_hr']) ?></th>
                 <th><?= $this->Html->link('奪三振', ['sort' => 'get_sansin']) ?></th>
@@ -48,6 +49,7 @@
                 <td><?= $this->Number->format($player->kanto) ?></td>
                 <td><?= $this->Number->format($player->kanpu) ?></td>
                 <td><?= $this->Number->format($player->p_hit) ?></td>
+                <td><?= $this->Number->format($player->p_walk) ?></td>
                 <td><?= $player->p_avg ?></td>
                 <td><?= $this->Number->format($player->p_hr) ?></td>
                 <td><?= $this->Number->format($player->get_sansin) ?></td>

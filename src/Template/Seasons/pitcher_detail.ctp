@@ -13,26 +13,26 @@
                 <th scope="col">T</th>
                 <th scope="col">no</th>
                 <th><?= $this->Html->link('試合', [$id, 'sort' => 'game']) ?></th>
-                <th><?= $this->Html->link('era', [$id, 'sort' => 'era']) ?></th>
+                <th><?= $this->Html->link('era', [$id, 'sort' => 'display_era']) ?></th>
                 <th><?= $this->Html->link('inning', [$id, 'sort' => 'inning']) ?></th>
                 <th><?= $this->Html->link('jiseki', [$id, 'sort' => 'jiseki']) ?></th>
                 <th><?= $this->Html->link('win', [$id, 'sort' => 'win']) ?></th>
                 <th><?= $this->Html->link('lose', [$id, 'sort' => 'lose']) ?></th>
-                <th><?= $this->Html->link('勝率', [$id, 'sort' => 'win_ratio']) ?></th>
+                <th><?= $this->Html->link('勝率', [$id, 'sort' => 'display_win_ratio']) ?></th>
                 <th><?= $this->Html->link('hold', [$id, 'sort' => 'hold']) ?></th>
                 <th><?= $this->Html->link('save', [$id, 'sort' => 'save']) ?></th>
                 <th><?= $this->Html->link('完投', [$id, 'sort' => 'kanto']) ?></th>
                 <th><?= $this->Html->link('完封', [$id, 'sort' => 'kanpu']) ?></th>
                 <th><?= $this->Html->link('被安打', [$id, 'sort' => 'p_hit']) ?></th>
-                <th scope="col">被打率</th>
+                <th><?= $this->Html->link('四球', [$id, 'sort' => 'p_walk']) ?></th>
+                <th><?= $this->Html->link('被打率', [$id, 'sort' => 'p_avg']) ?></th>
                 <th><?= $this->Html->link('被本塁打', [$id, 'sort' => 'p_hr']) ?></th>
                 <th><?= $this->Html->link('奪三振', [$id, 'sort' => 'get_sansin']) ?></th>
-                <th scope="col">奪三振率</th>
+                <th><?= $this->Html->link('奪三振率', [$id, 'sort' => 'sansin_ritsu']) ?></th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($players as $player): ?>
-            <?php if ($player->type_p === null) continue;?>
             <tr>
                 <td class="player_box_td">
                     <?= $this->element('player_block', ['player' => $player]);?>
@@ -55,16 +55,11 @@
                 <td><?= $this->Number->format($player->kanto) ?></td>
                 <td><?= $this->Number->format($player->kanpu) ?></td>
                 <td><?= $this->Number->format($player->p_hit) ?></td>
+                <td><?= $this->Number->format($player->p_walk) ?></td>
                 <td><?= $player->p_avg ?></td>
                 <td><?= $this->Number->format($player->p_hr) ?></td>
                 <td><?= $this->Number->format($player->get_sansin) ?></td>
-                <td>
-                <?php if ($player->inning != 0) :?>
-                    <?= sprintf('%0.2f', round($player->get_sansin / $player->inning * 27, 2)) ?>
-                <?php else:?>
-                    -
-                <?php endif;?>
-                </td>
+                <td><?= $player->sansin_ritsu ?></td>
             </tr>
             <?php endforeach; ?>
         </tbody>

@@ -56,6 +56,7 @@
                 <th scope="col"><?= $this->Paginator->sort('hold') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('save') ?></th>
                 <th scope="col">被安打</th>
+                <th scope="col">四球</th>
                 <th scope="col">被打率</th>
                 <th scope="col">被本塁打</th>
                 <th scope="col">奪三振</th>
@@ -83,6 +84,7 @@
                 <td><?= $this->Number->format($player->hold) ?></td>
                 <td><?= $this->Number->format($player->save) ?></td>
                 <td><?= $this->Number->format($player->p_hit) ?></td>
+                <td><?= $this->Number->format($player->p_walk) ?></td>
                 <td><?= $player->p_avg ?></td>
                 <td><?= $this->Number->format($player->p_hr) ?></td>
                 <td><?= $this->Number->format($player->get_sansin) ?></td>

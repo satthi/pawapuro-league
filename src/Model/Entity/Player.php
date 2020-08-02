@@ -569,6 +569,12 @@ class Player extends Entity
         	->where(['Players.' . $field . ' >' => $this->_properties[$field]])
         	->count() == 0;
     }
-    
 
+    protected function _getSansinRitsu()
+    {
+    	if (!$this->_properties['inning']) {
+    		return '-';
+    	} 
+        return sprintf('%0.2f', round($this->_properties['get_sansin'] / $this->_properties['inning'] * 27, 2));
+    }
 }

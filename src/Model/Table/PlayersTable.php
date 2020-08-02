@@ -166,6 +166,8 @@ class PlayersTable extends Table
             $playerInfo['type_i'] = $PositionCheck[$PhpExcelWrapper->getVal(12, $row)];
             $playerInfo['type_o'] = $PositionCheck[$PhpExcelWrapper->getVal(13, $row)];
             $playerInfo['accident_type'] = $PhpExcelWrapper->getVal(14, $row);
+            $playerInfo['walk_ritsu'] = $PhpExcelWrapper->getVal(15, $row);
+            $playerInfo['p_walk_ritsu'] = $PhpExcelWrapper->getVal(16, $row);
 
             $playerInfo['base_player_id'] = $PhpExcelWrapper->getVal(0, $row);
             if (empty($playerInfo['base_player_id'])) {
@@ -217,8 +219,10 @@ class PlayersTable extends Table
     		->select(['steal_count' => 'count(CASE WHEN GameResults.type = 3 AND GameResults.out_num = 0 THEN 1 ELSE null END)'])
     		->group('GameResults.target_player_id')
     		->where(['GameResults.target_player_id IS NOT' => null])
-    		->where(['Games.season_id' => $seasonId])
     	;
+    	if (!is_null($seasonId)) {
+    		$shukeiDatas->where(['Games.season_id' => $seasonId]);
+    	}
     	foreach ($shukeiDatas as $shukeiData) {
     		$playerInfo = $this->get($shukeiData->target_player_id);
     		$playerInfo->yashu_game = $shukeiData->game_count;
@@ -292,11 +296,15 @@ class PlayersTable extends Table
     			)
     		 THEN 1 ELSE null END)'])
     		->select(['jiseki_count' => 'sum(GamePitcherResults.jiseki)'])
-    		->where(['Games.season_id' => $seasonId])
     		->group('GamePitcherResults.pitcher_id')
     		;
-    	//加工しやすいように
     	
+    	if (!is_null($seasonId)) {
+    		$resultDatas->where(['Games.season_id' => $seasonId]);
+    	}
+    	
+    	
+    	//加工しやすいように
     	$inningDatas = $GameResults->find('all')
     		->select('pitcher_id')
     		->contain('Results')
@@ -306,9 +314,16 @@ class PlayersTable extends Table
     		->select(['dasu_count' => 'sum(Results.dasu_flag::integer)'])
     		->select(['hit_count' => 'sum(Results.hit_flag::integer)'])
     		->select(['hr_count' => 'sum(Results.hr_flag::integer)'])
-    		->where(['Games.season_id' => $seasonId])
+    		->select(['walk_count' => 'sum(Results.walk_flag::integer)'])
+    		
     		->group('GameResults.pitcher_id')
     		;
+
+    	if (!is_null($seasonId)) {
+    		$inningDatas->where(['Games.season_id' => $seasonId]);
+    	}
+
+
     	$inningInfos = [];
     	foreach ($inningDatas as $inningData) {
     		$inningInfos[$inningData->pitcher_id] = [
@@ -317,6 +332,7 @@ class PlayersTable extends Table
     			'p_dasu' => $inningData->dasu_count,
     			'p_hit' => $inningData->hit_count,
     			'p_hr' => $inningData->hr_count,
+    			'p_walk' => $inningData->walk_count,
     		];
     	}
     	// データの保存
@@ -344,6 +360,7 @@ class PlayersTable extends Table
     		$playerInfo->p_dasu = $inningInfos[$player_id]['p_dasu'];
     		$playerInfo->p_hit = $inningInfos[$player_id]['p_hit'];
     		$playerInfo->p_hr = $inningInfos[$player_id]['p_hr'];
+    		$playerInfo->p_walk = $inningInfos[$player_id]['p_walk'];
     		$playerInfo->kanto = $resultData->kanto_count;
     		$playerInfo->kanpu = $resultData->kanpu_count;
     		

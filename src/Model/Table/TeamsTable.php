@@ -239,9 +239,14 @@ class TeamsTable extends Table
             ->select(['lose' => 'count(CASE WHEN Games.home_point < Games.visitor_point AND Games.status = 99 THEN 1 ELSE null END)'])
             ->select(['draw' => 'count(CASE WHEN Games.home_point = Games.visitor_point AND Games.status = 99 THEN 1 ELSE null END)'])
             ->select(['remain' => 'count(CASE WHEN Games.status != 99 THEN 1 ELSE null END)'])
-            ->where(['Games.season_id' => $seasonId])
             ->group('Games.home_team_id')
             ;
+
+    	if (!is_null($seasonId)) {
+    		$homegameShukeis->where(['Games.season_id' => $seasonId]);
+    	}
+
+
         $visitorShukeis = $Games->find('all')
             ->select('Games.visitor_team_id')
             ->select(['game' => 'count(CASE WHEN Games.status = 99 THEN 1 ELSE null END)'])
@@ -249,9 +254,14 @@ class TeamsTable extends Table
             ->select(['lose' => 'count(CASE WHEN Games.home_point > Games.visitor_point AND Games.status = 99 THEN 1 ELSE null END)'])
             ->select(['draw' => 'count(CASE WHEN Games.home_point = Games.visitor_point AND Games.status = 99 THEN 1 ELSE null END)'])
             ->select(['remain' => 'count(CASE WHEN Games.status != 99 THEN 1 ELSE null END)'])
-            ->where(['Games.season_id' => $seasonId])
             ->group('Games.visitor_team_id')
             ;
+    	if (!is_null($seasonId)) {
+    		$visitorShukeis->where(['Games.season_id' => $seasonId]);
+    	}
+
+
+
         $shukei = [];
         foreach ($homegameShukeis as $homegameShukei) {
             $shukei[$homegameShukei->home_team_id] = [
@@ -284,7 +294,10 @@ class TeamsTable extends Table
         
         $saveFlag = true;
         foreach ($shukei as $a => $b) {
-            $teamInfo = $this->get($a);
+            $teamInfo = $this->findById($a)->first();
+            if (is_null($teamInfo)) {
+                continue;
+            }
             $teamInfo->game = $b['game'];
             $teamInfo->win = $b['win'];
             $teamInfo->lose = $b['lose'];

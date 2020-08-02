@@ -80,6 +80,7 @@
                 <th scope="col">完投</th>
                 <th scope="col">完封</th>
                 <th scope="col">被安打</th>
+                <th scope="col">四球</th>
                 <th scope="col">被打率</th>
                 <th scope="col">被本塁打</th>
                 <th scope="col">奪三振</th>
@@ -111,6 +112,7 @@
                 <td><?= $this->Number->format($player->kanto) ?></td>
                 <td><?= $this->Number->format($player->kanpu) ?></td>
                 <td><?= $this->Number->format($player->p_hit) ?></td>
+                <td><?= $this->Number->format($player->p_walk) ?></td>
                 <td><?= $player->p_avg ?></td>
                 <td><?= $this->Number->format($player->p_hr) ?></td>
                 <td><?= $this->Number->format($player->get_sansin) ?></td>
