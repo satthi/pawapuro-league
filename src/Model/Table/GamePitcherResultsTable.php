@@ -45,6 +45,11 @@ class GamePitcherResultsTable extends Table
         $this->belongsTo('Games', [
             'foreignKey' => 'game_id'
         ]);
+
+        $this->belongsTo('Pitchers', [
+        	'className' => 'Players',
+            'foreignKey' => 'pitcher_id'
+        ]);
     }
 
     /**

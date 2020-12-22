@@ -99,6 +99,29 @@ class SeasonsController extends AppController
         $this->set('vsTeam', $vsTeam);
         $this->set('_serialize', ['season']);
     }
+    
+    public function vsTeamDetail($rowTeamId, $colTeamId) {
+        $rowTeam = $this->Teams->get($rowTeamId, [
+            'contain' => [
+                'Seasons',
+            ],
+        ]);
+        $colTeam = $this->Teams->get($colTeamId);
+        
+        $otherTeams = $this->Teams->find()
+            ->where(['season_id' => $rowTeam->season->id])
+            ->where(['id NOT IN' => [$rowTeam->id, $colTeam->id]])
+            ->order(['id' => 'ASC']);
+        
+        $vsTeamDetail = $this->Games->vsTeamDetail($rowTeamId, $colTeamId);
+
+
+        $this->set('rowTeam', $rowTeam);
+        $this->set('colTeam', $colTeam);
+        $this->set('season', $rowTeam->season);
+        $this->set('otherTeams', $otherTeams);
+        $this->set('vsTeamDetail', $vsTeamDetail);
+    }
 
     public function viewMonth($id = null, $year = null, $month = null)
     {

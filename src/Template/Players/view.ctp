@@ -481,7 +481,6 @@
     <table cellpadding="0" cellspacing="0" style="width:auto;">
         <tr>
             <th nowrap>シーズン</th>
-            <th nowrap>名前</th>
             <th nowrap>チーム</th>
             <th nowrap>背番号</th>
             <th nowrap>試合</th>
@@ -520,8 +519,7 @@
         ];?>
         <?php foreach ($histories as $history):?>
         <tr>
-            <td><?= $history->team->season->name; ?></td>
-            <td><?= $this->Html->link($history->name, [$history->id]); ?></td>
+            <td><?= $this->Html->link($history->team->season->name, [$history->id]); ?></td>
             <td><?= $history->team->ryaku_name; ?></td>
             <td nowrap><?= $history->no; ?></td>
             <td nowrap><?= $history->yashu_game; ?></td>
@@ -562,7 +560,7 @@
         <?php endif;?>
         <?php endforeach;?>
         <tr>
-            <td colspan="5">シーズン合計</td>
+            <td colspan="4">シーズン合計</td>
                 <td nowrap>
 		        <?php if (!empty($total['dasu'])):?>
 		        <?= preg_replace('/^0/', '', sprintf('%0.3f', $total['hit'] / $total['dasu'])); ?>
@@ -598,7 +596,6 @@
         <thead>
             <tr>
                 <th nowrap>シーズン</th>
-                <th nowrap>名前</th>
                 <th nowrap>チーム</th>
                 <th nowrap>背番号</th>
                 <th nowrap scope="col"><?= $this->Paginator->sort('bougyo') ?></th>
@@ -614,6 +611,7 @@
                 <th nowrap scope="col">完封</th>
                 <th nowrap scope="col">被安打</th>
                 <th nowrap scope="col">被打率</th>
+                <th nowrap scope="col">被四球</th>
                 <th nowrap scope="col">被本塁打</th>
                 <th nowrap scope="col">奪三振</th>
                 <th nowrap scope="col">奪三振率</th>
@@ -633,12 +631,12 @@
             'p_hit' => 0,
             'p_dasu' => 0,
             'p_hr' => 0,
+            'p_walk' => 0,
             'get_sansin' => 0,
         ];?>
         <?php foreach ($histories as $history):?>
             <tr>
-                <td><?= $history->team->season->name; ?></td>
-                <td><?= $this->Html->link($history->name, [$history->id]); ?></td>
+                <td><?= $this->Html->link($history->team->season->name, [$history->id]); ?></td>
                 <td nowrap><?= $history->team->ryaku_name; ?></td>
                 <td nowrap><?= $history->no; ?></td>
                 <td nowrap <?= $history->era_top_check;?>>
@@ -664,6 +662,7 @@
                 <td nowrap <?= $history->kanpu_top_check;?>><?= $this->Number->format($history->kanpu) ?></td>
                 <td nowrap <?= $history->p_hit_top_check;?>><?= $this->Number->format($history->p_hit) ?></td>
                 <td nowrap><?= $history->p_avg ?></td>
+                <td nowrap <?= $history->p_walk_top_check;?>><?= $this->Number->format($history->p_walk) ?></td>
                 <td nowrap <?= $history->p_hr_top_check;?>><?= $this->Number->format($history->p_hr) ?></td>
                 <td nowrap <?= $history->get_sansin_top_check;?>><?= $this->Number->format($history->get_sansin) ?></td>
                 <td nowrap><?php
@@ -685,6 +684,7 @@
             'save' => $total['save'] + $history->save,
             'p_hit' => $total['p_hit'] + $history->p_hit,
             'p_dasu' => $total['p_dasu'] + $history->p_dasu,
+            'p_walk' => $total['p_walk'] + $history->p_walk,
             'p_hr' => $total['p_hr'] + $history->p_hr,
             'kanto' => $total['kanto'] + $history->kanto,
             'kanpu' => $total['kanpu'] + $history->kanpu,
@@ -693,7 +693,7 @@
         <?php endif;?>
         <?php endforeach;?>
             <tr>
-                <td colspan="4">シーズン合計</td>
+                <td colspan="3">シーズン合計</td>
                 <td nowrap>
 		        <?php if (!empty($total['inning'])):?>
 		        <?= sprintf('%0.2f', $total['jiseki'] / ($total['inning'] / 27)); ?>
@@ -723,6 +723,7 @@
 		        -
 		        <?php endif;?>
         </td>
+                <td nowrap><?= $this->Number->format($total['p_walk']) ?></td>
                 <td nowrap><?= $this->Number->format($total['p_hr']) ?></td>
                 <td nowrap><?= $this->Number->format($total['get_sansin']) ?></td>
                 <td nowrap><?php

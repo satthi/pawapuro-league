@@ -46,6 +46,7 @@
                 <th scope="col">打率</th>
                 <th scope="col">防御率</th>
                 <th scope="col">HR</th>
+                <th scope="col">盗塁</th>
                 <th scope="col">得点</th>
                 <th scope="col">失点</th>
                 <th scope="col">優可</th>
@@ -110,6 +111,7 @@
 				    }
                 ?></td>
                 <td><?php  echo $team->hr;?></td>
+                <td><?php  echo $team->steal;?></td>
                 <td><?php  echo $team->point;?></td>
                 <td><?php  echo $team->loss;?></td>
                 <td><?php  echo $team->championPossible;?></td>
@@ -178,7 +180,7 @@
 		        		<?php elseif (empty($vsTeam[$row_team['id']][$col_team['id']])):?>
 		        		0-0(0)
 		        		<?php else:?>
-		        		<?= $vsTeam[$row_team['id']][$col_team['id']]['win'] . '-' . $vsTeam[$row_team['id']][$col_team['id']]['lose'] . '(' . $vsTeam[$row_team['id']][$col_team['id']]['draw'] . ')';?>
+		        		<?= $this->Html->link($vsTeam[$row_team['id']][$col_team['id']]['win'] . '-' . $vsTeam[$row_team['id']][$col_team['id']]['lose'] . '(' . $vsTeam[$row_team['id']][$col_team['id']]['draw'] . ')', ['action' => 'vs_team_detail', $row_team['id'], $col_team['id']]);?>
 		        		<?php endif;?>
 		        	</td>
 		    

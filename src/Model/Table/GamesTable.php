@@ -214,6 +214,155 @@ class GamesTable extends Table
         }
         return $shukei_seikei;
     }
+
+    public function vsTeamDetail($rowTeamId, $colTeamId)
+    {
+        $gameResults = $this->find()
+            ->where([
+                'OR' => [
+                    [
+                        'home_team_id' => $rowTeamId,
+                        'visitor_team_id' => $colTeamId,
+                    ],
+                    [
+                        'home_team_id' => $colTeamId,
+                        'visitor_team_id' => $rowTeamId,
+                    ],
+                ],
+            ])
+            ->order(['date' => 'ASC'])
+            ->contain([
+                'WinPitchers',
+                'LosePitchers',
+                'SavePitchers',
+            ]);
+        // ここから集計
+        $shukei = [
+            'game' => 0,
+            'win' => 0,
+            'lose' => 0,
+            'draw' => 0,
+            'tokuten' => 0,
+            'shitten' => 0,
+        ];
+        
+        foreach ($gameResults as $gameResult) {
+            if ($gameResult->status != 99) {
+                continue;
+            }
+            $shukei['game']++;
+			if (
+				(
+					$rowTeamId == $gameResult->home_team_id &&
+					$gameResult->home_point > $gameResult->visitor_point 
+				) ||
+				(
+					$rowTeamId == $gameResult->visitor_team_id &&
+					$gameResult->home_point < $gameResult->visitor_point 
+				)
+				
+			){
+            	$shukei['win']++;
+			} elseif (
+				(
+					$rowTeamId == $gameResult->home_team_id &&
+					$gameResult->home_point < $gameResult->visitor_point 
+				) ||
+				(
+					$rowTeamId == $gameResult->visitor_team_id &&
+					$gameResult->home_point > $gameResult->visitor_point 
+				)
+				
+			) {
+            	$shukei['lose']++;
+            } else {
+            	$shukei['draw']++;
+            }
+            
+            if ($rowTeamId == $gameResult->home_team_id) {
+                $shukei['tokuten'] += $gameResult->home_point;
+                $shukei['shitten'] += $gameResult->visitor_point;
+            } else {
+                $shukei['tokuten'] += $gameResult->visitor_point;
+                $shukei['shitten'] += $gameResult->home_point;
+            }
+        }
+        
+        $shukei2 = TableRegistry::get('GameResults')->find()
+    		->contain('Results')
+    		->contain('Batters')
+    		->contain('Pitchers')
+    		->select(['daseki_count' => 'count(CASE WHEN GameResults.type = 2 THEN 1 ELSE null END)'])
+    		->select(['yontama_count' => 'sum(Results.walk_flag::integer)'])
+    		->select(['deadball_count' => 'sum(Results.deadball_flag::integer)'])
+    		->select(['dasu_count' => 'sum(Results.dasu_flag::integer)'])
+    		->select(['hit_count' => 'sum(Results.hit_flag::integer)'])
+    		->select(['base2_count' => 'sum(Results.base2_flag::integer)'])
+    		->select(['base3_count' => 'sum(Results.base3_flag::integer)'])
+    		->select(['hr_count' => 'sum(Results.hr_flag::integer)'])
+    		->select(['sansin_count' => 'sum(Results.sansin_flag::integer)'])
+    		->select(['bant_count' => 'sum(Results.bant_flag::integer)'])
+    		->select(['sacrifice_fly_count' => 'sum(Results.sacrifice_fly_flag::integer)'])
+    		->select(['heisatsu_count' => 'sum(Results.heisatsu_flag::integer)'])
+    		->select(['rbi_count' => 'sum(GameResults.point)'])
+    		->select(['steal_count' => 'count(CASE WHEN GameResults.type = 3 AND GameResults.out_num = 0 THEN 1 ELSE null END)'])
+    		->group('Batters.team_id')
+    		->where(['GameResults.target_player_id IS NOT' => null])
+    		->where(['Batters.team_id' => $rowTeamId])
+    		->where(['Pitchers.team_id' => $colTeamId])
+    		->firstOrFail()
+    	;
+
+        $shukei3 = TableRegistry::get('GameResults')->find()
+    		->contain('Results')
+    		->contain('Batters')
+    		->contain('Pitchers')
+    		->select(['daseki_count' => 'count(CASE WHEN GameResults.type = 2 THEN 1 ELSE null END)'])
+    		->select(['yontama_count' => 'sum(Results.walk_flag::integer)'])
+    		->select(['deadball_count' => 'sum(Results.deadball_flag::integer)'])
+    		->select(['dasu_count' => 'sum(Results.dasu_flag::integer)'])
+    		->select(['hit_count' => 'sum(Results.hit_flag::integer)'])
+    		->select(['base2_count' => 'sum(Results.base2_flag::integer)'])
+    		->select(['base3_count' => 'sum(Results.base3_flag::integer)'])
+    		->select(['hr_count' => 'sum(Results.hr_flag::integer)'])
+    		->select(['sansin_count' => 'sum(Results.sansin_flag::integer)'])
+    		->select(['bant_count' => 'sum(Results.bant_flag::integer)'])
+    		->select(['sacrifice_fly_count' => 'sum(Results.sacrifice_fly_flag::integer)'])
+    		->select(['heisatsu_count' => 'sum(Results.heisatsu_flag::integer)'])
+    		->select(['rbi_count' => 'sum(GameResults.point)'])
+    		->select(['steal_count' => 'count(CASE WHEN GameResults.type = 3 AND GameResults.out_num = 0 THEN 1 ELSE null END)'])
+    		->select(['inning_count' => 'sum(GameResults.out_num)'])
+    		->group('Batters.team_id')
+    		->where(['GameResults.target_player_id IS NOT' => null])
+    		->where(['Batters.team_id' => $colTeamId])
+    		->where(['Pitchers.team_id' => $rowTeamId])
+    		->firstOrFail()
+    	;
+
+    	$shukei4 = TableRegistry::get('GamePitcherResults')->find('all')
+    		->contain('Games')
+    		->contain('Pitchers')
+    		->select(['jiseki_count' => 'sum(GamePitcherResults.jiseki)'])
+    		->where(['OR' => [
+    				'Games.home_team_id' => $colTeamId,
+    				'Games.visitor_team_id' => $colTeamId,
+    		]])
+    		->where(['Pitchers.team_id' => $rowTeamId])
+    		->group('Pitchers.team_id')
+    		->first()
+    		;
+
+        return [
+            'gameResults' => $gameResults,
+            'shukei' => $shukei,
+            'shukei2' => $shukei2,
+            'shukei3' => $shukei3,
+            'shukei4' => $shukei4,
+        ];
+//        debug($gameResults->all());
+//        exit;
+        
+    }
     
     public function gameNextInning($gameId)
     {

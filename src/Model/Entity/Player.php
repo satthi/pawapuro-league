@@ -532,6 +532,11 @@ class Player extends Entity
         return $this->simpleTopCheck('p_hr');
     }    
     
+    protected function _getPWalkTopCheck()
+    {
+        return $this->simpleTopCheck('p_walk');
+    }    
+    
     protected function _getGetSansinTopCheck()
     {
         return $this->simpleTopCheck('get_sansin');
