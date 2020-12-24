@@ -582,4 +582,11 @@ class Player extends Entity
     	} 
         return sprintf('%0.2f', round($this->_properties['get_sansin'] / $this->_properties['inning'] * 27, 2));
     }
+
+
+    protected function _getLabelForSummary()
+    {
+        return '[' . $this->team->ryaku_name . ']' . $this->no . '.' . $this->name;
+    }
+
 }

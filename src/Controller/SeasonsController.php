@@ -100,6 +100,135 @@ class SeasonsController extends AppController
         $this->set('_serialize', ['season']);
     }
     
+    public function summary($id)
+    {
+        $season = $this->Seasons->get($id, [
+            'contain' => [
+                'Mvps',
+                'B9ps',
+                'B9cs',
+                'B91bs',
+                'B92bs',
+                'B93bs',
+                'B9sses',
+                'B9of1s',
+                'B9of2s',
+                'B9of3s',
+                'Ggps',
+                'Ggcs',
+                'Gg1bs',
+                'Gg2bs',
+                'Gg3bs',
+                'Ggsses',
+                'Ggof1s',
+                'Ggof2s',
+                'Ggof3s',
+            ]
+        ]);
+
+        // 各種タイトルの取得
+        $avgKings = $this->Players->getAvgKings($id);
+        $hrKings = $this->Players->getKings($id, 'hr');
+        $rbiKings = $this->Players->getKings($id, 'rbi');
+        $hitKings = $this->Players->getKings($id, 'hit');
+        $stealKings = $this->Players->getKings($id, 'steal');
+        $eraKings = $this->Players->getEraKings($id, 'era');
+        $winKings = $this->Players->getKings($id, 'win');
+        $winRatioKings = $this->Players->getWinRatioKings($id, 'win_ratio');
+        $getSansinKings = $this->Players->getKings($id, 'get_sansin');
+        $holdKings = $this->Players->getKings($id, 'hold');
+        $saveKings = $this->Players->getKings($id, 'save');
+        
+        // 各チーム情報
+        $teams = $this->Teams->find()
+            ->where(['Teams.season_id' => $id])
+            ->order(['Teams.win::numeric / Teams.game::numeric' => 'DESC'])
+            ;
+            
+        $this->set(compact(
+            'season',
+            'avgKings',
+            'hrKings',
+            'rbiKings',
+            'hitKings',
+            'stealKings',
+            'eraKings',
+            'winKings',
+            'winRatioKings',
+            'getSansinKings',
+            'holdKings',
+            'saveKings',
+            'teams'
+        ));
+    }
+
+    public function summary2($id)
+    {
+        $season = $this->Seasons->get($id, [
+            'contain' => [
+                'Mvps',
+                'B9ps',
+                'B9cs',
+                'B91bs',
+                'B92bs',
+                'B93bs',
+                'B9sses',
+                'B9of1s',
+                'B9of2s',
+                'B9of3s',
+                'Ggps',
+                'Ggcs',
+                'Gg1bs',
+                'Gg2bs',
+                'Gg3bs',
+                'Ggsses',
+                'Ggof1s',
+                'Ggof2s',
+                'Ggof3s',
+            ]
+        ]);
+
+        // 各種タイトルの取得
+        $avgKings = $this->Players->getAvgKings($id);
+        $hrKings = $this->Players->getKings($id, 'hr');
+        $rbiKings = $this->Players->getKings($id, 'rbi');
+        $hitKings = $this->Players->getKings($id, 'hit');
+        $stealKings = $this->Players->getKings($id, 'steal');
+        $eraKings = $this->Players->getEraKings($id, 'era');
+        $winKings = $this->Players->getKings($id, 'win');
+        $winRatioKings = $this->Players->getWinRatioKings($id, 'win_ratio');
+        $getSansinKings = $this->Players->getKings($id, 'get_sansin');
+        $holdKings = $this->Players->getKings($id, 'hold');
+        $saveKings = $this->Players->getKings($id, 'save');
+        
+            
+        $this->set(compact('season', 'avgKings', 'hrKings', 'rbiKings', 'hitKings', 'stealKings', 'eraKings', 'winKings', 'winRatioKings', 'getSansinKings', 'holdKings', 'saveKings'));
+    }
+
+    
+    public function summaryEdit($id)
+    {
+        $season = $this->Seasons->get($id);
+        $players = $this->Players->find('list', [
+                'valueField' => 'label_for_summary'
+            ])
+            ->contain('Teams')
+            ->where(['Teams.season_id' => $id])
+            ->order(['Teams.id' => 'ASC'])
+            ->order(['Players.no::integer' => 'ASC'])
+        ;
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $season = $this->Seasons->patchEntity($season, $this->request->getData());
+            if ($this->Seasons->save($season)) {
+                return $this->redirect(['action' => 'summary', $id]);
+            }
+        }
+        
+        $this->set(compact('season', 'players'));
+    }
+
+
+    
     public function vsTeamDetail($rowTeamId, $colTeamId) {
         $rowTeam = $this->Teams->get($rowTeamId, [
             'contain' => [

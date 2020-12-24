@@ -46,6 +46,84 @@ class SeasonsTable extends Table
         $this->hasMany('Teams', [
             'foreignKey' => 'season_id'
         ]);
+        $this->belongsTo('Mvps', [
+            'className' => 'Players',
+            'foreignKey' => 'mvp_player_id'
+        ]);
+        $this->belongsTo('B9ps', [
+            'className' => 'Players',
+            'foreignKey' => 'b9_p_player_id'
+        ]);
+        $this->belongsTo('B9cs', [
+            'className' => 'Players',
+            'foreignKey' => 'b9_c_player_id'
+        ]);
+        $this->belongsTo('B91bs', [
+            'className' => 'Players',
+            'foreignKey' => 'b9_1b_player_id'
+        ]);
+        $this->belongsTo('B92bs', [
+            'className' => 'Players',
+            'foreignKey' => 'b9_2b_player_id'
+        ]);
+        $this->belongsTo('B93bs', [
+            'className' => 'Players',
+            'foreignKey' => 'b9_3b_player_id'
+        ]);
+        $this->belongsTo('B9sses', [
+            'className' => 'Players',
+            'foreignKey' => 'b9_ss_player_id'
+        ]);
+        $this->belongsTo('B9of1s', [
+            'className' => 'Players',
+            'foreignKey' => 'b9_of1_player_id'
+        ]);
+        $this->belongsTo('B9of2s', [
+            'className' => 'Players',
+            'foreignKey' => 'b9_of2_player_id'
+        ]);
+        $this->belongsTo('B9of3s', [
+            'className' => 'Players',
+            'foreignKey' => 'b9_of3_player_id'
+        ]);
+        $this->belongsTo('Ggps', [
+            'className' => 'Players',
+            'foreignKey' => 'gg_p_player_id'
+        ]);
+        $this->belongsTo('Ggcs', [
+            'className' => 'Players',
+            'foreignKey' => 'gg_c_player_id'
+        ]);
+        $this->belongsTo('Gg1bs', [
+            'className' => 'Players',
+            'foreignKey' => 'gg_1b_player_id'
+        ]);
+        $this->belongsTo('Gg2bs', [
+            'className' => 'Players',
+            'foreignKey' => 'gg_2b_player_id'
+        ]);
+        $this->belongsTo('Gg3bs', [
+            'className' => 'Players',
+            'foreignKey' => 'gg_3b_player_id'
+        ]);
+        $this->belongsTo('Ggsses', [
+            'className' => 'Players',
+            'foreignKey' => 'gg_ss_player_id'
+        ]);
+        $this->belongsTo('Ggof1s', [
+            'className' => 'Players',
+            'foreignKey' => 'gg_of1_player_id'
+        ]);
+        $this->belongsTo('Ggof2s', [
+            'className' => 'Players',
+            'foreignKey' => 'gg_of2_player_id'
+        ]);
+        $this->belongsTo('Ggof3s', [
+            'className' => 'Players',
+            'foreignKey' => 'gg_of3_player_id'
+        ]);
+
+
     }
 
     /**

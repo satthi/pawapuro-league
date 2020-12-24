@@ -519,4 +519,39 @@ class PlayersTable extends Table
         	->order(['Players.id' => 'ASC'])
         ;
     }
+    
+    public function getKings($seasonId, $field)
+    {
+        return $this->find()
+            ->contain('Teams')
+            ->where(['Teams.season_id' => $seasonId])
+            ->where($this->aliasField($field) . ' = (SELECT max(compare_players.' . $field . ') FROM players AS compare_players LEFT JOIN teams as compare_teams ON compare_players.team_id = compare_teams.id WHERE compare_teams.season_id = ' . $seasonId . ')');
+    }
+    
+    public function getAvgKings($seasonId)
+    {
+        return $this->find()
+            ->contain('Teams')
+            ->where(['Teams.season_id' => $seasonId])
+            ->where($this->aliasField('daseki') . ' >= Teams.game * 3.1')
+            ->where($this->aliasField('avg') . ' = (SELECT max(compare_players.avg) FROM players AS compare_players LEFT JOIN teams as compare_teams ON compare_players.team_id = compare_teams.id WHERE compare_teams.season_id = ' . $seasonId . ' AND compare_players.daseki >= compare_teams.game * 3.1)');
+    }
+    
+    public function getEraKings($seasonId)
+    {
+        return $this->find()
+            ->contain('Teams')
+            ->where(['Teams.season_id' => $seasonId])
+            ->where($this->aliasField('inning') . ' >= Teams.game * 3')
+            ->where($this->aliasField('era') . ' = (SELECT min(compare_players.era) FROM players AS compare_players LEFT JOIN teams as compare_teams ON compare_players.team_id = compare_teams.id WHERE compare_teams.season_id = ' . $seasonId . ' AND compare_players.inning >= compare_teams.game * 3)');
+    }
+    
+    public function getWinRatioKings($seasonId)
+    {
+        return $this->find()
+            ->contain('Teams')
+            ->where(['Teams.season_id' => $seasonId])
+            ->where($this->aliasField('win') . ' >= 13')
+            ->where($this->aliasField('win_ratio') . ' = (SELECT max(compare_players.win_ratio) FROM players AS compare_players LEFT JOIN teams as compare_teams ON compare_players.team_id = compare_teams.id WHERE compare_teams.season_id = ' . $seasonId . ' AND compare_players.win >= 13)');
+    }
 }

@@ -20,6 +20,7 @@
     </div>
     <?= $this->Html->link('日程一覧', ['controller' => 'games', 'action' => 'index', $season->id, '#' => 'd' . $nextGame->date->format('Ymd')]) ?>
     <?php else:?>
+    <?= $this->Html->link('総評', ['controller' => 'seasons', 'action' => 'summary', $season->id]) ?>
     <?= $this->Html->link('日程一覧', ['controller' => 'games', 'action' => 'index', $season->id]) ?>
     <?php endif;?>
     

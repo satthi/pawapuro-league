@@ -1,4 +1,7 @@
 <?php 
+if (is_null($player)) {
+    return;
+}
 if (empty($nolink)) {
     $nolink =false;
 }
