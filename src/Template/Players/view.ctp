@@ -519,18 +519,36 @@
         ];?>
         <?php foreach ($histories as $history):?>
         <tr>
-            <td><?= $this->Html->link($history->team->season->name, [$history->id]); ?></td>
+            <td><?= $this->Html->link($history->team->season->name, ['action' => 'view', $history->id]); ?></td>
             <td><?= $history->team->ryaku_name; ?></td>
             <td nowrap><?= $history->no; ?></td>
             <td nowrap><?= $history->yashu_game; ?></td>
-            <td nowrap <?= $history->avg_top_check;?>><?= preg_replace('/^0/', '', sprintf('%0.3f', $history->avg)); ?></td>
-            <td nowrap <?= $history->hr_top_check;?>><?= $this->Number->format($history->hr) ?></td>
-            <td nowrap <?= $history->rbi_top_check;?>><?= $this->Number->format($history->rbi) ?></td>
+            <td nowrap <?= $history->avg_top_check;?>>
+                <?= preg_replace('/^0/', '', sprintf('%0.3f', $history->avg)); ?>
+                <?= $this->Player->displayRank($history->avg_rank, $history->daseki >= $history->team->game * 3.1);?>
+            </td>
+            <td nowrap <?= $history->hr_top_check;?>>
+                <?= $this->Number->format($history->hr) ?>
+                <?= $this->Player->displayRank($history->hr_rank);?>
+            </td>
+            <td nowrap <?= $history->rbi_top_check;?>>
+                <?= $this->Number->format($history->rbi) ?>
+                <?= $this->Player->displayRank($history->rbi_rank);?>
+            </td>
             <td nowrap <?= $history->daseki_top_check;?>><?= $this->Number->format($history->daseki) ?></td>
             <td nowrap <?= $history->dasu_top_check;?>><?= $this->Number->format($history->dasu) ?></td>
-            <td nowrap <?= $history->hit_top_check;?>><?= $this->Number->format($history->hit) ?></td>
-            <td nowrap <?= $history->base2_top_check;?>><?= $this->Number->format($history->base2) ?></td>
-            <td nowrap <?= $history->base3_top_check;?>><?= $this->Number->format($history->base3) ?></td>
+            <td nowrap <?= $history->hit_top_check;?>>
+                <?= $this->Number->format($history->hit) ?>
+                <?= $this->Player->displayRank($history->hit_rank);?>
+            </td>
+            <td nowrap <?= $history->base2_top_check;?>>
+                <?= $this->Number->format($history->base2) ?>
+                <?= $this->Player->displayRank($history->base2_rank);?>
+            </td>
+            <td nowrap <?= $history->base3_top_check;?>>
+                <?= $this->Number->format($history->base3) ?>
+                <?= $this->Player->displayRank($history->base3_rank);?>
+            </td>
             <td nowrap <?= $history->walk_top_check;?>><?= $this->Number->format($history->walk) ?></td>
             <td nowrap <?= $history->deadball_top_check;?>><?= $this->Number->format($history->deadball) ?></td>
             <td nowrap><?= $history->obp; ?></td>
@@ -538,7 +556,10 @@
             <td nowrap <?= $history->sacrifice_fly_top_check;?>><?= $this->Number->format($history->sacrifice_fly) ?></td>
             <td nowrap <?= $history->sansin_top_check;?>><?= $this->Number->format($history->sansin) ?></td>
             <td nowrap <?= $history->heisatsu_top_check;?>><?= $this->Number->format($history->heisatsu) ?></td>
-            <td nowrap <?= $history->steal_top_check;?>><?= $this->Number->format($history->steal) ?></td>
+            <td nowrap <?= $history->steal_top_check;?>>
+                <?= $this->Number->format($history->steal) ?>
+                <?= $this->Player->displayRank($history->steal_rank);?>
+            </td>
         </tr>
             <?php if ($history->team->season->regular_flag):?>
         <?php $total = [
@@ -636,7 +657,7 @@
         ];?>
         <?php foreach ($histories as $history):?>
             <tr>
-                <td><?= $this->Html->link($history->team->season->name, [$history->id]); ?></td>
+                <td><?= $this->Html->link($history->team->season->name, ['action' => 'view', $history->id]); ?></td>
                 <td nowrap><?= $history->team->ryaku_name; ?></td>
                 <td nowrap><?= $history->no; ?></td>
                 <td nowrap <?= $history->era_top_check;?>>
@@ -645,6 +666,8 @@
 				<?php else:?>
 		        -
 		        <?php endif;?>
+                    <?= $this->Player->displayRank($history->era_rank, $history->inning >= $history->team->game * 3);?>
+
         </td>
                 <td nowrap <?= $history->inning_top_check;?>><?= floor($history->inning / 3);?>
         		<?php if ($history->inning % 3 != 0) :?>
@@ -653,18 +676,33 @@
         		</td>
                 <td nowrap <?= $history->jiseki_top_check;?>><?= $this->Number->format($history->jiseki) ?></td>
                 <td nowrap <?= $history->game_top_check;?>><?= $this->Number->format($history->game) ?></td>
-                <td nowrap <?= $history->win_top_check;?>><?= $this->Number->format($history->win) ?></td>
+                <td nowrap <?= $history->win_top_check;?>>
+                    <?= $this->Number->format($history->win) ?>
+                    <?= $this->Player->displayRank($history->win_rank);?>
+                </td>
                 <td nowrap <?= $history->lose_top_check;?>><?= $this->Number->format($history->lose) ?></td>
-                <td nowrap <?= $history->win_ratio_top_check;?>><?= $this->Number->format($history->win_ratio) ?></td>
-                <td nowrap <?= $history->hold_top_check;?>><?= $this->Number->format($history->hold) ?></td>
-                <td nowrap <?= $history->save_top_check;?>><?= $this->Number->format($history->save) ?></td>
+                <td nowrap <?= $history->win_ratio_top_check;?>>
+                    <?= $this->Number->format($history->win_ratio) ?>
+                    <?= $this->Player->displayRank($history->win_ratio_rank, $history->win >= 13);?>
+                </td>
+                <td nowrap <?= $history->hold_top_check;?>>
+                    <?= $this->Number->format($history->hold) ?>
+                    <?= $this->Player->displayRank($history->hold_rank);?>
+                </td>
+                <td nowrap <?= $history->save_top_check;?>>
+                    <?= $this->Number->format($history->save) ?>
+                    <?= $this->Player->displayRank($history->save_rank);?>
+                </td>
                 <td nowrap <?= $history->kanto_top_check;?>><?= $this->Number->format($history->kanto) ?></td>
                 <td nowrap <?= $history->kanpu_top_check;?>><?= $this->Number->format($history->kanpu) ?></td>
                 <td nowrap <?= $history->p_hit_top_check;?>><?= $this->Number->format($history->p_hit) ?></td>
                 <td nowrap><?= $history->p_avg ?></td>
                 <td nowrap <?= $history->p_walk_top_check;?>><?= $this->Number->format($history->p_walk) ?></td>
                 <td nowrap <?= $history->p_hr_top_check;?>><?= $this->Number->format($history->p_hr) ?></td>
-                <td nowrap <?= $history->get_sansin_top_check;?>><?= $this->Number->format($history->get_sansin) ?></td>
+                <td nowrap <?= $history->get_sansin_top_check;?>>
+                    <?= $this->Number->format($history->get_sansin) ?>
+                    <?= $this->Player->displayRank($history->get_sansin_rank);?>
+                </td>
                 <td nowrap><?php
                 if ($history->inning > 0) {
              echo sprintf('%0.2f', round($history->get_sansin / $history->inning * 27, 2));

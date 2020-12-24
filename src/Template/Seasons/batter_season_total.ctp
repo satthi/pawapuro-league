@@ -1,8 +1,3 @@
-<div class="submenu clearfix">
-	<ul>
-		<li><?= $this->Html->link('TOP', ['controller' => 'seasons', 'action' => 'view', $id]);?></li>
-	</ul>
-</div>
 <div class="players index columns content">
     <h3><?= __('Players') ?></h3>
     <h4>打者</h4>
@@ -10,27 +5,28 @@
         <thead>
             <tr>
                 <th style="width:150px;">name</th>
-                <th scope="col">T</th>
                 <th scope="col">no</th>
-	            <th><?= $this->Html->link('試合', [$id, 'sort' => 'yashu_game']) ?></th>
-	            <th><?= $this->Html->link('打率', [$id, 'sort' => 'avg']) ?></th>
-	            <th><?= $this->Html->link('HR', [$id, 'sort' => 'hr']) ?></th>
-	            <th><?= $this->Html->link('打点', [$id, 'sort' => 'rbi']) ?></th>
-	            <th><?= $this->Html->link('打席', [$id, 'sort' => 'daseki']) ?></th>
-	            <th><?= $this->Html->link('打数', [$id, 'sort' => 'dasu']) ?></th>
-	            <th><?= $this->Html->link('安打', [$id, 'sort' => 'hit']) ?></th>
-	            <th><?= $this->Html->link('2塁打', [$id, 'sort' => 'base2']) ?></th>
-	            <th><?= $this->Html->link('3塁打', [$id, 'sort' => 'base3']) ?></th>
-	            <th><?= $this->Html->link('四球', [$id, 'sort' => 'walk']) ?></th>
-	            <th><?= $this->Html->link('死球', [$id, 'sort' => 'deadball']) ?></th>
-	            <th><?= $this->Html->link('出塁率', [$id, 'sort' => 'obp']) ?></th>
-	            <th><?= $this->Html->link('長打率', [$id, 'sort' => 'slg']) ?></th>
-	            <th><?= $this->Html->link('ops', [$id, 'sort' => 'ops']) ?></th>
-	            <th><?= $this->Html->link('犠打', [$id, 'sort' => 'bant']) ?></th>
-	            <th><?= $this->Html->link('犠飛', [$id, 'sort' => 'sacrifice_fly']) ?></th>
-	            <th><?= $this->Html->link('三振', [$id, 'sort' => 'sansin']) ?></th>
-	            <th><?= $this->Html->link('併殺', [$id, 'sort' => 'heisatsu']) ?></th>
-	            <th><?= $this->Html->link('盗塁', [$id, 'sort' => 'steal']) ?></th>
+	            <th>シーズン</th>
+	            <th>チーム</th>
+	            <th><?= $this->Html->link('試合', ['sort' => 'yashu_game']) ?></th>
+	            <th><?= $this->Html->link('打率', ['sort' => 'display_avg']) ?></th>
+	            <th><?= $this->Html->link('HR', ['sort' => 'hr']) ?></th>
+	            <th><?= $this->Html->link('打点', ['sort' => 'rbi']) ?></th>
+	            <th><?= $this->Html->link('打席', ['sort' => 'daseki']) ?></th>
+	            <th><?= $this->Html->link('打数', ['sort' => 'dasu']) ?></th>
+	            <th><?= $this->Html->link('安打', ['sort' => 'hit']) ?></th>
+	            <th><?= $this->Html->link('2塁打', ['sort' => 'base2']) ?></th>
+	            <th><?= $this->Html->link('3塁打', ['sort' => 'base3']) ?></th>
+	            <th><?= $this->Html->link('四球', ['sort' => 'walk']) ?></th>
+	            <th><?= $this->Html->link('死球', ['sort' => 'deadball']) ?></th>
+	            <th><?= $this->Html->link('出塁率', ['sort' => 'obp']) ?></th>
+	            <th><?= $this->Html->link('長打率', ['sort' => 'slg']) ?></th>
+	            <th><?= $this->Html->link('ops', ['sort' => 'ops']) ?></th>
+	            <th><?= $this->Html->link('犠打', ['sort' => 'bant']) ?></th>
+	            <th><?= $this->Html->link('犠飛', ['sort' => 'sacrifice_fly']) ?></th>
+	            <th><?= $this->Html->link('三振', ['sort' => 'sansin']) ?></th>
+	            <th><?= $this->Html->link('併殺', ['sort' => 'heisatsu']) ?></th>
+	            <th><?= $this->Html->link('盗塁', ['sort' => 'steal']) ?></th>
             </tr>
         </thead>
         <tbody>
@@ -39,8 +35,9 @@
                 <td class="player_box_td">
                     <?= $this->element('player_block', ['player' => $player]);?>
                 </td>
-                <td><?= h($player->team->ryaku_name) ?></td>
                 <td><?= h($player->no) ?></td>
+	            <td nowrap><?= str_replace('satthi リーグ', '', $player->team->season->name); ?></td>
+	            <td><?= $player->team->ryaku_name; ?></td>
 	            <td><?= $player->yashu_game; ?></td>
 	            <td><?= $player->display_avg; ?></td>
 	            <td><?= $this->Number->format($player->hr) ?></td>

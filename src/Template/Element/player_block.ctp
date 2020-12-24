@@ -69,7 +69,11 @@ $positionCount = count($positionInfo['sub']) + 1;
 	<?php endif;?>
 >
 <?php if ($nolink == false):?>
+    <?php if ($player instanceof \App\Model\Entity\Player) :?>
     <?= $this->Html->link($player->name_short, ['controller' => 'players', 'action' => 'view', $player->id]) ?>
+    <?php else :?>
+    <?= $this->Html->link($player->name_short, ['controller' => 'players', 'action' => 'base_player_view', $player->id]) ?>
+    <?php endif;?>
 <?php else:?>
     <?= $player->name_short; ?>
 <?php endif;?>

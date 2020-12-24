@@ -232,7 +232,7 @@ class SeasonsController extends AppController
     {
     	$sort = $this->request->query('sort');
     	if (!$sort) {
-    	    $sort ='display_avg'; 
+    	    $sort ='avg'; 
     	}
 
         $season = $this->Seasons->get($id);
@@ -244,7 +244,7 @@ class SeasonsController extends AppController
             ->where(['Players.yashu_game IS NOT' => null])
             ;
 
-        if ($sort == 'display_avg' || $sort == 'obp' || $sort == 'slg' || $sort == 'ops'){
+        if ($sort == 'avg' || $sort == 'obp' || $sort == 'slg' || $sort == 'ops'){
             $query = $query->where('Players.daseki >= Teams.game * 3.1');
         }
         
@@ -257,10 +257,10 @@ class SeasonsController extends AppController
     {
     	$sort = $this->request->query('sort');
     	if (!$sort) {
-    	    $sort ='display_era'; 
+    	    $sort ='era'; 
     	}
     	$ascDesc = SORT_DESC;
-    	if ($sort == 'display_era' || $sort == 'p_avg') {
+    	if ($sort == 'era' || $sort == 'p_avg') {
     	    $ascDesc = SORT_ASC;
     	}
 
@@ -273,7 +273,7 @@ class SeasonsController extends AppController
             ->where(['Players.game IS NOT' => null])
             ;
 
-        if ($sort == 'display_era' || $sort == 'p_avg' || $sort == 'sansin_ritsu' ){
+        if ($sort == 'era' || $sort == 'p_avg' || $sort == 'sansin_ritsu' ){
             $query = $query->where('Players.inning >= Teams.game * 3');
             $this->request->query['direction'] = 'asc';
         }
@@ -572,5 +572,49 @@ class SeasonsController extends AppController
 		$this->set('players', $basePlayers);
     }
 
+    public function batterSeasonTotal()
+    {
+    	$sort = $this->request->query('sort');
+    	if (!$sort) {
+    	    $sort ='display_avg'; 
+    	}
+        $players = $this->Players->find()
+            ->contain('Teams.Seasons')
+            ->where(['Seasons.regular_flag' => true]);
+        
+        if ($sort == 'display_avg') {
+            $players = $players->where(['Players.daseki >= Teams.game * 3.1']);
+        }
+        
+        $players = $players->sortBy($sort, SORT_DESC);
+//        debug($basePlayers->first());
+//        exit;
 
+		$this->set('players', $players);
+    }
+
+    
+    public function pitcherSeasonTotal()
+    {
+    	$sort = $this->request->query('sort');
+    	if (!$sort) {
+    	    $sort ='display_era'; 
+    	}
+    	$ascDesc = SORT_DESC;
+    	if ($sort == 'display_era') {
+    	    $ascDesc = SORT_ASC;
+    	}
+        $players = $this->Players->find()
+            ->contain('Teams.Seasons')
+            ->where(['Seasons.regular_flag' => true]);
+        if ($sort == 'display_era') {
+            $players = $players->where(['Players.inning >= Teams.game * 3']);
+        }
+        $players = $players->sortBy($sort, $ascDesc);
+        
+//        debug($basePlayers->first());
+//        exit;
+
+		$this->set('players', $players);
+    }
 }

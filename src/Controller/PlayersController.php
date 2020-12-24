@@ -11,6 +11,7 @@ use Cake\Core\Configure;
  */
 class PlayersController extends AppController
 {
+	public $helpers = ['Player'];
     /**
      * Index method
      *
@@ -310,12 +311,28 @@ class PlayersController extends AppController
         // 歴代成績
         $histories = $this->Players->find('all')
         	->where(['Players.base_player_id' => $player->base_player_id])
+        	->select($this->Players)
+        	->select($this->Players->Teams)
+        	->select($this->Players->Teams->Seasons)
+        	// シーズンごとのランキング
+        	->select(['avg_rank' => $this->rankQuery('avg', '<', ' AND compare_players.daseki >= compare_teams.game * 3.1 AND Players.daseki >= Teams.game * 3.1')])
+        	->select(['hr_rank' => $this->rankQuery('hr', '<')])
+        	->select(['rbi_rank' => $this->rankQuery('rbi', '<')])
+        	->select(['hit_rank' => $this->rankQuery('hit', '<')])
+        	->select(['base2_rank' => $this->rankQuery('base2', '<')])
+        	->select(['base3_rank' => $this->rankQuery('base3', '<')])
+        	->select(['steal_rank' => $this->rankQuery('steal', '<')])
+        	->select(['win_rank' => $this->rankQuery('win', '<')])
+        	->select(['win_ratio_rank' => $this->rankQuery('win_ratio', '<', ' AND compare_players.win >= 13 AND Players.win >= 13')])
+        	->select(['get_sansin_rank' => $this->rankQuery('get_sansin', '<')])
+        	->select(['era_rank' => $this->rankQuery('era', '>', ' AND compare_players.inning >= compare_teams.game * 3 AND Players.inning >= Teams.game * 3')])
+        	->select(['hold_rank' => $this->rankQuery('hold', '<')])
+        	->select(['save_rank' => $this->rankQuery('save', '<')])
         	->contain(['Teams' => ['Seasons']])
         	->order(['Teams.season_id' => 'ASC'])
         	->order(['Players.trade_flag' => 'DESC'])
         	->where(['Seasons.regular_flag' => true])
         	;
-        
         $this->set('player', $player);
         $this->set('batterResultSets', $batterResultSets);
         $this->set('monthBatterInfos', $monthBatterInfos);
@@ -329,6 +346,36 @@ class PlayersController extends AppController
         $this->set('vsHandPitcherInfos', $vsHandPitcherInfos);
         $this->set('histories', $histories);
         $this->set('_serialize', ['player']);
+    }
+    
+    private function rankQuery($compareField, $compareType, $addCondition = '')
+    {
+        return '(
+            SELECT
+                count(*) + 1
+            FROM
+                players AS compare_players
+            LEFT JOIN teams AS compare_teams
+            ON compare_players.team_id = compare_teams.id
+            WHERE
+                Seasons.id = compare_teams.season_id
+            AND
+                coalesce(Players.' . $compareField . ', 0) ' . $compareType . ' coalesce(compare_players.' . $compareField . ', 0)'
+            . $addCondition . ')';
+    }
+    
+    public function basePlayerView($basePlayerId)
+    {
+        // レギュラーシーズンの最新のplayerを返す
+        $player = $this->Players->find()
+            ->contain('Teams.Seasons')
+            ->where(['base_player_id' => $basePlayerId])
+            ->where(['Seasons.regular_flag' => true])
+            ->order(['Seasons.id' => 'DESC'])
+            ->firstOrFail();
+
+        $this->view($player->id);
+        $this->render('view');
     }
 
     private function resultCase($conditions)
