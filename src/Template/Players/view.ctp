@@ -500,6 +500,7 @@
             <th nowrap>三振</th>
             <th nowrap>併殺</th>
             <th nowrap>盗塁</th>
+            <th></th>
         </tr>
         <?php $total = [
             'hr' => 0,
@@ -560,6 +561,37 @@
                 <?= $this->Number->format($history->steal) ?>
                 <?= $this->Player->displayRank($history->steal_rank);?>
             </td>
+            <td nowrap>
+                <?php if ($history->team->season->mvp_player_id == $history->id) :?>
+                    MVP
+                <?php endif;?>
+                <?php if (
+                    $history->team->season->b9_p_player_id == $history->id ||
+                    $history->team->season->b9_c_player_id == $history->id ||
+                    $history->team->season->b9_1b_player_id == $history->id ||
+                    $history->team->season->b9_2b_player_id == $history->id ||
+                    $history->team->season->b9_3b_player_id == $history->id ||
+                    $history->team->season->b9_ss_player_id == $history->id ||
+                    $history->team->season->b9_of1_player_id == $history->id ||
+                    $history->team->season->b9_of2_player_id == $history->id ||
+                    $history->team->season->b9_of3_player_id == $history->id
+                 ) :?>
+                    B9
+                <?php endif;?>
+                <?php if (
+                    $history->team->season->gg_p_player_id == $history->id ||
+                    $history->team->season->gg_c_player_id == $history->id ||
+                    $history->team->season->gg_1b_player_id == $history->id ||
+                    $history->team->season->gg_2b_player_id == $history->id ||
+                    $history->team->season->gg_3b_player_id == $history->id ||
+                    $history->team->season->gg_ss_player_id == $history->id ||
+                    $history->team->season->gg_of1_player_id == $history->id ||
+                    $history->team->season->gg_of2_player_id == $history->id ||
+                    $history->team->season->gg_of3_player_id == $history->id
+                 ) :?>
+                    GG
+                <?php endif;?>
+            </td>
         </tr>
             <?php if ($history->team->season->regular_flag):?>
         <?php $total = [
@@ -610,6 +642,7 @@
             <td nowrap><?= $this->Number->format($total['sansin']) ?></td>
             <td nowrap><?= $this->Number->format($total['heisatsu']) ?></td>
             <td nowrap><?= $this->Number->format($total['steal']) ?></td>
+            <td></td>
         </tr>
     </table>
     <h4>投手</h4>
