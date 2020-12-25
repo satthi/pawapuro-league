@@ -25,9 +25,7 @@
         <tr>
             <th>MVP</th>
             <td>-</td>
-            <td class="player_box_td">
-                <?= $this->element('player_block', ['player' => $season->mvp]);?>
-            </td>
+            <?= $this->element('season_title_player_name', ['player' => $season->mvp]);?>
         </tr>
         <?= $this->element('season_title_parts', ['kings' => $avgKings, 'field' => 'display_avg', 'tani' => '', 'title' => '首位打者']);?>
         <?= $this->element('season_title_parts', ['kings' => $hrKings, 'field' => 'hr', 'tani' => '本', 'title' => 'HR王']);?>
@@ -47,67 +45,49 @@
     <div class="tab_body" data-type="2">
         <div style="position:relative;">
             <?= $this->Html->image('ground.png', ['width' => 600]);?>
-            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:270px;left:250px;">
+            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:270px;left:240px;">
                 <tr>
-                    <td class="player_box_td">
-                        <?= $this->element('player_block', ['player' => $season->b9p]);?>
-                    </td>
+                    <?= $this->element('season_title_player_name', ['player' => $season->b9p]);?>
                 </tr>
             </table>
-            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:440px;left:250px;">
+            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:440px;left:240px;">
                 <tr>
-                    <td class="player_box_td">
-                        <?= $this->element('player_block', ['player' => $season->b9c]);?>
-                    </td>
+                    <?= $this->element('season_title_player_name', ['player' => $season->b9c]);?>
                 </tr>
             </table>
-            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:270px;left:400px;">
+            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:270px;left:420px;">
                 <tr>
-                    <td class="player_box_td">
-                        <?= $this->element('player_block', ['player' => $season->b91b]);?>
-                    </td>
+                    <?= $this->element('season_title_player_name', ['player' => $season->b91b]);?>
                 </tr>
             </table>
-            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:170px;left:320px;">
+            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:180px;left:350px;">
                 <tr>
-                    <td class="player_box_td">
-                        <?= $this->element('player_block', ['player' => $season->b92b]);?>
-                    </td>
+                    <?= $this->element('season_title_player_name', ['player' => $season->b92b]);?>
                 </tr>
             </table>
-            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:270px;left:100px;">
+            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:270px;left:60px;">
                 <tr>
-                    <td class="player_box_td">
-                        <?= $this->element('player_block', ['player' => $season->b93b]);?>
-                    </td>
+                    <?= $this->element('season_title_player_name', ['player' => $season->b93b]);?>
                 </tr>
             </table>
-            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:170px;left:180px;">
+            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:180px;left:130px;">
                 <tr>
-                    <td class="player_box_td">
-                        <?= $this->element('player_block', ['player' => $season->b9ss]);?>
-                    </td>
+                    <?= $this->element('season_title_player_name', ['player' => $season->b9ss]);?>
                 </tr>
             </table>
-            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:120px;left:100px;">
+            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:120px;left:90px;">
                 <tr>
-                    <td class="player_box_td">
-                        <?= $this->element('player_block', ['player' => $season->b9of1]);?>
-                    </td>
+                    <?= $this->element('season_title_player_name', ['player' => $season->b9of1]);?>
                 </tr>
             </table>
-            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:60px;left:250px;">
+            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:60px;left:240px;">
                 <tr>
-                    <td class="player_box_td">
-                        <?= $this->element('player_block', ['player' => $season->b9of2]);?>
-                    </td>
+                    <?= $this->element('season_title_player_name', ['player' => $season->b9of2]);?>
                 </tr>
             </table>
-            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:120px;left:400px;">
+            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:120px;left:390px;">
                 <tr>
-                    <td class="player_box_td">
-                        <?= $this->element('player_block', ['player' => $season->b9of3]);?>
-                    </td>
+                    <?= $this->element('season_title_player_name', ['player' => $season->b9of3]);?>
                 </tr>
             </table>
         </div>
@@ -117,67 +97,49 @@
     <div class="tab_body" data-type="3">
         <div style="position:relative;">
             <?= $this->Html->image('ground.png', ['width' => 600]);?>
-            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:270px;left:250px;">
+            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:270px;left:240px;">
                 <tr>
-                    <td class="player_box_td">
-                        <?= $this->element('player_block', ['player' => $season->ggp]);?>
-                    </td>
+                    <?= $this->element('season_title_player_name', ['player' => $season->ggp]);?>
                 </tr>
             </table>
-            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:440px;left:250px;">
+            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:440px;left:240px;">
                 <tr>
-                    <td class="player_box_td">
-                        <?= $this->element('player_block', ['player' => $season->ggc]);?>
-                    </td>
+                    <?= $this->element('season_title_player_name', ['player' => $season->ggc]);?>
                 </tr>
             </table>
-            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:270px;left:400px;">
+            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:270px;left:420px;">
                 <tr>
-                    <td class="player_box_td">
-                        <?= $this->element('player_block', ['player' => $season->gg1b]);?>
-                    </td>
+                    <?= $this->element('season_title_player_name', ['player' => $season->gg1b]);?>
                 </tr>
             </table>
-            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:170px;left:320px;">
+            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:180px;left:350px;">
                 <tr>
-                    <td class="player_box_td">
-                        <?= $this->element('player_block', ['player' => $season->gg2b]);?>
-                    </td>
+                    <?= $this->element('season_title_player_name', ['player' => $season->gg2b]);?>
                 </tr>
             </table>
-            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:270px;left:100px;">
+            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:270px;left:60px;">
                 <tr>
-                    <td class="player_box_td">
-                        <?= $this->element('player_block', ['player' => $season->gg3b]);?>
-                    </td>
+                    <?= $this->element('season_title_player_name', ['player' => $season->gg3b]);?>
                 </tr>
             </table>
-            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:170px;left:180px;">
+            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:180px;left:130px;">
                 <tr>
-                    <td class="player_box_td">
-                        <?= $this->element('player_block', ['player' => $season->ggss]);?>
-                    </td>
+                    <?= $this->element('season_title_player_name', ['player' => $season->ggss]);?>
                 </tr>
             </table>
-            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:120px;left:100px;">
+            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:120px;left:90px;">
                 <tr>
-                    <td class="player_box_td">
-                        <?= $this->element('player_block', ['player' => $season->ggof1]);?>
-                    </td>
+                    <?= $this->element('season_title_player_name', ['player' => $season->ggof1]);?>
                 </tr>
             </table>
-            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:60px;left:250px;">
+            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:60px;left:240px;">
                 <tr>
-                    <td class="player_box_td">
-                        <?= $this->element('player_block', ['player' => $season->ggof2]);?>
-                    </td>
+                    <?= $this->element('season_title_player_name', ['player' => $season->ggof2]);?>
                 </tr>
             </table>
-            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:120px;left:400px;">
+            <table cellpadding="0" cellspacing="0" style="width:auto;height:35px;position:absolute;top:120px;left:390px;">
                 <tr>
-                    <td class="player_box_td">
-                        <?= $this->element('player_block', ['player' => $season->ggof3]);?>
-                    </td>
+                    <?= $this->element('season_title_player_name', ['player' => $season->ggof3]);?>
                 </tr>
             </table>
         </div>

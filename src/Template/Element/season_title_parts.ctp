@@ -1,11 +1,9 @@
 <tr>
-    <th><?= $title;?></th>
-     <td>
+    <th nowrap><?= $title;?></th>
+     <td nowrap>
          <?= $kings->all()->first()->{$field};?><?= $tani;?>
      </td>
     <?php foreach ($kings as $king) :?>
-        <td class="player_box_td">
-            <?= $this->element('player_block', ['player' => $king]);?><br />
-         </td>
+        <?= $this->element('season_title_player_name', ['player' => $king]);?>
      <?php endforeach;?>
 </tr>
