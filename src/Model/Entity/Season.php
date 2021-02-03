@@ -31,4 +31,14 @@ class Season extends Entity
         '*' => true,
         'id' => false
     ];
+    
+    protected function _getShortName()
+    {
+        $name = str_replace('satthi リーグ', '', $this->_properties['name']);
+        if (!$name) {
+            $name = '1期';
+        }
+        
+        return $name;
+    }
 }

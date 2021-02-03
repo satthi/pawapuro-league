@@ -46,6 +46,9 @@ class SeasonsTable extends Table
         $this->hasMany('Teams', [
             'foreignKey' => 'season_id'
         ]);
+        $this->hasMany('Games', [
+            'foreignKey' => 'season_id'
+        ]);
         $this->belongsTo('Mvps', [
             'className' => 'Players',
             'foreignKey' => 'mvp_player_id'

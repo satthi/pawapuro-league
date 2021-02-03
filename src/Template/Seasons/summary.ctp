@@ -5,7 +5,9 @@
 </div>
 <div class="seasons view large-11 medium-11 columns content">
     <h3><?= h($season->name) ?></h3>
-
+    <?php foreach ($seasons as $seasonPart): ?>
+        <?= $this->Html->link($seasonPart->short_name, ['action' => 'summary', $seasonPart->id]);?>&nbsp;
+    <?php endforeach;?>
     <h4>総評</h4>
     <div><?= nl2br($season->summary);?></div>
 

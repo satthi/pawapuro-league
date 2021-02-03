@@ -144,6 +144,12 @@ class SeasonsController extends AppController
             ->where(['Teams.season_id' => $id])
             ->order(['Teams.win::numeric / Teams.game::numeric' => 'DESC'])
             ;
+        
+        $seasons = $this->Seasons->find()
+            ->where(['regular_flag' => true])
+            ->where('(not exists(SELECT 1 FROM games WHERE games.season_id = Seasons.id AND games.status != 99))')
+            ->order(['Seasons.id' => 'ASC'])
+        ;
             
         $this->set(compact(
             'season',
@@ -158,7 +164,8 @@ class SeasonsController extends AppController
             'getSansinKings',
             'holdKings',
             'saveKings',
-            'teams'
+            'teams',
+            'seasons'
         ));
     }
 
