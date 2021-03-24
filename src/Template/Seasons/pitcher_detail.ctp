@@ -13,7 +13,7 @@
                 <th scope="col">T</th>
                 <th scope="col">no</th>
                 <th><?= $this->Html->link('試合', [$id, 'sort' => 'game']) ?></th>
-                <th><?= $this->Html->link('era', [$id, 'sort' => 'display_era']) ?></th>
+                <th><?= $this->Html->link('era', [$id, 'sort' => 'era']) ?></th>
                 <th><?= $this->Html->link('inning', [$id, 'sort' => 'inning']) ?></th>
                 <th><?= $this->Html->link('jiseki', [$id, 'sort' => 'jiseki']) ?></th>
                 <th><?= $this->Html->link('win', [$id, 'sort' => 'win']) ?></th>

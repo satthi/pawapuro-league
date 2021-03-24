@@ -718,7 +718,7 @@ class SeasonsController extends AppController
             ->contain('Teams.Seasons')
             ->where(['Seasons.regular_flag' => true]);
         
-        if ($sort == 'display_avg') {
+        if ($sort == 'display_avg' || $sort == 'obp' || $sort == 'slg' || $sort == 'ops') {
             $players = $players->where(['Players.daseki >= Teams.game * 3.1']);
         }
         

@@ -438,6 +438,8 @@
                 <th scope="col">被本塁打</th>
                 <th scope="col">自責点</th>
                 <th scope="col">奪三振</th>
+                <th scope="col">四球</th>
+                <th scope="col">死球</th>
                 <th scope="col">通算防御率</th>
             </tr>
         </thead>
@@ -464,6 +466,8 @@
                 <td><?= $pitcherResultSet['hr'];?></td>
                 <td><?= $pitcherResultSet['jiseki'];?></td>
                 <td><?= $pitcherResultSet['sansin'];?></td>
+                <td><?= $pitcherResultSet['walk'];?></td>
+                <td><?= $pitcherResultSet['deadball'];?></td>
                 <td>
                     <?php if ($totalInning == 0) {
                     echo '-';
@@ -495,6 +499,7 @@
             <th nowrap>四球</th>
             <th nowrap>死球</th>
             <th nowrap>出塁率</th>
+            <th nowrap>OPS</th>
             <th nowrap>犠打</th>
             <th nowrap>犠飛</th>
             <th nowrap>三振</th>
@@ -553,6 +558,7 @@
             <td nowrap <?= $history->walk_top_check;?>><?= $this->Number->format($history->walk) ?></td>
             <td nowrap <?= $history->deadball_top_check;?>><?= $this->Number->format($history->deadball) ?></td>
             <td nowrap><?= $history->obp; ?></td>
+            <td nowrap><?= $history->ops; ?></td>
             <td nowrap <?= $history->bant_top_check;?>><?= $this->Number->format($history->bant) ?></td>
             <td nowrap <?= $history->sacrifice_fly_top_check;?>><?= $this->Number->format($history->sacrifice_fly) ?></td>
             <td nowrap <?= $history->sansin_top_check;?>><?= $this->Number->format($history->sansin) ?></td>
@@ -637,6 +643,7 @@
 		        -
 		        <?php endif;?>
         </td>
+            <td nowrap><?= $basePlayer->ops;?></td>
             <td nowrap><?= $this->Number->format($total['bant']) ?></td>
             <td nowrap><?= $this->Number->format($total['sacrifice_fly']) ?></td>
             <td nowrap><?= $this->Number->format($total['sansin']) ?></td>

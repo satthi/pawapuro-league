@@ -61,8 +61,45 @@ class PlayersController extends AppController
     	$this->loadModel('VMonthBatterInfos');
     	$this->loadModel('VMonthPitcherInfos');
         $player = $this->Players->get($id, [
-            'contain' => ['GameMembers', 'Teams']
+            'contain' => ['GameMembers', 'Teams', 'BasePlayers']
         ]);
+
+        $basePlayer = $this->Players->BasePlayers->find()
+            ->select($this->Players->BasePlayers)
+			->select(['daseki' => 'sum(Players.daseki)'])
+			->select(['dasu' => 'sum(Players.dasu)'])
+			->select(['hit' => 'sum(Players.hit)'])
+			->select(['hr' => 'sum(Players.hr)'])
+			->select(['rbi' => 'sum(Players.rbi)'])
+			->select(['game' => 'sum(Players.game)'])
+			->select(['inning' => 'sum(Players.inning)'])
+			->select(['jiseki' => 'sum(Players.jiseki)'])
+			->select(['win' => 'sum(Players.win)'])
+			->select(['lose' => 'sum(Players.lose)'])
+			->select(['hold' => 'sum(Players.hold)'])
+			->select(['save' => 'sum(Players.save)'])
+			->select(['sansin' => 'sum(Players.sansin)'])
+			->select(['steal' => 'sum(Players.steal)'])
+			->select(['get_sansin' => 'sum(Players.get_sansin)'])
+			->select(['base2' => 'sum(Players.base2)'])
+			->select(['base3' => 'sum(Players.base3)'])
+			->select(['walk' => 'sum(Players.walk)'])
+			->select(['deadball' => 'sum(Players.deadball)'])
+			->select(['heisatsu' => 'sum(Players.heisatsu)'])
+			->select(['bant' => 'sum(Players.bant)'])
+			->select(['sacrifice_fly' => 'sum(Players.sacrifice_fly)'])
+			->select(['p_dasu' => 'sum(Players.p_dasu)'])
+			->select(['p_hit' => 'sum(Players.p_hit)'])
+			->select(['p_hr' => 'sum(Players.p_hr)'])
+			->select(['yashu_game' => 'sum(Players.yashu_game)'])
+			->select(['kanto' => 'sum(Players.kanto)'])
+			->select(['kanpu' => 'sum(Players.kanpu)'])
+            ->leftJoinWith('Players.Teams.Seasons')
+            ->group('BasePlayers.id')
+            ->where(['Players.base_player_id' => $player->base_player_id])
+            ->firstOrFail()
+        ;
+
         // 該当者の全履歴取得
         $batterResults = $this->GameResults->find('all')
         	->where(['GameResults.target_player_id' => $id])
@@ -151,6 +188,8 @@ class PlayersController extends AppController
         	->select(['sansin' => '(SELECT sum(Results.sansin_flag::integer) FROM game_results AS GameResults LEFT JOIN results AS Results ON GameResults.result_id = Results.id WHERE GameResults.pitcher_id = ' . $id . ' AND GameResults.game_id = GamePitcherResults.game_id)'])
         	->select(['hit' => '(SELECT sum(Results.hit_flag::integer) FROM game_results AS GameResults LEFT JOIN results AS Results ON GameResults.result_id = Results.id WHERE GameResults.pitcher_id = ' . $id . ' AND GameResults.game_id = GamePitcherResults.game_id)'])
         	->select(['hr' => '(SELECT sum(Results.hr_flag::integer) FROM game_results AS GameResults LEFT JOIN results AS Results ON GameResults.result_id = Results.id WHERE GameResults.pitcher_id = ' . $id . ' AND GameResults.game_id = GamePitcherResults.game_id)'])
+        	->select(['walk' => '(SELECT sum(Results.walk_flag::integer) FROM game_results AS GameResults LEFT JOIN results AS Results ON GameResults.result_id = Results.id WHERE GameResults.pitcher_id = ' . $id . ' AND GameResults.game_id = GamePitcherResults.game_id)'])
+        	->select(['deadball' => '(SELECT sum(Results.deadball_flag::integer) FROM game_results AS GameResults LEFT JOIN results AS Results ON GameResults.result_id = Results.id WHERE GameResults.pitcher_id = ' . $id . ' AND GameResults.game_id = GamePitcherResults.game_id)'])
         	;
         $pitcherResultSets = [];
         foreach ($pitcherResults as $pitcherResult) {
@@ -177,6 +216,8 @@ class PlayersController extends AppController
             		'jiseki' => $pitcherResult->jiseki,
             		'hit' => $pitcherResult->hit,
             		'hr' => $pitcherResult->hr,
+            		'walk' => $pitcherResult->walk,
+            		'deadball' => $pitcherResult->deadball,
             		'sansin' => $pitcherResult->sansin,
             		'result' => $result,
             	];
@@ -334,6 +375,7 @@ class PlayersController extends AppController
         	->where(['Seasons.regular_flag' => true])
         	;
         $this->set('player', $player);
+        $this->set('basePlayer', $basePlayer);
         $this->set('batterResultSets', $batterResultSets);
         $this->set('monthBatterInfos', $monthBatterInfos);
         $this->set('pitcherResultSets', $pitcherResultSets);
