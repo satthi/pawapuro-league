@@ -1,7 +1,13 @@
 <div class="member_block clearfix" id="<?= $type;?>_<?= $dajun;?>_side">
 	<div class="position fleft">
 		<span>
-			<?= $position;?>
+			<?php if ($dajun == 10) :?>
+				P
+			<?php elseif ($position != 99) :?>
+				<?= $position;?>
+			<?php else :?>
+				D
+			<?php endif;?>
 		</span>
 	</div>
 	<div class="name fleft">

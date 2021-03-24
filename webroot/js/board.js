@@ -76,7 +76,7 @@ $(function(){
 		
 		settime += visitor_first_time;
 		setTimeout(function(){
-			for ($i = 1;$i <= 9;$i++) {
+			for ($i = 1;$i <= $('#visitor_team_div .member_block').length;$i++) {
 				member_set('visitor', $i);
 			}
 		}, settime);
@@ -103,7 +103,7 @@ $(function(){
 		
 		settime += home_first_time;
 		setTimeout(function(){
-			for ($i = 1;$i <= 9;$i++) {
+			for ($i = 1;$i <= $('#home_team_div .member_block').length;$i++) {
 				member_set('home', $i);
 			}
 		}, settime);
@@ -139,7 +139,9 @@ $(function(){
 			
 			$("#voice_dajun_" + i).get(0).play();
 			$("#voice_dajun_" + i).on('ended', function(){
-				$("#voice_" + type + "_player_positiond_" + i).get(0).play();
+				if (i != 10) {
+					$("#voice_" + type + "_player_positiond_" + i).get(0).play();
+				}
 			});
 		}, member_all_time * (i - 1));
 		

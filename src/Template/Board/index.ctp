@@ -12,11 +12,14 @@
 </head>
 <body>
 <div class="clearfix body">
-	<div class="fleft member team_<?= $game->home_team->ryaku_name;?>">
+	<div class="fleft member team_<?= $game->home_team->ryaku_name;?>" id="home_team_div">
 		<div class="member_logo_div">
 			<?= $this->Html->image('logo_mini/' . $game->home_team->ryaku_name . '.png', ['class' => 'member_logo']);?>
 		</div>
-		<?php for ($i = 1;$i <= 9;$i++):?>
+		<?php for ($i = 1;$i <= 10;$i++):?>
+		<?php if (empty( $players[$game->home_team->id][$i])) :?>
+			<?php continue;?>
+		<?php endif;?>
 		<?php
 			$options = [
 				'type' => 'home',
@@ -104,7 +107,10 @@
 				<?= $this->Html->image('logo_big/' . $game->visitor_team->ryaku_name . '.png', ['class' => 'mark_logo']);?>
 			</div>
 			
-			<?php for ($i = 1;$i <= 9;$i++):?>
+			<?php for ($i = 1;$i <= 10;$i++):?>
+			<?php if (empty( $players[$game->visitor_team->id][$i])) :?>
+				<?php continue;?>
+			<?php endif;?>
 			<?php
 				$options = [
 					'type' => 'visitor',
@@ -133,7 +139,10 @@
 			?>
 			<?= $this->element('board/main_player', $options);?>
 			<?php endfor;?>
-			<?php for ($i = 1;$i <= 9;$i++):?>
+			<?php for ($i = 1;$i <= 10;$i++):?>
+			<?php if (empty( $players[$game->home_team->id][$i])) :?>
+				<?php continue;?>
+			<?php endif;?>
 			<?php
 				$options = [
 					'type' => 'home',
@@ -164,11 +173,14 @@
 			<?php endfor;?>
 		</div>
 	</div>
-	<div class="fleft member team_<?= $game->visitor_team->ryaku_name;?>">
+	<div class="fleft member team_<?= $game->visitor_team->ryaku_name;?>" id="visitor_team_div">
 		<div class="member_logo_div">
 			<?= $this->Html->image('logo_mini/' . $game->visitor_team->ryaku_name . '.png', ['class' => 'member_logo']);?>
 		</div>
-		<?php for ($i = 1;$i <= 9;$i++):?>
+		<?php for ($i = 1;$i <= 10;$i++):?>
+			<?php if (empty( $players[$game->visitor_team->id][$i])) :?>
+				<?php continue;?>
+			<?php endif;?>
 		<?php
 			$options = [
 				'type' => 'visitor',
@@ -212,12 +224,15 @@
 <?php // 歓声?>
 <audio src="<?= $this->Url->build('/voice/common/kansei.wav');?>" id="voice_kansei" controls></audio>
 <?php // 1番～9番?>
-<?php for($i = 1;$i <= 9;$i++):?>
+<?php for($i = 1;$i <= 10;$i++):?>
 <audio src="<?= $this->Url->build('/voice/common/dajun_' . $i . '.wav');?>" id="voice_dajun_<?= $i;?>" controls></audio>
 <?php endfor;?>
 <?php // 各選手情報?>
 <?php // ビジター?>
-<?php for($i = 1;$i <= 9;$i++):?>
+<?php for($i = 1;$i <= 10;$i++):?>
+<?php if (empty( $players[$game->visitor_team->id][$i])) :?>
+	<?php continue;?>
+<?php endif;?>
 <audio src="<?= $this->Url->build('/voice/common/position_' . $players[$game->visitor_team->id][$i]->position . '.wav');?>" id="voice_visitor_player_position_<?= $i;?>" controls></audio>
 <audio src="<?= $this->Url->build('/voice/common/positiond_' . $players[$game->visitor_team->id][$i]->position . '.wav');?>" id="voice_visitor_player_positiond_<?= $i;?>" controls></audio>
 <audio src="<?= $this->Url->build('/voice/number/' . $players[$game->visitor_team->id][$i]->player->no . '.wav');?>" id="voice_visitor_no_<?= $i;?>" controls></audio>
@@ -225,7 +240,10 @@
 <audio src="<?= $this->Url->build('/voice/member/' . $players[$game->visitor_team->id][$i]->player->base_player_id . '/full.wav');?>" id="voice_visitor_playerd_<?= $i;?>" controls></audio>
 <?php endfor;?>
 <?php // ホーム?>
-<?php for($i = 1;$i <= 9;$i++):?>
+<?php for($i = 1;$i <= 10;$i++):?>
+<?php if (empty( $players[$game->home_team->id][$i])) :?>
+	<?php continue;?>
+<?php endif;?>
 <audio src="<?= $this->Url->build('/voice/common/position_' . $players[$game->home_team->id][$i]->position . '.wav');?>" id="voice_home_player_position_<?= $i;?>" controls></audio>
 <audio src="<?= $this->Url->build('/voice/common/positiond_' . $players[$game->home_team->id][$i]->position . '.wav');?>" id="voice_home_player_positiond_<?= $i;?>" controls></audio>
 <audio src="<?= $this->Url->build('/voice/number/' . $players[$game->home_team->id][$i]->player->no . '.wav');?>" id="voice_home_no_<?= $i;?>" controls></audio>

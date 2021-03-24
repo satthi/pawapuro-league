@@ -64,8 +64,6 @@ class BoardController extends AppController
             $players[$gameMember->team_id][$gameMember->dajun] = $gameMember;
             $scores[$gameMember->player->id] = $this->stamenPlayerSeiri($gameMember->player, $gameMember->position, $id);
         }
-        //debug($game);
-        //exit;
         
         $this->set('game', $game);
         $this->set('players', $players);
